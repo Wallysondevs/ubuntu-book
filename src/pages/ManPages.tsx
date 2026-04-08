@@ -1,124 +1,221 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function ManPages() {
-  return (
-    <PageContainer
-      title="Man Pages e Documentação"
-      subtitle="Como usar o sistema de manuais do Linux, help, info, tldr e encontrar ajuda rapidamente."
-      difficulty="iniciante"
-      timeToRead="12 min"
-    >
-      <p>
-        O Linux tem um sistema de documentação completo embutido. Saber usar as
-        man pages e outras fontes de ajuda é uma habilidade essencial — você encontra
-        respostas sem precisar pesquisar na internet.
-      </p>
+  export default function ManPages() {
+    return (
+      <PageContainer
+        title="Man Pages — Manuais do Sistema"
+        subtitle="Guia completo para usar man pages, info, help, tldr e aproveitar a documentação integrada do Linux para aprender qualquer comando."
+        difficulty="iniciante"
+        timeToRead="20 min"
+      >
+        <p>
+          As <strong>man pages</strong> (manual pages) são a documentação oficial de cada
+          comando, função e arquivo de configuração do Linux. É a referência mais completa e
+          confiável — está disponível offline, diretamente no terminal, e cobre absolutamente
+          tudo que o sistema oferece.
+        </p>
 
-      <h2>1. Man Pages — O Manual Oficial</h2>
-      <CodeBlock title="Usando o comando man" code={`# Abrir o manual de um comando:
-man ls
-man cp
-man bash
-man apt
+        <h2>1. Usar o man</h2>
+        <CodeBlock
+          title="Acessar e navegar nas man pages"
+          code={`# Abrir o manual de um comando
+  man ls
+  man grep
+  man chmod
+  man ssh
 
-# Navegar no manual:
-# j / ↓        — descer uma linha
-# k / ↑        — subir uma linha
-# SPACE        — descer uma página
-# b            — subir uma página
-# /palavra     — buscar no manual
-# n            — próxima ocorrência da busca
-# N            — ocorrência anterior
-# q            — sair
+  # Navegação dentro do man:
+  # Espaço ou PageDown   → próxima página
+  # b ou PageUp          → página anterior
+  # /texto               → buscar "texto" para frente
+  # ?texto               → buscar para trás
+  # n                    → próxima ocorrência
+  # N                    → ocorrência anterior
+  # q                    → sair
+  # h                    → ajuda do less (paginador)
 
-# Buscar em qual seção está um tópico:
-man -k "copy file"          # Busca por palavras-chave em todos os manuais
-man -f ls                   # Ver quais seções têm "ls"
-apropos chmod               # Equivalente ao man -k`} />
+  # As man pages são divididas em seções:
+  # 1 = Comandos de usuário (ls, grep, cp)
+  # 2 = Chamadas de sistema (open, read, write)
+  # 3 = Funções de biblioteca C (printf, malloc)
+  # 4 = Arquivos especiais (/dev/...)
+  # 5 = Formatos de arquivo (fstab, passwd)
+  # 6 = Jogos
+  # 7 = Miscelânea (protocolos, convenções)
+  # 8 = Comandos de administração (mount, iptables)
 
-      <CodeBlock title="Seções das man pages" code={`# As man pages são divididas em seções numeradas:
-# 1 — Comandos de usuário (ls, cp, mv...)
-# 2 — Chamadas de sistema do kernel (open(), read(), fork()...)
-# 3 — Funções de bibliotecas C (printf(), malloc()...)
-# 4 — Dispositivos (/dev/null, /dev/random...)
-# 5 — Formatos de arquivo (/etc/fstab, /etc/passwd...)
-# 6 — Jogos (raramente usado)
-# 7 — Miscelânea (protocolos, conceitos...)
-# 8 — Administração do sistema (sudo, mount, fdisk...)
+  # Abrir uma seção específica
+  man 5 passwd    # Formato do arquivo /etc/passwd
+  man 1 passwd    # Comando passwd
+  man 5 fstab     # Formato do /etc/fstab
+  man 8 mount     # Comando mount (administração)
 
-# Especificar a seção:
-man 5 fstab        # Manual do ARQUIVO /etc/fstab (seção 5)
-man 1 passwd       # Comando passwd (seção 1)
-man 5 passwd       # Formato do arquivo /etc/passwd (seção 5)
+  # Buscar um comando no manual
+  man -k "copy files"
+  # Equivale a: apropos "copy files"
 
-# Abrir todas as seções:
-man -a passwd`} />
+  # Buscar por nome
+  man -f ls
+  # Equivale a: whatis ls
+  # Saída: ls (1) - list directory contents
 
-      <h2>2. Outros Comandos de Ajuda</h2>
-      <CodeBlock title="--help, info, type, which" code={`# --help — ajuda rápida inline (sem abrir manual completo)
-ls --help
-git --help
-apt --help
+  # Ver todas as seções de um comando
+  whatis passwd
+  # Saída:
+  # passwd (1)  - change user password
+  # passwd (5)  - the password file`}
+        />
 
-# -h também funciona em muitos comandos:
-cp -h
-mkdir -h
+        <h2>2. Alternativas ao man</h2>
+        <CodeBlock
+          title="Outras formas de obter ajuda"
+          code={`# --help (resumo rápido de opções)
+  ls --help
+  grep --help
+  docker --help
 
-# info — documentação mais detalhada (GNU style)
-info bash
-info coreutils
-# Navegar no info: Tab (links), Enter (seguir), q (sair)
+  # help (para comandos built-in do Bash)
+  help cd
+  help for
+  help if
+  help echo
 
-# type — descobrir o que um comando é
-type ls         # ls is aliased to 'ls --color=auto'
-type cd         # cd is a shell builtin
-type python3    # python3 is /usr/bin/python3
-type ll         # ll is aliased to 'ls -lah'
+  # info (documentação GNU detalhada)
+  info coreutils
+  info grep
 
-# which — localizar o executável
-which python3   # /usr/bin/python3
-which node      # /usr/local/bin/node
-which -a python # Todos os pythons no PATH`} />
+  # tldr (man pages simplificadas — exemplos práticos!)
+  sudo apt install -y tldr
+  # Ou via npm: npm install -g tldr
 
-      <h2>3. tldr — Man Pages Resumidas</h2>
-      <AlertBox type="success">
-        O <strong>tldr</strong> (Too Long; Didn't Read) mostra exemplos práticos e
-        resumidos dos comandos mais comuns. Muito mais rápido que ler o man completo!
-      </AlertBox>
-      <CodeBlock title="Instalando e usando o tldr" code={`# Instalar tldr:
-sudo apt install tldr
-# ou com npm:
-npm install -g tldr
+  tldr tar
+  # Mostra exemplos práticos:
+  # - Extract an archive: tar xf archive.tar.gz
+  # - Create an archive: tar czf archive.tar.gz file1 file2
+  # - List contents: tar tf archive.tar.gz
 
-# Atualizar o banco de dados:
-tldr --update
+  tldr rsync
+  tldr find
+  tldr awk
 
-# Usar:
-tldr tar          # Exemplos de uso do tar
-tldr grep         # Exemplos do grep
-tldr rsync        # Exemplos do rsync
-tldr git-commit   # Exemplos do git commit
-tldr ssh          # Exemplos do SSH`} />
+  # Atualizar o banco de dados do tldr
+  tldr --update
 
-      <h2>4. Documentação Online e Local</h2>
-      <CodeBlock title="Onde encontrar mais documentação" code={`# Documentação de pacotes instalados:
-ls /usr/share/doc/          # Documentação de todos os pacotes
-ls /usr/share/doc/bash/     # Docs específicos do bash
-zcat /usr/share/doc/bash/changelog.gz  # Ver changelog
+  # cheat.sh (man pages online com exemplos)
+  curl cheat.sh/tar
+  curl cheat.sh/rsync
+  curl cheat.sh/awk
+  # Funciona sem instalar nada!
 
-# Documentação do Ubuntu:
-# https://help.ubuntu.com        — Wiki oficial
-# https://askubuntu.com          — Q&A da comunidade
-# https://ubuntu.com/server/docs — Docs do Ubuntu Server
-# https://manpages.ubuntu.com    — Man pages online
+  # explain shell (explicar um comando complexo)
+  # Acesse: explainshell.com
+  # Cole qualquer comando e ele explica cada parte`}
+        />
 
-# README e docs dentro de pacotes instalados:
-find /usr/share/doc -name "README*" -o -name "*.md" 2>/dev/null | head -20
+        <h2>3. Estrutura de uma Man Page</h2>
+        <CodeBlock
+          title="Entender as seções de uma man page"
+          code={`# Uma man page típica tem estas seções:
 
-# Documentação do kernel:
-ls /usr/src/linux-headers-\$(uname -r)/Documentation/ 2>/dev/null`} />
-    </PageContainer>
-  );
-}
+  # NAME — nome e descrição curta
+  # SYNOPSIS — sintaxe do comando
+  #   Convenções:
+  #   [opção]     = opcional
+  #   <argumento> = obrigatório
+  #   ...         = pode repetir
+  #   |           = ou
+
+  # DESCRIPTION — descrição detalhada
+
+  # OPTIONS — todas as opções/flags
+  #   -a, --all     lista todos
+  #   -l            formato longo
+  #   -h, --help    mostra ajuda
+
+  # EXAMPLES — exemplos de uso (nem todas têm)
+
+  # FILES — arquivos relacionados
+
+  # SEE ALSO — comandos relacionados
+
+  # EXIT STATUS — códigos de retorno (0 = sucesso)
+
+  # BUGS — problemas conhecidos
+
+  # AUTHOR — autor
+
+  # Dica: Ir direto para EXAMPLES
+  man ls
+  # Digite: /EXAMPLES e Enter
+
+  # Dica: Ir direto para uma opção
+  man rsync
+  # Digite: /--delete e Enter`}
+        />
+
+        <h2>4. Instalar Man Pages Extras</h2>
+        <CodeBlock
+          title="Mais documentação no terminal"
+          code={`# Man pages em português (se disponíveis)
+  sudo apt install -y manpages-pt-br
+
+  # Man pages de desenvolvimento (funções C, chamadas de sistema)
+  sudo apt install -y manpages-dev manpages-posix-dev
+
+  # Atualizar o banco de dados do man
+  sudo mandb
+
+  # Salvar man page como texto
+  man ls > ls-manual.txt
+
+  # Salvar como PDF
+  man -t ls | ps2pdf - ls-manual.pdf
+
+  # Ver man page no navegador
+  man --html ls
+
+  # Criar suas próprias man pages
+  # Formato: troff/groff
+  # Caminho: /usr/local/share/man/man1/
+
+  # Instalar man pages do POSIX
+  sudo apt install -y manpages-posix`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com man pages"
+          code={`# "No manual entry for xxx"
+  # Instalar man pages:
+  sudo apt install -y man-db manpages manpages-dev
+  # Atualizar banco:
+  sudo mandb
+
+  # Man page não encontra após instalar pacote
+  sudo mandb    # Reindexar
+
+  # Man page em outro idioma
+  # Forçar inglês:
+  LANG=C man ls
+
+  # Man page não abre (paginador errado)
+  export PAGER=less
+  # Ou: export MANPAGER="less -R"
+
+  # Buscar documentação online
+  # Ubuntu manpages: manpages.ubuntu.com
+  # Linux man pages: man7.org
+  # Arch Wiki: wiki.archlinux.org (excelente para qualquer distro)`}
+        />
+
+        <AlertBox type="info" title="Aprenda a ler man pages">
+          No início, man pages parecem intimidadoras, mas são a documentação mais completa
+          que existe. Comece lendo a seção DESCRIPTION e EXAMPLES. Com o tempo, você vai
+          conseguir ler a SYNOPSIS diretamente. O <code>tldr</code> é um ótimo complemento
+          para ter exemplos práticos rápidos.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
