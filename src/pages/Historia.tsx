@@ -1,137 +1,149 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Historia() {
-  return (
-    <PageContainer
-      title="A História do Ubuntu"
-      subtitle="De um sonho sul-africano ao Linux mais popular do mundo — a trajetória do Ubuntu, do lançamento em 2004 até hoje."
-      difficulty="iniciante"
-      timeToRead="10 min"
-    >
-      <p>
-        Ubuntu. A palavra vem de um conceito filosófico africano que se traduz aproximadamente como
-        <em>"Eu sou porque nós somos"</em> ou <em>"Humanidade para os outros"</em>. Em 2004, um
-        bilionário sul-africano decidiu que esse nome seria o ideal para um novo sistema operacional
-        Linux — gratuito, bonito, fácil de usar, e construído sobre os ombros de décadas de trabalho
-        comunitário do software livre.
-      </p>
+  export default function Historia() {
+    return (
+      <PageContainer
+        title="História do Ubuntu e do Linux"
+        subtitle="A história completa do Ubuntu, do Linux e do software livre: de Unix a Linus Torvalds, de Debian a Mark Shuttleworth."
+        difficulty="iniciante"
+        timeToRead="15 min"
+      >
+        <p>
+          Entender a história do Ubuntu ajuda a compreender suas decisões de design,
+          sua filosofia e por que ele funciona como funciona. A história do Ubuntu é
+          inseparável da história do Linux, do GNU e do movimento de software livre.
+        </p>
 
-      <h2>O Começo: Mark Shuttleworth e a Canonical (2004)</h2>
-      <p>
-        <strong>Mark Shuttleworth</strong>, cofundador da empresa de segurança digital Thawte (vendida para
-        a VeriSign por 575 milhões de dólares em 1999), financiou de seu próprio bolso o projeto Ubuntu.
-        Em 2002, ele viajou para o espaço como o segundo turista espacial da história a bordo de um foguete
-        russo Soyuz — um detalhe que diz muito sobre sua personalidade visionária.
-      </p>
-      <p>
-        Em 2004, Shuttleworth fundou a <strong>Canonical Ltd.</strong>, com sede em Londres, e reuniu
-        um time de desenvolvedores de todo o mundo com um objetivo claro: criar uma distribuição Linux
-        baseada no Debian que fosse simples de instalar, usar e manter — e que lançasse novas versões
-        a cada seis meses, com suporte de longo prazo (LTS) a cada dois anos.
-      </p>
+        <h2>1. De Unix ao Linux (1969-1991)</h2>
+        <p>
+          Em <strong>1969</strong>, Ken Thompson e Dennis Ritchie criaram o <strong>Unix</strong>
+          nos Bell Labs da AT&T. O Unix introduziu conceitos revolucionários: tudo é arquivo,
+          permissões de usuário, pipes, shell e uma arquitetura modular que influencia
+          sistemas operacionais até hoje.
+        </p>
+        <p>
+          Em <strong>1983</strong>, Richard Stallman lançou o projeto <strong>GNU</strong>
+          (GNU's Not Unix) para criar um sistema operacional completamente livre. O GNU
+          criou ferramentas essenciais — GCC (compilador), Bash (shell), coreutils (ls, cp,
+          mv) — mas faltava o kernel.
+        </p>
+        <p>
+          Em <strong>1991</strong>, <strong>Linus Torvalds</strong>, um estudante finlandês
+          de 21 anos, publicou o <strong>kernel Linux</strong> como projeto pessoal. A
+          combinação das ferramentas GNU + kernel Linux criou o primeiro sistema operacional
+          completamente livre: <strong>GNU/Linux</strong>.
+        </p>
 
-      <AlertBox type="info" title="A base: Debian">
-        O Ubuntu é construído sobre o <strong>Debian</strong>, uma das distribuições Linux mais antigas
-        e respeitadas (criada em 1993). O Ubuntu herdou o formato de pacotes <code>.deb</code> e o
-        gerenciador APT, mas adicionou um ciclo de lançamento previsível, uma equipe profissional de
-        suporte e um foco intenso na experiência do usuário.
-      </AlertBox>
+        <h2>2. O Nascimento do Ubuntu (2004)</h2>
+        <p>
+          Em <strong>2004</strong>, <strong>Mark Shuttleworth</strong>, um empresário
+          sul-africano que havia vendido sua empresa de segurança Thawte para a VeriSign,
+          fundou a <strong>Canonical</strong> e lançou o <strong>Ubuntu 4.10</strong>
+          (codinome "Warty Warthog").
+        </p>
+        <p>
+          O Ubuntu foi baseado no <strong>Debian</strong>, uma das distribuições mais
+          respeitadas mas também mais difícil de usar. A missão era clara: criar um Linux
+          que qualquer pessoa pudesse usar, com instalação fácil, hardware funcionando
+          "out of the box" e CDs gratuitos enviados pelo correio (programa ShipIt).
+        </p>
+        <p>
+          A palavra <strong>"Ubuntu"</strong> vem da filosofia sul-africana Zulu/Xhosa e
+          significa <em>"eu sou porque nós somos"</em> — humanidade para os outros.
+        </p>
 
-      <h2>O Primeiro Lançamento: Ubuntu 4.10 "Warty Warthog" (2004)</h2>
-      <p>
-        Em 20 de outubro de 2004, o Ubuntu 4.10 foi lançado. O número da versão segue o padrão
-        <strong>Ano.Mês</strong>, então 4.10 significa outubro de 2004. O codinome "Warty Warthog"
-        (Javali Verrugoso) inaugurou a tradição de codinomes com animais em ordem alfabética.
-      </p>
-      <p>
-        A proposta era ousada: qualquer pessoa no mundo podia solicitar CDs físicos do Ubuntu
-        gratuitamente pelo correio, através do programa <strong>ShipIt</strong>. A Canonical enviou
-        milhões de CDs para mais de 100 países — um investimento massivo para popularizar o Linux.
-      </p>
+        <h2>3. Versões e Evolução</h2>
+        <CodeBlock
+          title="Linha do tempo das versões"
+          code={`# Sistema de versão: ANO.MÊS
+  # Lançamentos a cada 6 meses (abril e outubro)
+  # LTS (Long Term Support) a cada 2 anos (abril dos anos pares)
 
-      <h2>A Tradição dos Codinomes</h2>
-      <p>
-        Cada versão do Ubuntu recebe um codinome com duas palavras começando com a mesma letra do
-        alfabeto, sendo um adjetivo e um animal. A sequência é sempre em ordem alfabética:
-      </p>
-      <ul>
-        <li><strong>4.10</strong> — Warty Warthog (W de... começando no W para dar margem)</li>
-        <li><strong>5.04</strong> — Hoary Hedgehog</li>
-        <li><strong>6.06 LTS</strong> — Dapper Drake (primeiro LTS com 3 anos de suporte)</li>
-        <li><strong>8.04 LTS</strong> — Hardy Heron</li>
-        <li><strong>10.04 LTS</strong> — Lucid Lynx</li>
-        <li><strong>12.04 LTS</strong> — Precise Pangolin</li>
-        <li><strong>14.04 LTS</strong> — Trusty Tahr</li>
-        <li><strong>16.04 LTS</strong> — Xenial Xerus</li>
-        <li><strong>18.04 LTS</strong> — Bionic Beaver</li>
-        <li><strong>20.04 LTS</strong> — Focal Fossa</li>
-        <li><strong>22.04 LTS</strong> — Jammy Jellyfish</li>
-        <li><strong>24.04 LTS</strong> — Noble Numbat</li>
-      </ul>
+  # Marcos importantes:
+  # 4.10 (2004) — Primeiro lançamento (Warty Warthog)
+  # 6.06 LTS    — Primeiro LTS (Dapper Drake)
+  # 8.04 LTS    — Ubuntu se torna mainstream (Hardy Heron)
+  # 10.04 LTS   — Ubuntu Light, Social from the Start (Lucid Lynx)
+  # 11.04       — Unity substitui GNOME 2 (Natty Narwhal)
+  # 12.04 LTS   — LTS com Unity maduro (Precise Pangolin)
+  # 16.04 LTS   — Snap packages, systemd (Xenial Xerus)
+  # 17.10       — GNOME volta como desktop padrão (Artful Aardvark)
+  # 18.04 LTS   — Snap + Flatpak, Netplan (Bionic Beaver)
+  # 20.04 LTS   — WireGuard no kernel (Focal Fossa)
+  # 22.04 LTS   — GNOME 42, Wayland (Jammy Jellyfish)
+  # 24.04 LTS   — GNOME 46, kernel 6.8 (Noble Numbat)
 
-      <h2>Marcos Históricos</h2>
-      <ul>
-        <li>
-          <strong>2006 — Ubuntu 6.06 LTS (Dapper Drake):</strong> Primeiro lançamento LTS com 3 anos de
-          suporte para desktop e 5 para servidor. Estabeleceu o Ubuntu como opção séria para empresas.
-        </li>
-        <li>
-          <strong>2010 — Unity:</strong> A Canonical lançou a interface Unity, um ambiente gráfico
-          exclusivo desenvolvido para o Ubuntu, substituindo o GNOME 2. Foi controverso mas trouxe
-          inovações importantes como a HUD (Head-Up Display) e o Dash.
-        </li>
-        <li>
-          <strong>2013 — Ubuntu para Tablets e Celulares:</strong> A Canonical tentou entrar no mercado
-          mobile com o Ubuntu Touch. O projeto foi descontinuado em 2017, mas a comunidade o mantém
-          vivo no projeto UBports.
-        </li>
-        <li>
-          <strong>2017 — Retorno ao GNOME:</strong> O Ubuntu 17.10 abandonou o Unity e voltou ao GNOME
-          como ambiente padrão. Uma mudança histórica que reconheceu a força da comunidade GNOME e
-          permitiu maior padronização com outras distribuições.
-        </li>
-        <li>
-          <strong>2018 — Ubuntu 18.04 LTS (Bionic Beaver):</strong> Um dos lançamentos LTS mais
-          importantes, com suporte de 10 anos para servidores via ESM (Extended Security Maintenance).
-          Adotado massivamente por empresas ao redor do mundo.
-        </li>
-        <li>
-          <strong>2022 — Ubuntu 22.04 LTS (Jammy Jellyfish):</strong> Trouxe o GNOME 42, Wayland como
-          sessão padrão, e melhorias significativas de desempenho.
-        </li>
-        <li>
-          <strong>2024 — Ubuntu 24.04 LTS (Noble Numbat):</strong> GNOME 46, kernel Linux 6.8, melhorias
-          de segurança com AppArmor 4, e suporte até 2029 (ou 2034 com ESM).
-        </li>
-      </ul>
+  # Verificar sua versão
+  lsb_release -a
+  cat /etc/os-release
 
-      <AlertBox type="success" title="O Ecossistema Ubuntu">
-        A popularidade do Ubuntu deu origem a toda uma família de distribuições "sabores" (flavours)
-        oficiais e derivadas:
-        <ul className="mt-2 mb-0">
-          <li><strong>Kubuntu:</strong> Ubuntu com KDE Plasma em vez de GNOME</li>
-          <li><strong>Xubuntu:</strong> Ubuntu com XFCE — leve e ideal para PCs antigos</li>
-          <li><strong>Ubuntu MATE:</strong> Ubuntu com MATE (fork do GNOME 2) — clássico e familiar</li>
-          <li><strong>Ubuntu Studio:</strong> Ubuntu para produção criativa (áudio, vídeo, gráficos)</li>
-          <li><strong>Linux Mint:</strong> Derivada muito popular focada em facilidade de uso extrema</li>
-          <li><strong>Pop!_OS:</strong> Desenvolvida pela System76, focada em desenvolvedores e gamers</li>
-          <li><strong>elementary OS:</strong> Visual inspirado no macOS, foco em elegância</li>
+  # Codinomes usam: Adjetivo + Animal (mesmo letra)
+  # Exemplos: Focal Fossa, Jammy Jellyfish, Noble Numbat`}
+        />
+
+        <h2>4. Família Ubuntu</h2>
+        <p>
+          O Ubuntu tem <strong>sabores oficiais</strong> (flavors) que usam o mesmo
+          sistema base com diferentes ambientes desktop:
+        </p>
+        <ul>
+          <li><strong>Ubuntu</strong> — GNOME (padrão, mais polido)</li>
+          <li><strong>Kubuntu</strong> — KDE Plasma (mais customizável)</li>
+          <li><strong>Xubuntu</strong> — Xfce (leve, para PCs antigos)</li>
+          <li><strong>Lubuntu</strong> — LXQt (o mais leve de todos)</li>
+          <li><strong>Ubuntu MATE</strong> — MATE (GNOME 2 modernizado)</li>
+          <li><strong>Ubuntu Budgie</strong> — Budgie (moderno e elegante)</li>
+          <li><strong>Ubuntu Studio</strong> — Para produção multimídia</li>
+          <li><strong>Ubuntu Server</strong> — Sem interface gráfica (servidores)</li>
         </ul>
-      </AlertBox>
 
-      <h2>O Ubuntu Hoje</h2>
-      <p>
-        Em 2025, o Ubuntu é instalado em mais de <strong>40 milhões de computadores</strong>, é o
-        sistema operacional Linux mais popular do mundo e lidera o mercado de servidores em nuvem
-        (Amazon AWS, Google Cloud, Microsoft Azure). É a distribuição recomendada por padrão na maioria
-        dos tutoriais de programação, containers Docker e guias de DevOps.
-      </p>
-      <p>
-        A Canonical, agora com mais de 700 funcionários em todo o mundo, continua financiando o
-        desenvolvimento com suporte empresarial, Kubernetes gerenciado (MicroK8s), Ubuntu Core para
-        dispositivos IoT, e muito mais. O Ubuntu permanece gratuito e de código aberto para todos.
-      </p>
-    </PageContainer>
-  );
-}
+        <h2>5. LTS vs Versões Regulares</h2>
+        <CodeBlock
+          title="Entender as versões do Ubuntu"
+          code={`# LTS (Long Term Support)
+  # - Suporte de 5 anos (12 anos com Ubuntu Pro)
+  # - Lançamento: abril de anos pares (24.04, 26.04, etc.)
+  # - Recomendado para: servidores, produção, empresas
+  # - Prioridade: estabilidade sobre novidades
+
+  # Versões regulares (interim)
+  # - Suporte de 9 meses
+  # - Lançamento: a cada 6 meses
+  # - Recomendado para: entusiastas, desenvolvedores
+  # - Prioridade: software mais recente
+
+  # Quando atualizar?
+  # Servidor: LTS para LTS (24.04 → 26.04)
+  # Desktop: LTS é suficiente para a maioria
+  # Desenvolvedor: pode usar versões regulares
+
+  # Verificar suporte
+  ubuntu-security-status
+  # Ou: ubuntu-support-status (pacotes fora de suporte)`}
+        />
+
+        <h2>6. Filosofia e Comunidade</h2>
+        <p>
+          O Ubuntu é guiado por princípios claros: software deve ser <strong>gratuito</strong>,
+          disponível no <strong>idioma do usuário</strong>, e as pessoas devem ter
+          <strong>liberdade para customizá-lo</strong>. O projeto é mantido pela
+          Canonical (empresa) mas tem uma enorme comunidade voluntária global.
+        </p>
+        <p>
+          Formas de participar da comunidade: <strong>Ubuntu Forums</strong>,
+          <strong>Ask Ubuntu</strong> (perguntas e respostas), <strong>Launchpad</strong>
+          (bugs e traduções), <strong>Ubuntu Wiki</strong>, e os eventos
+          <strong>Ubuntu Summit</strong>.
+        </p>
+
+        <AlertBox type="info" title="Ubuntu no mundo">
+          O Ubuntu é usado em: <strong>supercomputadores</strong> (maioria dos Top 500),
+          <strong>nuvem</strong> (líder em clouds públicas como AWS e Azure),
+          <strong>IoT</strong> (Ubuntu Core), <strong>estação espacial</strong> (ISS),
+          <strong>carros autônomos</strong>, e milhões de desktops e servidores mundo afora.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
