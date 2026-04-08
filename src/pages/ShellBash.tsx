@@ -77,7 +77,6 @@ import { PageContainer } from "@/components/layout/PageContainer";
   # Referências ao último comando
   !$              # Último argumento do último comando
   !*              # Todos os argumentos do último comando
-  !^              # Primeiro argumento do último comando
 
   # Exemplo:
   mkdir /tmp/meu-diretorio
@@ -128,31 +127,33 @@ import { PageContainer } from "@/components/layout/PageContainer";
           title="Controlar processos no terminal"
           code={`# Executar em background
   comando &
-  sleep 60 &
+  sleep 300 &
+
+  # Ctrl+Z — suspender processo atual
+  # fg — retomar em foreground
+  # bg — retomar em background
 
   # Listar jobs
   jobs
 
-  # Suspender processo (Ctrl+Z)
-  # Retomar em foreground
-  fg
-  fg %1          # Job número 1
+  # Retomar job específico
+  fg %1       # Job 1 em foreground
+  bg %2       # Job 2 em background
 
-  # Retomar em background
-  bg
-  bg %1
-
-  # Desacoplar do terminal (continua rodando após fechar)
+  # Manter rodando após fechar terminal
   nohup comando &
   nohup ./script.sh > saida.log 2>&1 &
 
-  # disown — desacoplar job existente
-  ./longo-processo &
+  # disown — desacoplar job do terminal
+  ./processo-longo &
   disown %1
 
-  # Esperar jobs terminarem
-  wait           # Esperar todos
-  wait %1        # Esperar job 1`}
+  # screen/tmux — sessões persistentes (melhor que nohup)
+  sudo apt install -y tmux
+  tmux new -s minha-sessao
+  # Ctrl+B, D = desacoplar
+  tmux attach -t minha-sessao
+  tmux ls     # Listar sessões`}
         />
 
         <h2>5. Personalizar o Prompt (PS1)</h2>
@@ -161,29 +162,23 @@ import { PageContainer } from "@/components/layout/PageContainer";
           code={`# O prompt é controlado pela variável PS1
   echo $PS1
 
-  # Sequências especiais:
-  # \u = usuário
-  # \h = hostname
-  # \w = diretório atual (caminho completo)
-  # \W = diretório atual (apenas o nome)
-  # \d = data
-  # \t = hora (24h)
-  # \n = nova linha
-  # \$ = $ (ou # se root)
+  # Sequências especiais do PS1:
+  # \\u = usuário
+  # \\h = hostname
+  # \\w = diretório atual (caminho completo)
+  # \\W = diretório atual (apenas o nome)
+  # \\d = data
+  # \\t = hora (24h)
+  # \\n = nova linha
+  # \\$ = $ (ou # se root)
 
-  # Cores ANSI:
-  # \[\033[COLORm\] ... \[\033[0m\]
+  # Cores ANSI (formato para PS1):
+  # \\[\\033[COLORm\\] ... \\[\\033[0m\\]
   # 31=vermelho, 32=verde, 33=amarelo, 34=azul, 35=magenta, 36=ciano
 
-  # Prompt colorido
-  export PS1='\[\033[32m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ '
+  # Prompt colorido (exemplo)
+  # export PS1='\\[\\033[32m\\]\\u@\\h\\[\\033[0m\\]:\\[\\033[34m\\]\\w\\[\\033[0m\\]\\$ '
   # Resultado: usuario@host:/caminho$ (verde e azul)
-
-  # Prompt com git branch
-  parse_git_branch() {
-      git branch 2>/dev/null | grep '^*' | sed 's/* //'
-  }
-  export PS1='\[\033[32m\]\u\[\033[0m\]:\[\033[34m\]\W\[\033[33m\] ($(parse_git_branch))\[\033[0m\]\$ '
 
   # Adicionar ao ~/.bashrc para persistir`}
         />
@@ -220,7 +215,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
         <CodeBlock
           title="Problemas comuns com o Bash"
           code={`# Terminal travado (Ctrl+S acidental)
-  # Pressione Ctrl+Q para destravr
+  # Pressione Ctrl+Q para destravar
 
   # Comando não encontrado
   # Verificar PATH:
