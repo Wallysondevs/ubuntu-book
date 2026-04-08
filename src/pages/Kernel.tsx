@@ -1,162 +1,192 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Kernel() {
-  return (
-    <PageContainer
-      title="O Kernel Linux"
-      subtitle="Entenda o núcleo do sistema: módulos, versões, parâmetros e como interagir com o kernel no Ubuntu."
-      difficulty="avancado"
-      timeToRead="25 min"
-    >
-      <p>
-        O <strong>kernel</strong> é o núcleo do sistema operacional — o programa que fica entre o hardware e
-        os aplicativos, gerenciando memória, processos, dispositivos e chamadas de sistema.
-        O Ubuntu usa o <strong>Linux kernel</strong>, desenvolvido por Linus Torvalds desde 1991.
-      </p>
+  export default function Kernel() {
+    return (
+      <PageContainer
+        title="Kernel Linux no Ubuntu"
+        subtitle="Guia completo do kernel: verificar versão, atualizar, instalar kernels alternativos, módulos, parâmetros e compilar kernel customizado."
+        difficulty="avancado"
+        timeToRead="25 min"
+      >
+        <p>
+          O <strong>kernel</strong> é o coração do sistema operacional. Ele gerencia todo o
+          hardware (CPU, memória, discos, rede), processos, sistemas de arquivos e segurança.
+          O Ubuntu usa o kernel Linux, mantido por Linus Torvalds e milhares de contribuidores.
+        </p>
 
-      <h2>1. Verificando a Versão do Kernel</h2>
-      <CodeBlock title="Informações sobre o kernel instalado" code={`# Ver a versão do kernel em uso
-uname -r
-# Exemplo: 6.8.0-51-generic
+        <h2>1. Informações do Kernel</h2>
+        <CodeBlock
+          title="Verificar versão e informações"
+          code={`# Ver versão do kernel
+  uname -r
+  # Saída: 6.8.0-40-generic
 
-# Informações completas do sistema
-uname -a
-# Linux hostname 6.8.0-51-generic #52-Ubuntu SMP PREEMPT_DYNAMIC...
+  # Informações completas
+  uname -a
+  # Saída: Linux hostname 6.8.0-40-generic #40-Ubuntu SMP x86_64 GNU/Linux
 
-# Versão do kernel (formato limpo)
-cat /proc/version
+  # Significado da versão: 6.8.0-40-generic
+  # 6       = versão principal
+  # 8       = versão secundária
+  # 0       = patch
+  # 40      = build do Ubuntu
+  # generic = tipo (generic=desktop/server, lowlatency=áudio/tempo real)
 
-# Ver todos os kernels instalados no Ubuntu
-dpkg --list | grep linux-image
-# ou
-ls /boot/vmlinuz-*
+  # Kernels instalados
+  dpkg -l | grep linux-image
 
-# Ver qual kernel está sendo usado no boot (GRUB)
-grep GRUB_DEFAULT /etc/default/grub`} />
+  # Kernel atual em detalhes
+  cat /proc/version
 
-      <h2>2. Módulos do Kernel</h2>
-      <p>
-        Módulos são partes do kernel que podem ser carregadas e descarregadas dinamicamente,
-        sem reiniciar o sistema. Drivers de hardware, sistemas de arquivos e protocolos de
-        rede são exemplos de módulos.
-      </p>
-      <CodeBlock title="Gerenciando módulos do kernel" code={`# Listar todos os módulos carregados
-lsmod
+  # Parâmetros do kernel atual
+  cat /proc/cmdline
 
-# Ver informações sobre um módulo específico
-modinfo bluetooth
-modinfo nvidia
+  # Informações do hardware via kernel
+  cat /proc/cpuinfo | head -20
+  cat /proc/meminfo | head -10
+  cat /proc/partitions`}
+        />
 
-# Carregar um módulo manualmente
-sudo modprobe bluetooth
-sudo modprobe nf_conntrack
+        <h2>2. Atualizar o Kernel</h2>
+        <CodeBlock
+          title="Manter o kernel atualizado"
+          code={`# Atualizar kernel via apt (recomendado)
+  sudo apt update
+  sudo apt upgrade
+  # Inclui atualizações de kernel automaticamente
 
-# Remover um módulo
-sudo modprobe -r bluetooth
-sudo rmmod bluetooth
+  # Instalar kernel específico
+  apt search linux-image | grep generic
+  sudo apt install linux-image-6.8.0-41-generic linux-headers-6.8.0-41-generic
 
-# Adicionar módulo para carregar na inicialização
-echo "bluetooth" | sudo tee -a /etc/modules
+  # Kernel HWE (Hardware Enablement)
+  # Kernel mais recente com suporte a hardware novo
+  sudo apt install linux-generic-hwe-24.04
 
-# Bloquear um módulo (evitar carregamento automático)
-echo "blacklist nouveau" | sudo tee -a /etc/modprobe.d/blacklist.conf
-sudo update-initramfs -u
+  # Kernel lowlatency (para áudio, tempo real)
+  sudo apt install linux-lowlatency
 
-# Ver parâmetros de um módulo carregado
-cat /sys/module/bluetooth/parameters/`} />
+  # Reiniciar para usar o novo kernel
+  sudo reboot
 
-      <h2>3. O Sistema /proc e /sys</h2>
-      <CodeBlock title="Interagindo com o kernel via /proc e /sys" code={`# /proc — informações dinâmicas do kernel em tempo real
-cat /proc/cpuinfo          # Informações detalhadas da CPU
-cat /proc/meminfo          # Uso de memória
-cat /proc/mounts           # Sistemas de arquivos montados
-cat /proc/net/dev          # Estatísticas de rede por interface
-cat /proc/loadavg          # Média de carga do sistema (1, 5, 15 min)
-cat /proc/uptime           # Tempo ligado em segundos
-ls /proc/1/                # Informações do processo PID 1
+  # Remover kernels antigos (liberar espaço em /boot)
+  sudo apt autoremove --purge
+  # Ou manualmente:
+  dpkg -l linux-image-* | grep ^ii
+  sudo apt remove linux-image-6.8.0-39-generic`}
+        />
 
-# /sys — interface com dispositivos e drivers
-ls /sys/class/net/         # Interfaces de rede disponíveis
-cat /sys/class/net/eth0/speed  # Velocidade da interface
-ls /sys/block/             # Dispositivos de bloco (discos)
-cat /sys/block/sda/size    # Tamanho do disco em setores
+        <h2>3. Módulos do Kernel</h2>
+        <CodeBlock
+          title="Gerenciar módulos (drivers)"
+          code={`# Listar módulos carregados
+  lsmod
+  lsmod | grep nvidia     # Filtrar por nome
 
-# sysctl — parâmetros do kernel em tempo de execução
-sysctl -a                  # Listar TODOS os parâmetros
-sysctl net.ipv4.ip_forward # Ver se roteamento IPv4 está ativo
-sudo sysctl -w net.ipv4.ip_forward=1  # Ativar roteamento (temporário)
+  # Informações sobre um módulo
+  modinfo nvidia
+  modinfo ext4
+  modinfo wireguard
 
-# Tornar persistente (sobrevive ao reboot):
-echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.d/99-custom.conf
-sudo sysctl -p /etc/sysctl.d/99-custom.conf`} />
+  # Carregar módulo
+  sudo modprobe wireguard
+  sudo modprobe vhost_net
 
-      <h2>4. Atualização do Kernel no Ubuntu</h2>
-      <AlertBox type="info">
-        O Ubuntu gerencia atualizações do kernel automaticamente via APT. Normalmente você
-        não precisa instalar o kernel manualmente — apenas mantenha o sistema atualizado.
-      </AlertBox>
-      <CodeBlock title="Atualizando e gerenciando kernels" code={`# Atualizar todos os pacotes (inclui kernel se disponível)
-sudo apt update && sudo apt upgrade
+  # Descarregar módulo
+  sudo modprobe -r nome_modulo
+  sudo rmmod nome_modulo
 
-# Instalar kernel específico (ex.: kernel HWE — Hardware Enablement)
-# O kernel HWE traz suporte a hardware mais novo para Ubuntu LTS
-sudo apt install linux-generic-hwe-22.04
+  # Carregar módulo permanentemente (no boot)
+  echo "wireguard" | sudo tee /etc/modules-load.d/wireguard.conf
 
-# Ver qual kernel está agendado para boot padrão
-cat /etc/default/grub | grep GRUB_DEFAULT
+  # Bloquear módulo (impedir de carregar)
+  echo "blacklist nouveau" | sudo tee /etc/modprobe.d/blacklist-nouveau.conf
+  sudo update-initramfs -u
 
-# Remover kernels antigos (deixar pelo menos 2!)
-sudo apt autoremove --purge
-# Isso remove kernels antigos que o Ubuntu não usa mais
+  # Parâmetros de módulos
+  # Ver parâmetros disponíveis:
+  modinfo -p i915
+  # Definir parâmetro:
+  echo "options i915 enable_fbc=1" | sudo tee /etc/modprobe.d/i915.conf`}
+        />
 
-# NUNCA remova o kernel em uso!
-uname -r  # Ver o que está rodando agora — não remova este!`} />
+        <h2>4. Parâmetros do Kernel (sysctl)</h2>
+        <CodeBlock
+          title="Ajustar parâmetros em tempo real"
+          code={`# Ver todos os parâmetros
+  sysctl -a
 
-      <h2>5. Parâmetros de Boot do Kernel</h2>
-      <CodeBlock title="Passando parâmetros para o kernel" code={`# Ver parâmetros com que o kernel atual foi iniciado
-cat /proc/cmdline
-# Exemplo: BOOT_IMAGE=/boot/vmlinuz-6.8.0-51-generic root=/dev/sda2 ro quiet splash
+  # Ver parâmetro específico
+  sysctl net.ipv4.ip_forward
+  sysctl vm.swappiness
 
-# Parâmetros comuns:
-# quiet       — oculta mensagens de boot (modo silencioso)
-# splash      — mostra tela de splash
-# nomodeset   — desativa kernel mode setting (útil para problemas de GPU)
-# acpi=off    — desativa ACPI (soluciona alguns problemas de hardware)
-# ro          — monta a raiz como somente leitura inicialmente
-# single      — boot em modo de recuperação (single user)
+  # Alterar temporariamente
+  sudo sysctl -w net.ipv4.ip_forward=1
+  sudo sysctl -w vm.swappiness=10
 
-# Editar parâmetros permanentemente:
-sudo nano /etc/default/grub
-# Linha: GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
-# Adicione parâmetros nessa string, ex: "quiet splash acpi=off"
+  # Alterar permanentemente
+  sudo tee /etc/sysctl.d/99-custom.conf > /dev/null << 'EOF'
+  # Encaminhamento de pacotes (para roteador/VPN)
+  net.ipv4.ip_forward = 1
 
-# Depois de editar, atualizar o GRUB:
-sudo update-grub`} />
+  # Reduzir uso de swap (melhor performance com SSD)
+  vm.swappiness = 10
 
-      <h2>6. Mensagens do Kernel — dmesg</h2>
-      <CodeBlock title="Lendo mensagens do kernel com dmesg" code={`# Ver mensagens do kernel (buffer circular)
-dmesg
+  # Segurança de rede
+  net.ipv4.conf.all.rp_filter = 1
+  net.ipv4.icmp_echo_ignore_broadcasts = 1
+  net.ipv4.conf.all.accept_redirects = 0
 
-# Seguir mensagens em tempo real
-sudo dmesg -w
-sudo dmesg --follow
+  # Performance de rede
+  net.core.rmem_max = 16777216
+  net.core.wmem_max = 16777216
+  EOF
 
-# Filtrar por nível de severidade
-dmesg --level=err          # Apenas erros
-dmesg --level=warn,err     # Avisos e erros
+  # Aplicar
+  sudo sysctl --system`}
+        />
 
-# Buscar por dispositivo ou módulo
-dmesg | grep -i usb        # Mensagens sobre USB
-dmesg | grep -i eth        # Mensagens de rede
-dmesg | grep -i nvme       # Mensagens sobre NVMe
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com kernel"
+          code={`# Kernel novo não funciona (tela preta, crash)
+  # Bootar com kernel anterior via GRUB:
+  # GRUB → Advanced options → Escolher kernel antigo
+  # Depois remover o kernel problemático:
+  sudo apt remove linux-image-VERSAO-PROBLEMATICA
 
-# Ver mensagens desde o último boot
-dmesg -T   # Com timestamps legíveis (data/hora)
+  # /boot cheio (não consegue atualizar)
+  df -h /boot
+  # Remover kernels antigos:
+  sudo apt autoremove --purge
 
-# Limpar o buffer do dmesg
-sudo dmesg -C`} />
-    </PageContainer>
-  );
-}
+  # Módulo não encontrado
+  sudo depmod -a    # Reconstruir banco de módulos
+  sudo update-initramfs -u
+
+  # Kernel panic
+  # Geralmente causado por: RAM defeituosa, disco corrompido,
+  # ou módulo do kernel incompatível
+  # Verificar:
+  journalctl -b -1 | grep -i panic
+
+  # Verificar integridade do kernel
+  sha256sum /boot/vmlinuz-$(uname -r)
+
+  # Driver de hardware não funciona
+  dmesg | grep -i error
+  dmesg | grep -i firmware
+  # Instalar firmware:
+  sudo apt install linux-firmware`}
+        />
+
+        <AlertBox type="warning" title="Cuidado com o kernel">
+          O kernel é crítico — um kernel defeituoso pode impedir o sistema de iniciar.
+          Sempre mantenha pelo menos <strong>dois kernels instalados</strong> para poder
+          bootar com o anterior via GRUB em caso de problemas.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
