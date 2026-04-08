@@ -1,217 +1,218 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Redirecionamento() {
-  return (
-    <PageContainer
-      title="Redirecionamento e Pipes"
-      subtitle="stdin, stdout, stderr, pipes e redirecionamentos — conectando comandos e controlando o fluxo de dados no terminal."
-      difficulty="intermediario"
-      timeToRead="15 min"
-    >
-      <p>
-        Uma das funcionalidades mais poderosas do terminal Linux é a capacidade de conectar
-        comandos entre si, enviando a saída de um como entrada de outro. Isso permite criar
-        fluxos de processamento complexos com comandos simples.
-      </p>
+  export default function Redirecionamento() {
+    return (
+      <PageContainer
+        title="Redirecionamento e Pipes"
+        subtitle="Guia completo de redirecionamento no Bash: stdin, stdout, stderr, pipes, tee, xargs, substituição de processos e combinações avançadas."
+        difficulty="intermediario"
+        timeToRead="25 min"
+      >
+        <p>
+          O <strong>redirecionamento</strong> permite controlar para onde vai a saída de um
+          comando e de onde vem sua entrada. Junto com <strong>pipes</strong> (<code>|</code>),
+          é uma das funcionalidades mais poderosas do terminal Linux, permitindo encadear
+          comandos para criar fluxos de processamento complexos.
+        </p>
 
-      <h2>Streams: stdin, stdout, stderr</h2>
-      <CodeBlock
-        title="Os três streams padrão do Linux"
-        code={`# Cada processo tem três canais de comunicação:
-# stdin  (0) = entrada padrão  (por padrão: teclado)
-# stdout (1) = saída padrão    (por padrão: tela do terminal)
-# stderr (2) = saída de erro   (por padrão: tela do terminal)
+        <h2>1. Descritores de Arquivo</h2>
+        <CodeBlock
+          title="Entender stdin, stdout e stderr"
+          code={`# Todo processo no Linux tem 3 fluxos padrão:
+  # stdin  (0) → entrada padrão (teclado)
+  # stdout (1) → saída padrão (tela)
+  # stderr (2) → saída de erro (tela)
 
-# Quando você digita um comando:
-ls /home
-# ls lê argumentos, processa, e escreve resultado em stdout (tela)
+  # Exemplo: o comando ls
+  ls /home          # stdout → lista de arquivos (tela)
+  ls /inexistente   # stderr → mensagem de erro (tela)
 
-# Quando há um erro:
-ls /diretorio-inexistente
-# ls escreve a mensagem de erro em stderr (também aparece na tela)
+  # O número do descritor é usado no redirecionamento:
+  # 0 = stdin
+  # 1 = stdout (padrão, pode omitir)
+  # 2 = stderr`}
+        />
 
-# Você pode redirecionar esses streams independentemente`}
-      />
+        <h2>2. Redirecionar Saída (stdout)</h2>
+        <CodeBlock
+          title="Enviar saída para arquivos"
+          code={`# > (redirecionar, SOBRESCREVE o arquivo)
+  echo "Olá" > arquivo.txt
+  ls -la > listagem.txt
+  date > data.txt
 
-      <h2>Redirecionamento de Saída</h2>
-      <CodeBlock
-        title="Salvando saídas em arquivos"
-        code={`# > Redirecionar stdout para arquivo (cria ou SOBRESCREVE)
-ls -la /home > lista-arquivos.txt
-date > /tmp/data-atual.txt
+  # >> (redirecionar, ADICIONA ao final)
+  echo "Linha 1" > log.txt
+  echo "Linha 2" >> log.txt
+  echo "Linha 3" >> log.txt
+  cat log.txt
+  # Saída:
+  # Linha 1
+  # Linha 2
+  # Linha 3
 
-# >> Redirecionar stdout para arquivo (ADICIONA ao final)
-echo "Nova entrada" >> log.txt
-date >> /tmp/historico.txt
+  # Criar arquivo vazio
+  > arquivo.txt
+  # Ou: truncate -s 0 arquivo.txt
 
-# 2> Redirecionar apenas stderr para arquivo
-ls /diretorio-inexistente 2> erros.txt
-sudo apt update 2> /tmp/apt-erros.log
+  # Redirecionar para /dev/null (descartar saída)
+  comando > /dev/null     # Ignorar saída
+  find / -name "*.conf" > /dev/null 2>&1   # Ignorar tudo`}
+        />
 
-# 2>> Adicionar stderr ao arquivo (sem sobrescrever)
-comando-com-erro 2>> /tmp/erros.log
+        <h2>3. Redirecionar Erros (stderr)</h2>
+        <CodeBlock
+          title="Controlar saída de erros"
+          code={`# Redirecionar apenas erros
+  ls /inexistente 2> erros.txt
+  # stdout vai para a tela, stderr vai para erros.txt
 
-# Redirecionar stdout E stderr para o mesmo arquivo
-sudo apt upgrade > /tmp/saida-completa.log 2>&1
-# Ou forma mais moderna (bash 4+):
-sudo apt upgrade &> /tmp/saida-completa.log
+  # Redirecionar stdout e stderr separadamente
+  comando > saida.txt 2> erros.txt
 
-# Adicionar stdout E stderr ao arquivo:
-comando >> /tmp/log.txt 2>&1
+  # Redirecionar ambos para o mesmo arquivo
+  comando > tudo.txt 2>&1
+  # Ou (sintaxe moderna):
+  comando &> tudo.txt
 
-# Descartar saída indesejada (jogar no /dev/null)
-comando > /dev/null        # Descartar stdout
-comando 2> /dev/null       # Descartar stderr
-comando > /dev/null 2>&1   # Descartar tudo`}
-      />
+  # Adicionar ambos ao arquivo
+  comando >> tudo.txt 2>&1
+  comando &>> tudo.txt
 
-      <h2>Redirecionamento de Entrada</h2>
-      <CodeBlock
-        title="Alimentando comandos com arquivos"
-        code={`# < Redirecionar arquivo para stdin
-sort < lista-desordenada.txt
+  # Descartar erros, manter saída
+  find / -name "*.conf" 2>/dev/null
 
-# Contar linhas de um arquivo
-wc -l < /var/log/syslog
+  # Descartar saída, manter erros
+  comando > /dev/null
 
-# Enviar texto de múltiplas linhas como stdin (Here Document)
-cat << EOF
-Linha 1
-Linha 2
-Linha 3
-EOF
+  # Descartar tudo
+  comando &> /dev/null`}
+        />
 
-# Here Document para criar arquivo:
-cat << EOF > /tmp/configuracao.txt
-host=localhost
-port=3306
-user=admin
-EOF
+        <h2>4. Pipes (|)</h2>
+        <CodeBlock
+          title="Encadear comandos com pipes"
+          code={`# O pipe (|) envia o stdout de um comando para o stdin do próximo
 
-# Here String — enviar string como stdin
-grep "erro" <<< "Esta linha tem um erro aqui"
-base64 <<< "texto para codificar"`}
-      />
+  # Exemplos básicos
+  ls -la | less                    # Paginar saída
+  ps aux | grep nginx              # Filtrar processos
+  cat /etc/passwd | wc -l          # Contar linhas
+  history | grep "apt install"     # Buscar no histórico
 
-      <h2>Pipes — Encadeando Comandos</h2>
-      <CodeBlock
-        title="Conectando comandos com | (pipe)"
-        code={`# O pipe | conecta stdout de um comando ao stdin do próximo
-comando1 | comando2 | comando3
+  # Encadear múltiplos pipes
+  cat access.log | grep "404" | sort | uniq -c | sort -rn | head -10
+  # 1. Ler o arquivo
+  # 2. Filtrar linhas com "404"
+  # 3. Ordenar
+  # 4. Contar únicos
+  # 5. Ordenar por contagem (reverso)
+  # 6. Top 10
 
-# Exemplos básicos:
-ls -la | grep ".txt"           # Listar apenas arquivos .txt
-cat /etc/passwd | grep joao   # Filtrar linha do usuário
-history | tail -20             # Ver últimos 20 comandos
+  # Pipe com stderr também (|&)
+  comando |& grep "erro"
+  # Envia stdout E stderr pelo pipe
 
-# Contar arquivos em um diretório:
-ls /var/log | wc -l
+  # Exemplos práticos
+  # Top 10 maiores arquivos
+  du -ah /var | sort -rh | head -10
 
-# Ver processos em ordem de uso de memória:
-ps aux | sort -k4 -rn | head -10
+  # Processos usando mais memória
+  ps aux --sort=-%mem | head -10
 
-# Ver os IPs que mais aparecem em um log:
-grep "Failed password" /var/log/auth.log | \\
-    grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | \\
-    sort | \\
-    uniq -c | \\
-    sort -rn | \\
-    head -10
+  # IPs mais frequentes no log
+  awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -10
 
-# Buscar e matar todos os processos de um programa:
-pgrep firefox | xargs kill -9
+  # Contar arquivos por extensão
+  find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -rn`}
+        />
 
-# Processamento em pipeline com múltiplos comandos:
-cat /var/log/nginx/access.log | \\
-    cut -d'"' -f2 | \\     # Extrair método + URL
-    sort | \\               # Ordenar
-    uniq -c | \\            # Contar ocorrências
-    sort -rn | \\           # Ordenar por frequência
-    head -20                # Top 20 URLs mais acessadas`}
-      />
+        <h2>5. Redirecionar Entrada (stdin)</h2>
+        <CodeBlock
+          title="Fornecer entrada a partir de arquivos"
+          code={`# < (redirecionar entrada)
+  wc -l < arquivo.txt      # Contar linhas do arquivo
+  sort < nomes.txt          # Ordenar conteúdo do arquivo
+  mysql -u root < script.sql  # Executar SQL
 
-      <h2>tee — Bifurcar a Saída</h2>
-      <CodeBlock
-        title="Salvar e exibir ao mesmo tempo com tee"
-        code={`# tee lê stdin, escreve em stdout E em arquivo ao mesmo tempo
-# (como fazer um "T" no fluxo de dados — daí o nome)
+  # Here Document (<<) — entrada inline
+  cat << 'EOF'
+  Isso é um texto
+  com múltiplas linhas
+  que será enviado ao cat
+  EOF
 
-# Salvar saída no arquivo E mostrar na tela:
-sudo apt update | tee /tmp/apt-update.log
+  # Here String (<<<)
+  grep "Ubuntu" <<< "Eu uso Ubuntu"
+  wc -w <<< "contar estas palavras"
 
-# Adicionar ao arquivo em vez de sobrescrever:
-sudo apt upgrade | tee -a /tmp/apt.log
+  # Here Document com variáveis
+  nome="João"
+  cat << EOF
+  Olá, $nome!
+  Bem-vindo ao Ubuntu.
+  EOF
 
-# Salvar em múltiplos arquivos ao mesmo tempo:
-ls -la | tee arquivo1.txt arquivo2.txt
+  # Here Document sem expandir variáveis (aspas no delimitador)
+  cat << 'EOF'
+  Isso não expande $variavel
+  EOF`}
+        />
 
-# Uso muito comum: executar comando como root mas manter log:
-sudo apt install nginx | tee /tmp/nginx-install.log 2>&1`}
-      />
+        <h2>6. tee, xargs e Substituição de Processos</h2>
+        <CodeBlock
+          title="Ferramentas avançadas de redirecionamento"
+          code={`# tee — enviar para arquivo E tela ao mesmo tempo
+  ls -la | tee listagem.txt           # Mostra na tela E salva
+  ls -la | tee -a listagem.txt        # Adiciona ao arquivo
+  ls -la | tee arquivo1.txt arquivo2.txt  # Salvar em dois arquivos
 
-      <h2>xargs — Passar Saída como Argumentos</h2>
-      <CodeBlock
-        title="xargs: transformar stdin em argumentos"
-        code={`# xargs converte linhas do stdin em argumentos de outro comando
+  # Uso com sudo
+  echo "texto" | sudo tee /etc/arquivo.conf
+  # Funciona! (ao contrário de sudo echo > /etc/arquivo)
 
-# Problema: rm não aceita stdin, só argumentos
-find /tmp -name "*.log" | rm    # ERRADO!
-find /tmp -name "*.log" | xargs rm   # CORRETO
+  # xargs — converter stdin em argumentos
+  find . -name "*.tmp" | xargs rm     # Remover arquivos encontrados
+  cat urls.txt | xargs wget           # Baixar URLs da lista
+  echo "1 2 3" | xargs -n 1 echo     # Um por linha
+  find . -name "*.jpg" | xargs -I {} cp {} /backup/  # Usar placeholder
 
-# Exemplos práticos:
+  # Substituição de processos <() e >()
+  diff <(ls dir1) <(ls dir2)          # Comparar listagens
+  comm <(sort file1) <(sort file2)    # Comparar arquivos ordenados
 
-# Matar todos os processos do chrome:
-pgrep chrome | xargs kill -9
+  # Combinar tudo
+  ps aux | tee processos.txt | grep nginx | wc -l`}
+        />
 
-# Baixar uma lista de URLs:
-cat urls.txt | xargs wget -P /downloads/
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com redirecionamento"
+          code={`# "Permission denied" ao redirecionar com sudo
+  # ERRADO: sudo echo "texto" > /etc/arquivo  (o > é executado sem sudo)
+  # CERTO:
+  echo "texto" | sudo tee /etc/arquivo
+  # Ou:
+  sudo bash -c 'echo "texto" > /etc/arquivo'
 
-# Instalar lista de pacotes de um arquivo:
-cat pacotes.txt | xargs sudo apt install -y
+  # Arquivo ficou vazio ao redirecionar para ele mesmo
+  # ERRADO: sort arquivo.txt > arquivo.txt  (sobrescreve antes de ler!)
+  # CERTO:
+  sort arquivo.txt > temp.txt && mv temp.txt arquivo.txt
+  # Ou: sort -o arquivo.txt arquivo.txt
 
-# Compactar múltiplos arquivos individuais:
-find /backup -name "*.log" | xargs gzip
+  # Pipe não funciona com alias
+  # Aliases não são expandidos em pipes subshells
+  # Use o caminho completo ou funções`}
+        />
 
-# Com substituição de placeholder {}:
-find . -name "*.txt" | xargs -I{} cp {} /backup/
-
-# Limitar o número de argumentos por chamada:
-echo "a b c d e f" | xargs -n 2 echo
-# a b
-# c d
-# e f
-
-# Executar em paralelo (muito útil para tarefas demoradas):
-cat servidores.txt | xargs -P 4 -I{} ssh {} "sudo apt update"`}
-      />
-
-      <h2>Substituição de Comandos</h2>
-      <CodeBlock
-        title="Capturar saída de comandos"
-        code={`# Forma moderna: \$( )
-data=\$(date +%Y-%m-%d)
-usuario=\$(whoami)
-ip=\$(hostname -I | awk '{print \$1}')
-
-echo "Data: \$data"
-echo "Usuário: \$usuario"
-echo "IP: \$ip"
-
-# Usar resultado diretamente em comando:
-echo "Arquivos: \$(ls | wc -l)"
-cd \$(dirname /etc/nginx/nginx.conf)
-
-# Aninhamento:
-echo "PID do bash: \$(echo \$\$)"
-
-# Forma antiga com crases (ainda funciona mas não recomendado):
-data=\`date +%Y-%m-%d\`   # evitar — use \$()
-
-# Exemplo prático: criar nome de arquivo com data
-tar -czf "backup_\$(date +%Y%m%d_%H%M%S).tar.gz" /home/joao/`}
-      />
-    </PageContainer>
-  );
-}
+        <AlertBox type="info" title="Filosofia Unix">
+          A filosofia Unix é: cada programa faz uma coisa bem, e pipes os conectam.
+          <code>grep</code> filtra, <code>sort</code> ordena, <code>wc</code> conta,
+          <code>awk</code> processa — juntos, fazem praticamente qualquer coisa.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
