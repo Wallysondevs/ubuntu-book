@@ -1,127 +1,213 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function CodigoFonte() {
-  return (
-    <PageContainer
-      title="Compilando do Código Fonte"
-      subtitle="Como compilar programas a partir do source code no Ubuntu: make, cmake, meson e o processo completo."
-      difficulty="avancado"
-      timeToRead="20 min"
-    >
-      <p>
-        Às vezes você precisa instalar um programa mais novo do que o disponível no
-        repositório, ou com opções de compilação personalizadas. Compilar do código
-        fonte é uma habilidade importante para qualquer usuário avançado do Linux.
-      </p>
+  export default function CodigoFonte() {
+    return (
+      <PageContainer
+        title="Compilar Código Fonte no Ubuntu"
+        subtitle="Guia completo para compilar software a partir do código fonte: ./configure, make, make install, checkinstall, dependências e boas práticas."
+        difficulty="avancado"
+        timeToRead="25 min"
+      >
+        <p>
+          Compilar a partir do código fonte permite instalar a versão mais recente de qualquer
+          software, aplicar patches, otimizar para seu hardware e entender como o software é
+          construído. É o método usado quando o pacote não está disponível no apt/snap/flatpak
+          ou quando você precisa de uma versão específica.
+        </p>
 
-      <h2>1. Ferramentas de Compilação Essenciais</h2>
-      <CodeBlock title="Instalando o ambiente de compilação" code={`# Pacote essencial que instala gcc, make, g++, etc:
-sudo apt install build-essential
+        <h2>1. Preparar o Ambiente</h2>
+        <CodeBlock
+          title="Instalar ferramentas de compilação"
+          code={`# Instalar o essencial para compilação
+  sudo apt install -y build-essential
+  # Inclui: gcc, g++, make, dpkg-dev, libc6-dev
 
-# Instala:
-# gcc           — compilador C
-# g++           — compilador C++
-# make          — ferramenta de build
-# dpkg-dev      — ferramentas de empacotamento Debian
-# libc6-dev     — headers da biblioteca C
+  # Ferramentas extras comuns
+  sudo apt install -y cmake automake autoconf libtool pkg-config
+  sudo apt install -y git wget curl
 
-# Ferramentas adicionais muito usadas:
-sudo apt install cmake meson ninja-build pkg-config
+  # Instalar dependências de desenvolvimento (headers)
+  # Cada software tem suas dependências — leia o README/INSTALL
 
-# Para projetos que usam autoconf:
-sudo apt install autoconf automake libtool
+  # Verificar ferramentas
+  gcc --version       # Compilador C
+  g++ --version       # Compilador C++
+  make --version      # Build system
+  cmake --version     # Build system moderno`}
+        />
 
-# Para ver versões instaladas:
-gcc --version
-make --version
-cmake --version`} />
+        <h2>2. O Processo Clássico</h2>
+        <CodeBlock
+          title="./configure && make && make install"
+          code={`# O processo clássico de compilação tem 3 passos:
 
-      <h2>2. O Fluxo Clássico: configure → make → make install</h2>
-      <CodeBlock title="Compilação com autoconf/automake" code={`# Fluxo mais comum em projetos C/C++ antigos:
-# 1. Baixar o código fonte:
-wget https://exemplo.com/programa-1.0.tar.gz
-tar xzf programa-1.0.tar.gz
-cd programa-1.0/
+  # 1. Baixar o código fonte
+  wget https://exemplo.com/software-1.0.tar.gz
+  tar xzf software-1.0.tar.gz
+  cd software-1.0
 
-# 2. Verificar dependências e configurar:
-./configure
-# Opções comuns:
-./configure --prefix=/usr/local       # Onde instalar (padrão)
-./configure --prefix=/opt/meu-prog    # Instalar em local próprio
-./configure --enable-ssl              # Ativar feature opcional
-./configure --disable-gtk             # Desativar feature
-./configure --help                    # Ver todas as opções
+  # Ou clonar do Git:
+  git clone https://github.com/autor/software.git
+  cd software
 
-# 3. Compilar (usar todos os núcleos com -j):
-make
-make -j\$(nproc)     # -j com nproc = usa todos os núcleos da CPU
-make -j4             # Usar 4 núcleos especificamente
+  # 2. Configurar (detectar sistema, verificar dependências)
+  ./configure
+  # Opções comuns:
+  ./configure --prefix=/usr/local       # Onde instalar (padrão)
+  ./configure --prefix=/opt/software    # Instalar em local customizado
+  ./configure --enable-feature          # Habilitar recurso opcional
+  ./configure --disable-feature         # Desabilitar recurso
+  ./configure --with-library=/caminho   # Caminho de biblioteca
 
-# 4. Testar (opcional, se o projeto suportar):
-make check
-make test
+  # Se der erro de dependência:
+  # "configure: error: Package requirements (libssl) were not met"
+  # Instalar: sudo apt install libssl-dev
 
-# 5. Instalar no sistema:
-sudo make install
+  # 3. Compilar
+  make
+  # Ou com múltiplos cores (mais rápido):
+  make -j$(nproc)
+  # $(nproc) = número de CPUs
 
-# 6. Para desinstalar (se suportado):
-sudo make uninstall`} />
+  # 4. Instalar
+  sudo make install
 
-      <h2>3. CMake — O Sistema Moderno</h2>
-      <AlertBox type="info">
-        CMake é o sistema de build mais popular para projetos C/C++ modernos.
-        Gera Makefiles ou Ninja builds a partir de CMakeLists.txt.
-      </AlertBox>
-      <CodeBlock title="Compilando projetos CMake" code={`# Estrutura de um projeto CMake:
-ls projeto/
-# CMakeLists.txt  src/  include/  build/
+  # 5. Verificar
+  which software
+  software --version
 
-# Processo padrão (out-of-source build — recomendado!):
-cd projeto/
-mkdir build && cd build
+  # Desinstalar (se make uninstall existir)
+  sudo make uninstall`}
+        />
 
-# Configurar:
-cmake ..
-cmake .. -DCMAKE_BUILD_TYPE=Release         # Build otimizado
-cmake .. -DCMAKE_BUILD_TYPE=Debug           # Com debug
-cmake .. -DCMAKE_INSTALL_PREFIX=/opt/prog   # Onde instalar
-cmake .. -G Ninja                            # Gerar build Ninja (mais rápido)
+        <h2>3. checkinstall — Método Recomendado</h2>
+        <CodeBlock
+          title="Usar checkinstall para criar pacotes .deb"
+          code={`# checkinstall cria um .deb ao invés de instalar diretamente
+  # Vantagens: pode desinstalar com apt, rastrear arquivos, sem conflitos
+  sudo apt install -y checkinstall
 
-# Compilar:
-cmake --build .                   # Equivalente ao make
-cmake --build . -j\$(nproc)       # Com paralelismo
-cmake --build . --target install  # Compilar e instalar
+  # Ao invés de "sudo make install", use:
+  sudo checkinstall --default
+  # Cria: software_1.0-1_amd64.deb
+  # Instala automaticamente
 
-# Ou com make/ninja diretamente:
-make -j\$(nproc)
-ninja               # Se usou -G Ninja`} />
+  # Com opções customizadas:
+  sudo checkinstall \
+    --pkgname=meu-software \
+    --pkgversion=1.0 \
+    --maintainer="seu@email.com" \
+    --provides=meu-software
 
-      <h2>4. Instalando Dependências de Compilação</h2>
-      <CodeBlock title="Headers e bibliotecas de desenvolvimento" code={`# Quando ./configure diz "biblioteca X não encontrada":
-# Instale o pacote "-dev" correspondente
+  # Desinstalar (como qualquer pacote):
+  sudo apt remove meu-software
 
-# Exemplos comuns:
-sudo apt install libssl-dev         # OpenSSL
-sudo apt install libcurl4-openssl-dev  # libcurl
-sudo apt install libsqlite3-dev     # SQLite
-sudo apt install libxml2-dev        # libxml2
-sudo apt install libjpeg-dev        # libjpeg
-sudo apt install libpng-dev         # libpng
-sudo apt install zlib1g-dev         # zlib
-sudo apt install libreadline-dev    # readline
+  # Reinstalar o .deb:
+  sudo dpkg -i meu-software_1.0-1_amd64.deb`}
+        />
 
-# Buscar o pacote -dev de uma biblioteca:
-apt-cache search "nome-biblioteca" | grep dev
+        <h2>4. CMake — Build System Moderno</h2>
+        <CodeBlock
+          title="Compilar projetos com CMake"
+          code={`# Muitos projetos modernos usam CMake ao invés de autotools
+  # O processo é similar mas usa diretórios de build:
 
-# Ver se uma biblioteca está instalada:
-pkg-config --exists openssl && echo "OpenSSL OK"
-pkg-config --modversion openssl     # Ver versão
+  # Baixar o código
+  git clone https://github.com/autor/projeto.git
+  cd projeto
 
-# Dica: apt build-dep instala TODAS as deps de um pacote oficial:
-sudo apt build-dep nome-pacote
-# Ex: sudo apt build-dep nginx  (instala todas as deps para compilar nginx)`} />
-    </PageContainer>
-  );
-}
+  # Criar diretório de build (out-of-source)
+  mkdir build && cd build
+
+  # Configurar
+  cmake ..
+  # Com opções:
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+  cmake .. -DCMAKE_BUILD_TYPE=Release
+  cmake .. -DBUILD_TESTS=ON
+
+  # Compilar
+  cmake --build . -j$(nproc)
+  # Ou: make -j$(nproc)
+
+  # Instalar
+  sudo cmake --install .
+  # Ou: sudo make install`}
+        />
+
+        <h2>5. Encontrar Dependências</h2>
+        <CodeBlock
+          title="Resolver dependências de compilação"
+          code={`# Padrão no Ubuntu: pacotes -dev contêm os headers
+  # Se o configure pede "libfoo", instale "libfoo-dev"
+  sudo apt install -y libfoo-dev
+
+  # Dependências comuns:
+  sudo apt install -y \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libsqlite3-dev \
+    libjpeg-dev \
+    libpng-dev \
+    zlib1g-dev \
+    libreadline-dev \
+    libncurses5-dev \
+    libffi-dev
+
+  # Buscar pacote de desenvolvimento:
+  apt search libssl | grep dev
+
+  # Instalar dependências de um pacote do Ubuntu (para recompilar)
+  sudo apt build-dep nome-do-pacote
+
+  # Verificar quais pacotes fornecem um arquivo
+  apt-file search "openssl/ssl.h"
+  # Instalar apt-file se necessário:
+  sudo apt install -y apt-file
+  sudo apt-file update`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns ao compilar"
+          code={`# "configure: error: C compiler cannot create executables"
+  # Instalar build-essential:
+  sudo apt install -y build-essential
+
+  # "No package 'xxx' found" (pkg-config)
+  # Instalar o pacote -dev:
+  sudo apt install -y libxxx-dev
+
+  # "fatal error: xxx.h: No such file or directory"
+  # Encontrar qual pacote fornece o header:
+  apt-file search xxx.h
+  # Instalar o pacote -dev correspondente
+
+  # make dá erro de compilação
+  # Limpar e tentar novamente:
+  make clean
+  make -j1   # Compilar com 1 core (mais fácil ver o erro)
+
+  # Conflito com software instalado via apt
+  # Usar prefixo diferente:
+  ./configure --prefix=/opt/software
+  # Ou usar checkinstall para gerenciar como pacote
+
+  # Remover software compilado manualmente
+  # Se usou checkinstall: sudo apt remove nome
+  # Se usou make install e tem make uninstall: sudo make uninstall
+  # Se não tem uninstall: use o install_manifest.txt ou reinstale com checkinstall`}
+        />
+
+        <AlertBox type="info" title="Quando compilar vs usar apt/snap/flatpak">
+          Prefira <strong>apt</strong> (estável, atualizado, testado). Use
+          <strong>snap/flatpak</strong> se precisar de versão mais recente. Compile do fonte
+          apenas se: precisa de uma versão muito específica, precisa de opções de compilação
+          customizadas, ou o software não está empacotado.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
