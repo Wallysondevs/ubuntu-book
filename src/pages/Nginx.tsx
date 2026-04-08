@@ -1,151 +1,263 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Nginx() {
-  return (
-    <PageContainer
-      title="Nginx — Servidor Web"
-      subtitle="Configure o Nginx no Ubuntu: servidor web, proxy reverso, SSL e virtual hosts."
-      difficulty="intermediario"
-      timeToRead="25 min"
-    >
-      <p>
-        O <strong>Nginx</strong> é um dos servidores web mais populares do mundo,
-        conhecido por sua performance, baixo consumo de memória e capacidade como
-        proxy reverso. É a escolha preferida para hospedar sites modernos.
-      </p>
+  export default function Nginx() {
+    return (
+      <PageContainer
+        title="Nginx — Servidor Web e Proxy Reverso"
+        subtitle="Guia completo do Nginx no Ubuntu: instalar, configurar virtual hosts, SSL/TLS, proxy reverso, load balancing, cache e otimização."
+        difficulty="intermediario"
+        timeToRead="35 min"
+      >
+        <p>
+          O <strong>Nginx</strong> (pronuncia-se "engine-x") é o servidor web mais popular
+          do mundo, usado por sites como Netflix, Airbnb e WordPress.com. Além de servir
+          arquivos estáticos, funciona como proxy reverso, load balancer e terminador SSL.
+        </p>
 
-      <h2>1. Instalação e Comandos Básicos</h2>
-      <CodeBlock title="Instalando e controlando o Nginx" code={`# Instalar Nginx:
-sudo apt update && sudo apt install nginx
+        <h2>1. Instalação e Estrutura</h2>
+        <CodeBlock
+          title="Instalar e entender a estrutura do Nginx"
+          code={`# Instalar Nginx
+  sudo apt install -y nginx
 
-# Controlar o serviço:
-sudo systemctl status nginx
-sudo systemctl start nginx
-sudo systemctl stop nginx
-sudo systemctl restart nginx          # Reinicia completamente
-sudo systemctl reload nginx           # Recarrega config SEM interromper conexões
-sudo systemctl enable nginx           # Iniciar automaticamente no boot
+  # Verificar e iniciar
+  sudo systemctl start nginx
+  sudo systemctl enable nginx
+  sudo systemctl status nginx
+  nginx -v    # Versão
 
-# Testar configuração (IMPORTANTE antes de reload):
-sudo nginx -t
-# "syntax is ok" e "test is successful" = tudo certo
+  # Testar
+  curl http://localhost
+  # Deve mostrar a página padrão "Welcome to nginx!"
 
-# Ver versão e opções compiladas:
-nginx -v
-nginx -V
+  # Estrutura de diretórios:
+  # /etc/nginx/nginx.conf            → Configuração principal
+  # /etc/nginx/sites-available/      → Configs de sites disponíveis
+  # /etc/nginx/sites-enabled/        → Links para sites ativos
+  # /etc/nginx/conf.d/               → Configs adicionais
+  # /var/www/html/                   → DocumentRoot padrão
+  # /var/log/nginx/access.log        → Log de acessos
+  # /var/log/nginx/error.log         → Log de erros
 
-# Abrir firewall:
-sudo ufw allow 'Nginx Full'    # HTTP e HTTPS
-sudo ufw allow 'Nginx HTTP'    # Apenas HTTP
-sudo ufw allow 'Nginx HTTPS'   # Apenas HTTPS`} />
+  # Testar configuração (SEMPRE antes de reiniciar!)
+  sudo nginx -t
 
-      <h2>2. Estrutura de Arquivos do Nginx</h2>
-      <CodeBlock title="Arquivos de configuração do Nginx" code={`# Arquivo principal:
-/etc/nginx/nginx.conf
+  # Recarregar sem downtime
+  sudo nginx -s reload
+  # Ou: sudo systemctl reload nginx`}
+        />
 
-# Configurações de sites disponíveis:
-/etc/nginx/sites-available/    # Sites configurados (ativos ou não)
-/etc/nginx/sites-enabled/      # Symlinks dos sites ativos
+        <h2>2. Virtual Hosts (Server Blocks)</h2>
+        <CodeBlock
+          title="Configurar múltiplos sites"
+          code={`# Criar diretório do site
+  sudo mkdir -p /var/www/meusite.com/html
+  sudo chown -R $USER:$USER /var/www/meusite.com
+  echo "<h1>Meu Site</h1>" > /var/www/meusite.com/html/index.html
 
-# Fragmentos de configuração:
-/etc/nginx/snippets/           # Trechos reutilizáveis
+  # Criar configuração do site
+  sudo tee /etc/nginx/sites-available/meusite.com > /dev/null << 'EOF'
+  server {
+      listen 80;
+      listen [::]:80;
+      server_name meusite.com www.meusite.com;
+      root /var/www/meusite.com/html;
+      index index.html index.htm;
 
-# Logs:
-/var/log/nginx/access.log      # Log de acessos
-/var/log/nginx/error.log       # Log de erros
+      # Logs separados por site
+      access_log /var/log/nginx/meusite.com.access.log;
+      error_log /var/log/nginx/meusite.com.error.log;
 
-# Raiz padrão dos sites:
-/var/www/html/                 # Página padrão do Nginx
+      location / {
+          try_files $uri $uri/ =404;
+      }
 
-# Fluxo de configuração:
-# 1. Criar arquivo em sites-available/
-# 2. Criar symlink em sites-enabled/
-# 3. Testar: sudo nginx -t
-# 4. Recarregar: sudo systemctl reload nginx`} />
+      # Páginas de erro customizadas
+      error_page 404 /404.html;
+      error_page 500 502 503 504 /50x.html;
+  }
+  EOF
 
-      <h2>3. Configurando um Virtual Host (Site)</h2>
-      <CodeBlock title="Hosting de um site estático" code={`# Criar diretório do site:
-sudo mkdir -p /var/www/meusite.com.br/html
-sudo chown -R \$USER:\$USER /var/www/meusite.com.br/html
-echo "<h1>Meu Site Funcionando!</h1>" > /var/www/meusite.com.br/html/index.html
+  # Ativar o site (criar link simbólico)
+  sudo ln -s /etc/nginx/sites-available/meusite.com /etc/nginx/sites-enabled/
 
-# Criar configuração do virtual host:
-sudo nano /etc/nginx/sites-available/meusite.com.br
+  # Remover site padrão (opcional)
+  sudo rm /etc/nginx/sites-enabled/default
 
-# Conteúdo do arquivo:
-server {
-    listen 80;
-    listen [::]:80;
-    server_name meusite.com.br www.meusite.com.br;
-    root /var/www/meusite.com.br/html;
-    index index.html index.htm;
+  # Testar e recarregar
+  sudo nginx -t && sudo nginx -s reload`}
+        />
 
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
+        <h2>3. SSL/TLS com Let's Encrypt</h2>
+        <CodeBlock
+          title="Configurar HTTPS gratuito"
+          code={`# Instalar Certbot (Let's Encrypt)
+  sudo apt install -y certbot python3-certbot-nginx
 
-    # Logs separados por site:
-    access_log /var/log/nginx/meusite-access.log;
-    error_log /var/log/nginx/meusite-error.log;
-}
+  # Obter certificado automaticamente
+  sudo certbot --nginx -d meusite.com -d www.meusite.com
+  # Certbot modifica o Nginx automaticamente para HTTPS!
 
-# Ativar o site:
-sudo ln -s /etc/nginx/sites-available/meusite.com.br /etc/nginx/sites-enabled/
+  # Renovar certificados (automático via timer)
+  sudo certbot renew --dry-run    # Testar renovação
 
-# Desativar o site padrão (opcional):
-sudo rm /etc/nginx/sites-enabled/default
+  # Verificar timer de renovação
+  sudo systemctl list-timers | grep certbot
 
-# Testar e recarregar:
-sudo nginx -t && sudo systemctl reload nginx`} />
+  # Configuração HTTPS manual (se não usar Certbot):
+  server {
+      listen 443 ssl http2;
+      server_name meusite.com;
 
-      <h2>4. Proxy Reverso com Nginx</h2>
-      <CodeBlock title="Nginx como proxy reverso para Node.js/Python" code={`# Configuração de proxy reverso:
-sudo nano /etc/nginx/sites-available/meuapp
+      ssl_certificate /etc/letsencrypt/live/meusite.com/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/meusite.com/privkey.pem;
 
-server {
-    listen 80;
-    server_name meuapp.com;
+      # Configurações SSL recomendadas
+      ssl_protocols TLSv1.2 TLSv1.3;
+      ssl_ciphers HIGH:!aNULL:!MD5;
+      ssl_prefer_server_ciphers on;
 
-    location / {
-        proxy_pass http://localhost:3000;     # Sua aplicação na porta 3000
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-    }
+      # HSTS
+      add_header Strict-Transport-Security "max-age=63072000" always;
+  }
 
-    # Servir arquivos estáticos diretamente:
-    location /static/ {
-        root /var/www/meuapp;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-}`} />
+  # Redirecionar HTTP para HTTPS
+  server {
+      listen 80;
+      server_name meusite.com www.meusite.com;
+      return 301 https://$host$request_uri;
+  }`}
+        />
 
-      <h2>5. HTTPS com Let's Encrypt</h2>
-      <CodeBlock title="SSL gratuito com Certbot" code={`# Instalar Certbot:
-sudo apt install certbot python3-certbot-nginx
+        <h2>4. Proxy Reverso</h2>
+        <CodeBlock
+          title="Configurar Nginx como proxy reverso"
+          code={`# Proxy reverso para aplicação Node.js/Python/etc.
+  server {
+      listen 80;
+      server_name app.meusite.com;
 
-# Obter certificado SSL e configurar automaticamente:
-sudo certbot --nginx -d meusite.com.br -d www.meusite.com.br
+      location / {
+          proxy_pass http://127.0.0.1:3000;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_cache_bypass $http_upgrade;
+      }
 
-# Apenas obter o certificado (sem configurar nginx):
-sudo certbot certonly --nginx -d meusite.com.br
+      # Servir arquivos estáticos diretamente (mais rápido)
+      location /static/ {
+          alias /var/www/app/static/;
+          expires 30d;
+          add_header Cache-Control "public, immutable";
+      }
+  }
 
-# Renovação automática (já configurada pelo certbot):
-sudo systemctl status certbot.timer    # Verificar timer de renovação
+  # Load Balancing (distribuir entre múltiplos servidores)
+  upstream backend {
+      least_conn;    # Estratégia: menos conexões
+      server 127.0.0.1:3001;
+      server 127.0.0.1:3002;
+      server 127.0.0.1:3003;
+  }
 
-# Testar renovação:
-sudo certbot renew --dry-run
+  server {
+      listen 80;
+      server_name app.meusite.com;
 
-# Ver certificados:
-sudo certbot certificates`} />
-    </PageContainer>
-  );
-}
+      location / {
+          proxy_pass http://backend;
+      }
+  }`}
+        />
+
+        <h2>5. Otimização e Cache</h2>
+        <CodeBlock
+          title="Otimizar performance do Nginx"
+          code={`# Editar /etc/nginx/nginx.conf
+
+  # Compressão Gzip
+  gzip on;
+  gzip_vary on;
+  gzip_min_length 1000;
+  gzip_proxied any;
+  gzip_types text/plain text/css application/json application/javascript
+             text/xml application/xml image/svg+xml;
+  gzip_comp_level 6;
+
+  # Cache de arquivos estáticos
+  location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff2)$ {
+      expires 30d;
+      add_header Cache-Control "public, immutable";
+  }
+
+  # Rate limiting (proteção contra DDoS/brute force)
+  limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+  server {
+      location /api/ {
+          limit_req zone=api burst=20 nodelay;
+          proxy_pass http://backend;
+      }
+  }
+
+  # Timeouts
+  client_body_timeout 12;
+  client_header_timeout 12;
+  keepalive_timeout 15;
+  send_timeout 10;
+
+  # Upload máximo
+  client_max_body_size 50M;`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com Nginx"
+          code={`# Testar configuração antes de reiniciar
+  sudo nginx -t
+  # Se OK: "syntax is ok" + "test is successful"
+
+  # Ver erros
+  sudo tail -f /var/log/nginx/error.log
+  sudo tail -f /var/log/nginx/access.log
+
+  # "502 Bad Gateway"
+  # A aplicação backend não está rodando
+  # Verificar se a app está rodando na porta correta:
+  sudo ss -tlnp | grep 3000
+  # Reiniciar a aplicação
+
+  # "403 Forbidden"
+  # Verificar permissões:
+  ls -la /var/www/meusite.com/
+  sudo chown -R www-data:www-data /var/www/meusite.com/
+
+  # "Address already in use"
+  # Outra coisa usando a porta 80:
+  sudo ss -tlnp | grep :80
+  sudo fuser -k 80/tcp
+
+  # Configuração não aplica após reload
+  # Usar restart ao invés de reload:
+  sudo systemctl restart nginx
+
+  # Nginx não inicia após atualização
+  sudo nginx -t    # Ver erro de sintaxe
+  sudo journalctl -u nginx --no-pager`}
+        />
+
+        <AlertBox type="info" title="Nginx vs Apache">
+          <strong>Nginx</strong>: melhor performance com arquivos estáticos e proxy reverso,
+          usa menos memória, configuração declarativa. <strong>Apache</strong>: mais módulos
+          disponíveis, .htaccess (configuração por diretório), mais fácil para hospedagem
+          compartilhada. Para novos projetos, Nginx é geralmente a melhor escolha.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
