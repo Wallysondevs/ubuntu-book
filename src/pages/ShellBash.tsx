@@ -1,351 +1,252 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
-
-export default function ShellBash() {
-  return (
-    <PageContainer
-      title="Shell Bash e Scripting"
-      subtitle="Variáveis, condicionais, loops, funções e boas práticas de scripting Bash — do básico ao intermediário."
-      difficulty="intermediario"
-      timeToRead="30 min"
-    >
-      <p>
-        O <strong>Bash</strong> (Bourne Again SHell) é o shell padrão do Ubuntu. Além de
-        interpretar seus comandos interativos, ele é uma linguagem de programação completa
-        para automação de tarefas. Saber escrever scripts Bash é uma das habilidades mais
-        úteis para qualquer usuário de Linux.
-      </p>
-
-      <h2>Variáveis</h2>
-      <CodeBlock
-        title="Trabalhando com variáveis"
-        code={`# Definir variável (sem espaços ao redor do =!)
-nome="João"
-idade=25
-cidade="São Paulo"
-
-# Usar variável (adicione $ antes do nome)
-echo "Olá, $nome!"
-echo "Você tem $idade anos."
-
-# Forma segura: chaves para evitar ambiguidade
-echo "Arquivo: \${nome}_backup.txt"
-
-# Variáveis de ambiente
-echo $HOME        # /home/joao
-echo $USER        # joao
-echo $PATH        # lista de diretórios para buscar executáveis
-echo $SHELL       # /bin/bash
-echo $PWD         # diretório atual
-echo $HOSTNAME    # nome do computador
-echo $$           # PID do shell atual
-echo $?           # código de saída do último comando (0 = sucesso)
-
-# Tornar variável exportável para processos filhos
-export MINHA_VAR="valor"
-export JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
-
-# Variável somente leitura
-readonly CONSTANTE="valor-fixo"
-
-# Variável com substituição de comando
-data_atual=\$(date +%Y-%m-%d)
-arquivos=\$(ls /home/joao/ | wc -l)
-echo "Hoje é \$data_atual"
-
-# Aritmética com (( ))
-resultado=$((10 + 5 * 2))
-echo $resultado   # 20
-
-# Aritmética com let
-let x=5
-let x=x+3
-echo $x   # 8`}
-      />
-
-      <h2>Seu Primeiro Script</h2>
-      <CodeBlock
-        title="Estrutura básica de um script Bash"
-        code={`#!/bin/bash
-# A primeira linha (shebang) diz ao sistema qual interpretador usar
-
-# Comentários começam com #
-
-# Variáveis
-NOME="Mundo"
-
-# Executar comando
-echo "Olá, \$NOME!"
-
-# Verificar argumento de linha de comando
-# $1 = primeiro argumento, $2 = segundo, etc.
-# $0 = nome do script
-# $# = número de argumentos
-# $@ = todos os argumentos
-
-echo "Script: \$0"
-echo "Argumentos: \$#"
-echo "Primeiro: \$1"
-
-# --- Como usar ---
-# Salve como: meu-script.sh
-# Dê permissão de execução:
-chmod +x meu-script.sh
-
-# Execute:
-./meu-script.sh argumento1 argumento2
-
-# Ou explicite o interpretador:
-bash meu-script.sh`}
-      />
-
-      <h2>Condicionais — if/elif/else</h2>
-      <CodeBlock
-        title="Estruturas condicionais"
-        code={`#!/bin/bash
-
-# if/elif/else básico
-nota=7
-
-if [ \$nota -ge 9 ]; then
-    echo "Aprovado com Distinção!"
-elif [ \$nota -ge 6 ]; then
-    echo "Aprovado"
-else
-    echo "Reprovado"
-fi
-
-# Operadores numéricos:
-# -eq = igual           (== não funciona com [ ])
-# -ne = diferente
-# -gt = maior que
-# -ge = maior ou igual
-# -lt = menor que
-# -le = menor ou igual
-
-# Comparação de strings
-cidade="São Paulo"
-if [ "\$cidade" = "São Paulo" ]; then
-    echo "Bem-vindo à capital!"
-fi
-
-# Testar existência de arquivo/diretório
-if [ -f /etc/hosts ]; then
-    echo "Arquivo /etc/hosts existe"
-fi
-
-if [ -d /home/joao ]; then
-    echo "Diretório home existe"
-fi
-
-if [ -x /usr/bin/python3 ]; then
-    echo "Python3 é executável"
-fi
-
-# Teste de string vazia
-nome=""
-if [ -z "\$nome" ]; then
-    echo "Nome está vazio"
-fi
-if [ -n "\$nome" ]; then
-    echo "Nome tem conteúdo"
-fi
-
-# Operadores lógicos
-if [ \$nota -ge 6 ] && [ \$nota -le 10 ]; then
-    echo "Aprovado com nota válida"
-fi
-
-if [ "\$cidade" = "SP" ] || [ "\$cidade" = "São Paulo" ]; then
-    echo "É São Paulo"
-fi`}
-      />
-
-      <h2>Loops</h2>
-      <CodeBlock
-        title="for, while e until"
-        code={`#!/bin/bash
-
-# for loop — iterar em lista
-for fruta in maçã banana laranja pera; do
-    echo "Fruta: \$fruta"
-done
-
-# for loop — iterar em arquivos
-for arquivo in /var/log/*.log; do
-    echo "Log: \$arquivo ($(wc -l < "\$arquivo") linhas)"
-done
-
-# for loop — intervalo numérico
-for i in {1..10}; do
-    echo "Número: \$i"
-done
-
-# for loop — estilo C
-for ((i=0; i<5; i++)); do
-    echo "Iteração \$i"
-done
-
-# while loop — enquanto condição for verdadeira
-contador=1
-while [ \$contador -le 5 ]; do
-    echo "Contagem: \$contador"
-    ((contador++))
-done
-
-# while loop — ler linhas de um arquivo
-while IFS= read -r linha; do
-    echo "Linha: \$linha"
-done < /etc/hosts
-
-# until loop — até que condição seja verdadeira
-tentativas=0
-until ping -c 1 google.com &>/dev/null; do
-    echo "Sem internet... tentativa \$((++tentativas))"
-    sleep 5
-done
-echo "Conectado após \$tentativas tentativas!"
-
-# break e continue
-for i in {1..10}; do
-    if [ \$i -eq 5 ]; then
-        continue    # Pular o 5
-    fi
-    if [ \$i -eq 8 ]; then
-        break       # Parar no 8
-    fi
-    echo \$i
-done`}
-      />
-
-      <h2>Funções</h2>
-      <CodeBlock
-        title="Definindo e usando funções"
-        code={`#!/bin/bash
-
-# Definir função
-saudacao() {
-    echo "Olá, \$1!"    # \$1 = primeiro argumento da função
-}
-
-# Chamar função
-saudacao "João"
-saudacao "Maria"
-
-# Função com retorno (usando echo para capturar resultado)
-soma() {
-    echo \$((\$1 + \$2))
-}
-resultado=\$(soma 3 5)
-echo "3 + 5 = \$resultado"
-
-# Função com variáveis locais
-calcular() {
-    local a=\$1
-    local b=\$2
-    local resultado=\$((a * b))
-    echo \$resultado
-}
-
-# Função prática: verificar se pacote está instalado
-esta_instalado() {
-    dpkg -l "\$1" &>/dev/null
-    return \$?   # retorna 0 se instalado, 1 se não
-}
-
-if esta_instalado nginx; then
-    echo "Nginx está instalado"
-else
-    echo "Nginx não está instalado"
-    sudo apt install -y nginx
-fi`}
-      />
-
-      <h2>Arrays</h2>
-      <CodeBlock
-        title="Trabalhando com arrays"
-        code={`#!/bin/bash
-
-# Criar array
-frutas=("maçã" "banana" "laranja" "pera")
-servidores=("web1" "web2" "db1" "cache1")
-
-# Acessar elemento
-echo \${frutas[0]}        # maçã (índice começa em 0)
-echo \${frutas[2]}        # laranja
-
-# Ver todos os elementos
-echo \${frutas[@]}
-echo \${servidores[@]}
-
-# Tamanho do array
-echo \${#frutas[@]}       # 4
-
-# Adicionar elemento
-frutas+=("uva")
-
-# Iterar no array
-for fruta in "\${frutas[@]}"; do
-    echo "Fruta: \$fruta"
-done
-
-# Fatiar array (do índice 1, pegar 2 elementos)
-echo \${frutas[@]:1:2}    # banana laranja`}
-      />
-
-      <h2>Tratamento de Erros</h2>
-      <CodeBlock
-        title="Tornando scripts mais robustos"
-        code={`#!/bin/bash
-
-# Parar o script ao primeiro erro (muito recomendado!)
-set -e
-
-# Também reportar variáveis não definidas como erro
-set -u
-
-# Também tratar erros em pipes
-set -o pipefail
-
-# Forma completa (inicia todos os scripts assim):
-set -euo pipefail
-
-# Verificar código de saída de comandos
-sudo apt update
-if [ \$? -ne 0 ]; then
-    echo "ERRO: apt update falhou!"
-    exit 1
-fi
-
-# Forma mais elegante com ||
-sudo apt update || { echo "ERRO: apt update falhou!"; exit 1; }
-
-# Trap: executar código ao sair (cleanup)
-limpar() {
-    echo "Limpando arquivos temporários..."
-    rm -f /tmp/meu-script-*.tmp
-}
-trap limpar EXIT      # Executar ao sair (normal ou erro)
-trap limpar ERR       # Executar ao ocorrer erro
-
-# Exemplo de script robusto completo:
-#!/bin/bash
-set -euo pipefail
-
-BACKUP_DIR="/mnt/backup/\$(date +%Y-%m-%d)"
-
-# Verificar se é root
-if [ "\$(id -u)" -ne 0 ]; then
-    echo "ERRO: Este script precisa ser executado como root" >&2
-    exit 1
-fi
-
-mkdir -p "\$BACKUP_DIR"
-echo "Backup iniciado em \$BACKUP_DIR"
-tar -czf "\$BACKUP_DIR/home.tar.gz" /home/
-echo "Backup concluído com sucesso!"`}
-      />
-    </PageContainer>
-  );
-}
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
+
+  export default function ShellBash() {
+    return (
+      <PageContainer
+        title="Shell Bash — O Terminal do Ubuntu"
+        subtitle="Guia completo do Bash: atalhos, histórico, expansões, globbing, jobs, personalização do prompt e recursos avançados do shell."
+        difficulty="iniciante"
+        timeToRead="25 min"
+      >
+        <p>
+          O <strong>Bash</strong> (Bourne Again SHell) é o shell padrão do Ubuntu — é o
+          programa que interpreta seus comandos no terminal. Dominar o Bash vai além de
+          saber comandos: é entender atalhos, histórico, expansões e recursos que multiplicam
+          sua produtividade no terminal.
+        </p>
+
+        <h2>1. Atalhos de Teclado</h2>
+        <CodeBlock
+          title="Atalhos essenciais do Bash"
+          code={`# === MOVIMENTO DO CURSOR ===
+  # Ctrl+A     → Início da linha
+  # Ctrl+E     → Final da linha
+  # Ctrl+B     → Um caractere para trás (←)
+  # Ctrl+F     → Um caractere para frente (→)
+  # Alt+B      → Uma palavra para trás
+  # Alt+F      → Uma palavra para frente
+
+  # === EDIÇÃO ===
+  # Ctrl+U     → Apagar do cursor até o início da linha
+  # Ctrl+K     → Apagar do cursor até o final da linha
+  # Ctrl+W     → Apagar palavra anterior
+  # Alt+D      → Apagar próxima palavra
+  # Ctrl+Y     → Colar texto apagado (yank)
+  # Ctrl+T     → Trocar dois caracteres
+  # Alt+T      → Trocar duas palavras
+  # Alt+U      → Converter palavra para MAIÚSCULA
+  # Alt+L      → Converter palavra para minúscula
+
+  # === CONTROLE ===
+  # Ctrl+C     → Cancelar comando atual
+  # Ctrl+D     → Sair do shell (ou EOF)
+  # Ctrl+Z     → Suspender processo (enviar para background)
+  # Ctrl+L     → Limpar tela
+  # Ctrl+S     → Pausar saída do terminal
+  # Ctrl+Q     → Retomar saída do terminal
+  # Ctrl+R     → Buscar no histórico (reverso)
+
+  # === TAB (autocompletar) ===
+  # Tab        → Autocompletar comando/arquivo
+  # Tab Tab    → Listar todas as opções
+  # apt ins[Tab]  → apt install
+  # cd /e[Tab]    → cd /etc/`}
+        />
+
+        <h2>2. Histórico de Comandos</h2>
+        <CodeBlock
+          title="Navegar e reusar comandos anteriores"
+          code={`# Setas ↑ e ↓ — navegar pelo histórico
+  # Ctrl+R — buscar no histórico (muito útil!)
+  # Ctrl+R, digitar parte do comando, Enter para executar
+  # Ctrl+R novamente para buscar a próxima ocorrência
+
+  # Ver histórico completo
+  history
+  history 20      # Últimos 20 comandos
+  history | grep "apt"  # Buscar
+
+  # Executar comando do histórico
+  !42             # Executar comando número 42
+  !!              # Repetir último comando
+  sudo !!         # Repetir último comando com sudo
+  !apt            # Último comando que começa com "apt"
+
+  # Referências ao último comando
+  !$              # Último argumento do último comando
+  !*              # Todos os argumentos do último comando
+  !^              # Primeiro argumento do último comando
+
+  # Exemplo:
+  mkdir /tmp/meu-diretorio
+  cd !$            # cd /tmp/meu-diretorio
+
+  # Limpar histórico
+  history -c       # Limpar da memória
+  history -w       # Salvar (vazio) no arquivo
+
+  # Configurar histórico no .bashrc
+  export HISTSIZE=10000         # Comandos na memória
+  export HISTFILESIZE=20000     # Comandos no arquivo
+  export HISTCONTROL=ignoredups:erasedups  # Sem duplicatas
+  export HISTIGNORE="ls:cd:pwd:exit:clear" # Ignorar comandos simples
+  export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "  # Com data/hora`}
+        />
+
+        <h2>3. Globbing (Padrões de Arquivo)</h2>
+        <CodeBlock
+          title="Usar padrões para selecionar arquivos"
+          code={`# * = qualquer coisa
+  ls *.txt            # Todos os .txt
+  ls foto*            # Começa com "foto"
+  rm *.log            # Remover todos os .log
+
+  # ? = um único caractere
+  ls foto?.jpg        # foto1.jpg, foto2.jpg, mas não foto10.jpg
+
+  # [] = lista de caracteres
+  ls foto[123].jpg    # foto1.jpg, foto2.jpg, foto3.jpg
+  ls foto[0-9].jpg    # foto0.jpg até foto9.jpg
+  ls foto[!0-9].jpg   # NÃO numérico
+
+  # {} = alternativas (brace expansion)
+  echo {1..10}        # 1 2 3 4 5 6 7 8 9 10
+  echo {a..z}         # a b c ... z
+  echo {01..12}       # 01 02 03 ... 12
+  mkdir dir{1,2,3}    # Cria dir1, dir2, dir3
+  cp arquivo.{txt,bak}  # Copiar arquivo.txt para arquivo.bak
+
+  # ** = recursivo (precisa de globstar)
+  shopt -s globstar
+  ls **/*.py          # Todos os .py em subdiretórios`}
+        />
+
+        <h2>4. Jobs e Processos</h2>
+        <CodeBlock
+          title="Controlar processos no terminal"
+          code={`# Executar em background
+  comando &
+  sleep 60 &
+
+  # Listar jobs
+  jobs
+
+  # Suspender processo (Ctrl+Z)
+  # Retomar em foreground
+  fg
+  fg %1          # Job número 1
+
+  # Retomar em background
+  bg
+  bg %1
+
+  # Desacoplar do terminal (continua rodando após fechar)
+  nohup comando &
+  nohup ./script.sh > saida.log 2>&1 &
+
+  # disown — desacoplar job existente
+  ./longo-processo &
+  disown %1
+
+  # Esperar jobs terminarem
+  wait           # Esperar todos
+  wait %1        # Esperar job 1`}
+        />
+
+        <h2>5. Personalizar o Prompt (PS1)</h2>
+        <CodeBlock
+          title="Customizar o prompt do terminal"
+          code={`# O prompt é controlado pela variável PS1
+  echo $PS1
+
+  # Sequências especiais:
+  # \u = usuário
+  # \h = hostname
+  # \w = diretório atual (caminho completo)
+  # \W = diretório atual (apenas o nome)
+  # \d = data
+  # \t = hora (24h)
+  # \n = nova linha
+  # \$ = $ (ou # se root)
+
+  # Cores ANSI:
+  # \[\033[COLORm\] ... \[\033[0m\]
+  # 31=vermelho, 32=verde, 33=amarelo, 34=azul, 35=magenta, 36=ciano
+
+  # Prompt colorido
+  export PS1='\[\033[32m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ '
+  # Resultado: usuario@host:/caminho$ (verde e azul)
+
+  # Prompt com git branch
+  parse_git_branch() {
+      git branch 2>/dev/null | grep '^*' | sed 's/* //'
+  }
+  export PS1='\[\033[32m\]\u\[\033[0m\]:\[\033[34m\]\W\[\033[33m\] ($(parse_git_branch))\[\033[0m\]\$ '
+
+  # Adicionar ao ~/.bashrc para persistir`}
+        />
+
+        <h2>6. Arquivos de Configuração</h2>
+        <CodeBlock
+          title="Entender .bashrc, .profile, .bash_profile"
+          code={`# ~/.bashrc — carregado em cada terminal interativo
+  # Colocar: aliases, funções, prompt, variáveis do shell
+
+  # ~/.profile — carregado uma vez no login
+  # Colocar: variáveis de ambiente, PATH
+
+  # ~/.bash_profile — carregado no login (se existir, substitui .profile)
+  # Normalmente carrega .bashrc
+
+  # /etc/bash.bashrc — .bashrc global (todos os usuários)
+  # /etc/profile — profile global
+  # /etc/profile.d/*.sh — scripts de login globais
+
+  # Ordem de carregamento:
+  # Login shell: /etc/profile → ~/.bash_profile ou ~/.profile
+  # Terminal interativo: /etc/bash.bashrc → ~/.bashrc
+
+  # Recarregar .bashrc
+  source ~/.bashrc
+  # Ou: . ~/.bashrc
+
+  # Verificar se é login shell
+  shopt login_shell`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com o Bash"
+          code={`# Terminal travado (Ctrl+S acidental)
+  # Pressione Ctrl+Q para destravr
+
+  # Comando não encontrado
+  # Verificar PATH:
+  echo $PATH
+  # Instalar:
+  sudo apt install nome-do-pacote
+  # Ou verificar se o script é executável:
+  chmod +x script.sh
+
+  # .bashrc não carrega
+  # Verificar se ~/.profile carrega o .bashrc:
+  # if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
+
+  # Prompt bagunçado após redimensionar terminal
+  # Adicionar ao .bashrc:
+  shopt -s checkwinsize
+
+  # Caracteres estranhos no terminal
+  reset    # Restaurar terminal`}
+        />
+
+        <AlertBox type="info" title="Alternativas ao Bash">
+          <strong>Zsh</strong> (com Oh My Zsh) oferece autocompletar superior, temas e
+          plugins. <strong>Fish</strong> tem syntax highlighting e sugestões automáticas.
+          Ambos são compatíveis com a maioria dos scripts Bash.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
