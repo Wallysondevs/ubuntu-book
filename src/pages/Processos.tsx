@@ -1,255 +1,287 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Processos() {
-  return (
-    <PageContainer
-      title="Processos e Monitoramento"
-      subtitle="ps, top, htop, kill, nice — monitorando, controlando e otimizando processos no Ubuntu."
-      difficulty="intermediario"
-      timeToRead="20 min"
-    >
-      <p>
-        Um processo é um programa em execução. O Linux gerencia centenas de processos
-        simultaneamente — do kernel aos seus aplicativos abertos. Saber monitorar e
-        controlar processos é essencial para administrar um sistema Ubuntu com eficiência.
-      </p>
+  export default function Processos() {
+    return (
+      <PageContainer
+        title="Gerenciamento de Processos"
+        subtitle="Guia completo de processos no Ubuntu: ps, top, htop, kill, nice, jobs, sinais, prioridade e monitoramento avançado."
+        difficulty="iniciante"
+        timeToRead="25 min"
+      >
+        <p>
+          Todo programa em execução no Linux é um <strong>processo</strong>. Cada processo
+          tem um <strong>PID</strong> (Process ID) único, um dono, prioridade e consome
+          recursos (CPU, memória, I/O). Saber gerenciar processos é essencial para manter
+          o sistema responsivo e resolver problemas de performance.
+        </p>
 
-      <h2>ps — Listar Processos</h2>
-      <CodeBlock
-        title="Listando processos com ps"
-        code={`# Ver processos do usuário atual na sessão atual
-ps
+        <h2>1. Ver Processos (ps)</h2>
+        <CodeBlock
+          title="Listar processos em execução"
+          code={`# Ver seus processos
+  ps
+  # Saída: PID, TTY, TIME, CMD
 
-# Ver TODOS os processos do sistema (o mais usado)
-ps aux
+  # Ver todos os processos do sistema
+  ps aux
+  # a = todos os usuários
+  # u = formato de usuário (com CPU%, MEM%)
+  # x = incluir processos sem terminal
 
-# Explicação das colunas do ps aux:
-# USER   PID  %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-# root     1   0.0  0.2 167808  9876 ?        Ss   09:00   0:01 /sbin/init
-# joao  1234   2.5  1.5 4567890 61440 pts/0  Sl+  10:00   0:15 firefox
+  # Saída do ps aux:
+  # USER   PID %CPU %MEM   VSZ   RSS TTY  STAT START TIME COMMAND
+  # root     1  0.0  0.1 16920 10240 ?    Ss   10:00 0:01 /sbin/init
 
-# USER   = dono do processo
-# PID    = Process ID (número único do processo)
-# %CPU   = uso de CPU em porcentagem
-# %MEM   = uso de memória RAM em porcentagem
-# VSZ    = memória virtual total (KB)
-# RSS    = memória física usada (KB)
-# TTY    = terminal associado (? = sem terminal)
-# STAT   = estado (S=sleeping, R=running, Z=zombie, T=stopped)
-# START  = hora/data de início
-# TIME   = tempo de CPU consumido
-# COMMAND= comando que iniciou o processo
+  # STAT (estado):
+  # R = Rodando        S = Dormindo (esperando I/O)
+  # D = Dormindo (não interrompível)
+  # T = Parado (Ctrl+Z)
+  # Z = Zombie (finalizado mas não coletado pelo pai)
 
-# Ver em formato de árvore (hierarquia pai→filho)
-ps auxf
-ps --forest
+  # Filtrar processos
+  ps aux | grep nginx
+  ps aux | grep -v grep | grep nginx  # Sem o próprio grep
 
-# Buscar um processo específico
-ps aux | grep nginx
-ps aux | grep python
+  # Ver processos em árvore
+  ps auxf              # Árvore com detalhes
+  pstree               # Árvore visual
+  pstree -p            # Com PIDs
+  pstree -u usuario    # De um usuário
 
-# Ver apenas os PIDs de um programa
-pgrep nginx
-pgrep -l nginx  # Com o nome também`}
-      />
+  # Formato customizado
+  ps -eo pid,ppid,user,%cpu,%mem,comm --sort=-%cpu | head -15
+  # -e = todos, -o = colunas customizadas
 
-      <h2>top e htop — Monitor em Tempo Real</h2>
-      <CodeBlock
-        title="Monitoramento interativo de processos"
-        code={`# Abrir o top (vem pré-instalado)
-top
+  # Ver threads de um processo
+  ps -T -p 1234
 
-# Dentro do top:
-# q  → Sair
-# k  → Matar processo (pede o PID)
-# r  → Mudar prioridade (renice)
-# P  → Ordenar por uso de CPU
-# M  → Ordenar por uso de memória
-# 1  → Ver cada core de CPU separado
-# u  → Filtrar por usuário
-# s  → Mudar intervalo de atualização
-# Espaço → Atualizar imediatamente
+  # Ver processos de um usuário
+  ps -u usuario
 
-# Instalar o htop (muito mais amigável):
-sudo apt install htop
-htop
+  # Contar processos
+  ps aux | wc -l`}
+        />
 
-# Dentro do htop:
-# F6 ou < > → Ordenar por coluna
-# F5        → Modo de árvore (ver hierarquia)
-# F9        → Matar processo (lista de sinais)
-# F4        → Filtrar por nome
-# F2        → Configurações (personalizar colunas)
-# q         → Sair
+        <h2>2. Monitoramento em Tempo Real</h2>
+        <CodeBlock
+          title="top, htop e btop"
+          code={`# top — monitor básico (já instalado)
+  top
+  # Atalhos dentro do top:
+  # P = ordenar por CPU
+  # M = ordenar por memória
+  # k = matar processo (pede PID)
+  # q = sair
+  # 1 = mostrar cada core da CPU
+  # c = mostrar comando completo
 
-# Para monitorar apenas um processo específico:
-htop -p 1234,5678
+  # htop — monitor interativo (muito melhor!)
+  sudo apt install -y htop
+  htop
+  # Atalhos do htop:
+  # F5 = modo árvore
+  # F6 = ordenar
+  # F9 = matar processo (escolher sinal)
+  # F4 = filtrar
+  # / = buscar
+  # Setas + Enter = selecionar processo
 
-# Instalar btop (mais bonito ainda):
-sudo apt install btop
-btop`}
-      />
+  # btop — monitor moderno e bonito
+  sudo apt install -y btop
+  btop
+  # Interface visual rica com gráficos de CPU, memória, rede e disco
 
-      <h2>Sinais e Kill — Controlando Processos</h2>
-      <CodeBlock
-        title="Enviando sinais para processos"
-        code={`# Ver lista de sinais disponíveis
-kill -l
+  # Outras ferramentas de monitoramento
+  watch -n 1 "ps aux --sort=-%cpu | head -10"   # Atualizar a cada 1s
+  glances                  # Monitor avançado (pip install glances)
+  nmon                     # Monitor IBM (sudo apt install nmon)`}
+        />
 
-# Os mais importantes:
-# SIGTERM (15) = Pedir educadamente para o processo terminar
-# SIGKILL  (9) = Matar o processo imediatamente (sem chance de limpeza)
-# SIGHUP   (1) = Recarregar configuração (usado por nginx, apache, etc.)
-# SIGSTOP (19) = Pausar o processo
-# SIGCONT (18) = Continuar processo pausado
+        <h2>3. Sinais e Kill</h2>
+        <CodeBlock
+          title="Enviar sinais a processos"
+          code={`# Listar todos os sinais
+  kill -l
 
-# Terminar um processo pelo PID
-kill 1234           # Envia SIGTERM (15) — padrão
-kill -15 1234       # Explícito: SIGTERM
-kill -9 1234        # SIGKILL — forçado (use apenas se SIGTERM não funcionar)
-kill -SIGKILL 1234  # Equivalente ao -9
+  # Sinais mais importantes:
+  # SIGTERM (15) — Terminar educadamente (padrão)
+  # SIGKILL (9)  — Matar forçadamente (não pode ser ignorado)
+  # SIGHUP (1)   — Recarregar configuração
+  # SIGSTOP (19) — Pausar processo
+  # SIGCONT (18) — Continuar processo pausado
+  # SIGINT (2)   — Interromper (Ctrl+C)
+  # SIGTSTP (20) — Suspender (Ctrl+Z)
 
-# Terminar processo pelo nome (mata todos com esse nome)
-pkill nginx
-pkill -9 firefox    # Forçar
+  # Matar processo por PID
+  kill 1234           # SIGTERM (pede para terminar)
+  kill -9 1234        # SIGKILL (forçar — último recurso!)
+  kill -15 1234       # SIGTERM explícito
 
-# Matar processo e todos os seus filhos
-pkill -TERM -P 1234  # Matar filhos do PID 1234
-kill -- -1234         # Matar grupo do processo
+  # Matar por nome
+  killall nginx       # Mata TODOS os processos chamados "nginx"
+  killall -9 nginx    # Forçar
 
-# Matar todas as instâncias de um programa interativamente
-killall firefox
-killall -9 firefox   # Forçado
+  # pkill — matar por padrão
+  pkill firefox       # Mata processos que contêm "firefox"
+  pkill -u usuario    # Mata todos os processos de um usuário
+  pkill -f "python app.py"  # Buscar no comando completo (-f)
 
-# Verificar qual processo está usando uma porta específica
-sudo ss -tlnp | grep :80
-sudo lsof -i :80
-# Depois matar o processo que ocupa a porta:
-sudo kill $(sudo lsof -t -i:80)`}
-      />
+  # Recarregar configuração (sem matar)
+  kill -HUP 1234      # Muitos daemons recarregam com SIGHUP
+  sudo systemctl reload nginx  # Forma preferida para serviços
 
-      <h2>nice e renice — Prioridade de Processos</h2>
-      <CodeBlock
-        title="Controlando prioridade de CPU"
-        code={`# Nice value: de -20 (máxima prioridade) a 19 (mínima prioridade)
-# Padrão: 0
-# Processos comuns: 0
-# Usuário root pode usar negativos (prioridade maior)
-# Usuário normal só pode diminuir prioridade (aumentar niceness)
+  # Encontrar PID de um processo
+  pgrep nginx         # PIDs de processos chamados "nginx"
+  pgrep -a nginx      # Com comando completo
+  pidof nginx         # PID do processo exato`}
+        />
 
-# Iniciar um processo com prioridade menor (menos CPU)
-nice -n 10 tar -czf backup.tar.gz /home/  # Compressão pesada com baixa prioridade
-nice -n 19 make -j4   # Compilar com mínima prioridade
+        <h2>4. Prioridade (nice/renice)</h2>
+        <CodeBlock
+          title="Controlar prioridade de processos"
+          code={`# Nice value: -20 (mais alta prioridade) a 19 (mais baixa)
+  # Valor padrão: 0
+  # Somente root pode usar valores negativos (aumentar prioridade)
 
-# Iniciar com alta prioridade (apenas root)
-sudo nice -n -10 ./programa-critico
+  # Ver prioridade
+  ps -eo pid,ni,comm | head -20
+  top    # Coluna NI
 
-# Mudar prioridade de um processo já em execução
-renice -n 5 -p 1234      # Diminuir prioridade do PID 1234
-renice -n 5 -u joao      # Diminuir prioridade de todos os processos do usuário
-sudo renice -n -5 -p 1234 # Aumentar prioridade (precisa de root)
+  # Iniciar com prioridade baixa (não prejudica outros processos)
+  nice -n 10 comando-pesado
+  nice -n 19 tar czf backup.tar.gz /dados   # Menor prioridade
 
-# Ver niceness dos processos no top:
-# Coluna "NI" = niceness
-# Coluna "PR" = prioridade real (20 + niceness)`}
-      />
+  # Iniciar com prioridade alta (precisa de root)
+  sudo nice -n -10 processo-importante
 
-      <h2>Jobs — Processos em Background</h2>
-      <CodeBlock
-        title="Gerenciando jobs em background"
-        code={`# Executar comando em background (adicione & no final)
-wget https://exemplo.com/arquivo-grande.iso &
-# [1] 1234   ← [número do job] PID
+  # Mudar prioridade de processo em execução
+  renice 10 -p 1234          # Reduzir prioridade
+  sudo renice -5 -p 1234    # Aumentar prioridade
 
-# Ver jobs em background
-jobs
-# [1]+  Running    wget https://exemplo.com/arquivo-grande.iso &
+  # Mudar prioridade de todos os processos de um usuário
+  sudo renice 10 -u usuario`}
+        />
 
-# Pausar um processo em foreground
-# Ctrl+Z  ← pausa e coloca em background como STOPPED
+        <h2>5. Jobs e Background</h2>
+        <CodeBlock
+          title="Controlar processos em background"
+          code={`# Executar em background
+  comando &
+  sleep 300 &
 
-# Continuar processo pausado em background
-bg %1   # Continuar job número 1 em background
-bg      # Continuar o último job pausado
+  # Ctrl+Z — suspender processo atual
+  # fg — retomar em foreground
+  # bg — retomar em background
 
-# Trazer processo do background para o foreground
-fg %1   # Trazer job número 1 para foreground
-fg      # Trazer o último job
+  # Listar jobs
+  jobs
+  jobs -l     # Com PIDs
 
-# Matar um job específico
-kill %1
+  # Retomar job específico
+  fg %1       # Job 1 em foreground
+  bg %2       # Job 2 em background
 
-# Exemplo prático: iniciar e gerenciar múltiplas tarefas
-long-running-script.sh &     # [1] 1234
-another-script.sh &          # [2] 1235
-jobs                          # Ver ambos
-fg %1                         # Trazer o primeiro para foreground
-Ctrl+Z                        # Pausar
-bg %1                         # Mandar de volta para background`}
-      />
+  # Manter rodando após fechar terminal
+  nohup comando &
+  nohup ./script.sh > saida.log 2>&1 &
 
-      <h2>nohup — Processos Imunes ao Logout</h2>
-      <CodeBlock
-        title="Manter processos rodando após desconectar"
-        code={`# nohup = No HangUP — processo continua após fechar terminal
-nohup python3 meu-script.py &
+  # disown — desacoplar job do terminal
+  ./processo-longo &
+  disown %1
 
-# A saída vai para nohup.out por padrão
-tail -f nohup.out
+  # screen/tmux — sessões persistentes (melhor que nohup)
+  sudo apt install -y tmux
+  tmux new -s minha-sessao
+  # Ctrl+B, D = desacoplar
+  tmux attach -t minha-sessao
+  tmux ls     # Listar sessões`}
+        />
 
-# Redirecionar saída para arquivo específico:
-nohup python3 meu-script.py > /var/log/meu-script.log 2>&1 &
+        <h2>6. Monitoramento Avançado</h2>
+        <CodeBlock
+          title="Ferramentas avançadas de monitoramento"
+          code={`# Uso de CPU por core em tempo real
+  mpstat -P ALL 1
+  # (sudo apt install sysstat)
 
-# Alternativa moderna: screen ou tmux
-sudo apt install screen
+  # Estatísticas de I/O de disco
+  iostat -x 1
 
-# Criar nova sessão screen
-screen -S minha-sessao
+  # Ver memória virtual e estatísticas do sistema
+  vmstat 1 5     # Atualizar a cada 1s, 5 vezes
 
-# Dentro do screen: Ctrl+A D  para desconectar (detach)
-# Listar sessões screen
-screen -ls
+  # Ver quanta memória cada processo usa (ordenado)
+  ps aux --sort=-%mem | head -20    # Top 20 por memória
+  ps aux --sort=-%cpu | head -20    # Top 20 por CPU
 
-# Reconectar a uma sessão
-screen -r minha-sessao
+  # Processos consumindo I/O de disco
+  sudo iotop
+  # (sudo apt install iotop-c)
 
-# Alternativa: tmux (mais poderoso)
-sudo apt install tmux
-tmux new-session -s minha-sessao
-# Ctrl+B D para desconectar
-tmux attach-session -t minha-sessao`}
-      />
+  # Rastrear chamadas de sistema (debug avançado)
+  strace -p 1234                    # Rastrear processo existente
+  strace -c ls                      # Resumo de syscalls
 
-      <h2>Informações de Memória e CPU</h2>
-      <CodeBlock
-        title="Monitorando recursos do sistema"
-        code={`# Uso de memória RAM e swap
-free -h
-# total  usado  livre  compartilhado  buff/cache  disponível
-# Mem:   15Gi  5.2Gi   3.1Gi  410Mi  6.8Gi  9.5Gi
-# Swap:   2Gi  100Mi   1.9Gi
+  # /proc — informações em tempo real
+  cat /proc/1234/status             # Status do processo
+  cat /proc/1234/cmdline            # Comando que iniciou
+  ls -la /proc/1234/fd/             # Arquivos abertos
+  cat /proc/loadavg                 # Load average do sistema`}
+        />
 
-# Informações da CPU
-lscpu
-cat /proc/cpuinfo | grep "model name" | head -1
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com processos"
+          code={`# Processo não morre com kill
+  # Tentar SIGTERM primeiro:
+  kill 1234
+  # Esperar 5 segundos, depois SIGKILL:
+  kill -9 1234
 
-# Uso de CPU por core em tempo real
-mpstat -P ALL 1
-# (precisa instalar: sudo apt install sysstat)
+  # Processo zombie (Z no ps)
+  # Zombies são processos que terminaram mas o pai não coletou o status
+  # Solução: matar o processo PAI
+  ps -eo pid,ppid,stat,comm | grep Z
+  # Encontrar o PPID e matar:
+  kill -9 PPID
 
-# Estatísticas de I/O de disco
-iostat -x 1
-# (sudo apt install sysstat)
+  # "Cannot allocate memory" (sem memória)
+  free -h                   # Ver memória
+  ps aux --sort=-%mem | head -10  # Quem está usando
+  # Matar o processo que consome mais ou adicionar swap
 
-# Ver memória virtual e estatísticas do sistema
-vmstat 1 5     # Atualizar a cada 1s, 5 vezes
+  # Sistema lento — encontrar o culpado
+  top     # Verificar CPU e memória
+  # Processo com 100% CPU? Matar ou reduzir prioridade:
+  renice 19 -p PID
 
-# Ver quanta memória cada processo usa (ordenado):
-ps aux --sort=-%mem | head -20    # Top 20 por memória
-ps aux --sort=-%cpu | head -20    # Top 20 por CPU`}
-      />
-    </PageContainer>
-  );
-}
+  # Load average alto
+  uptime
+  # Load > número de cores = sistema sobrecarregado
+  nproc    # Ver número de cores
+  # Investigar com top/htop
+
+  # Muitos processos de um serviço
+  pgrep -c apache2    # Contar processos Apache
+  # Se excessivo, ajustar configuração do serviço
+
+  # Listar processos usando uma porta
+  sudo ss -tlnp | grep :80
+  sudo fuser -v 80/tcp
+
+  # Listar processos usando um arquivo
+  sudo fuser -mv /mnt/dados
+  sudo lsof /var/log/syslog`}
+        />
+
+        <AlertBox type="info" title="Sinais: SIGTERM vs SIGKILL">
+          Sempre use <code>kill</code> (SIGTERM) primeiro — ele permite que o processo
+          salve dados e limpe recursos. Só use <code>kill -9</code> (SIGKILL) como
+          <strong>último recurso</strong> — ele mata instantaneamente sem dar chance
+          de cleanup, podendo causar corrupção de dados.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
