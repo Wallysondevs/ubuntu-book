@@ -1,128 +1,197 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function LVM() {
-  return (
-    <PageContainer
-      title="LVM — Logical Volume Manager"
-      subtitle="Gerencie discos de forma flexível com LVM: redimensione volumes sem reiniciar, adicione discos e muito mais."
-      difficulty="avancado"
-      timeToRead="25 min"
-    >
-      <p>
-        O <strong>LVM</strong> (Logical Volume Manager) cria uma camada de abstração entre
-        os discos físicos e o sistema de arquivos, permitindo redimensionar, criar snapshots
-        e combinar múltiplos discos de forma dinâmica.
-      </p>
+  export default function LVM() {
+    return (
+      <PageContainer
+        title="LVM — Gerenciamento de Volumes Lógicos"
+        subtitle="Guia completo de LVM no Ubuntu: criar, redimensionar, snapshots, migrar dados entre discos e gerenciar armazenamento flexível."
+        difficulty="avancado"
+        timeToRead="30 min"
+      >
+        <p>
+          O <strong>LVM</strong> (Logical Volume Manager) adiciona uma camada de abstração
+          entre discos físicos e sistemas de arquivos. Com LVM, você pode redimensionar
+          partições sem desmontar, combinar múltiplos discos em um único volume, criar
+          snapshots e migrar dados entre discos — tudo sem parar o sistema.
+        </p>
 
-      <h2>1. Conceitos LVM</h2>
-      <CodeBlock title="PV, VG e LV — os três níveis do LVM" code={`# PV = Physical Volume (Volume Físico)
-# Disco ou partição inicializado para uso pelo LVM
-# Exemplos: /dev/sdb, /dev/sdc1
+        <h2>Conceitos do LVM</h2>
+        <ul>
+          <li><strong>PV (Physical Volume)</strong> — Disco ou partição física preparada para LVM</li>
+          <li><strong>VG (Volume Group)</strong> — Pool de armazenamento formado por um ou mais PVs</li>
+          <li><strong>LV (Logical Volume)</strong> — "Partição virtual" criada dentro de um VG</li>
+        </ul>
 
-# VG = Volume Group (Grupo de Volumes)
-# Pool de armazenamento que combina um ou mais PVs
-# Funciona como um "disco virtual grande"
+        <h2>1. Criar Infraestrutura LVM</h2>
+        <CodeBlock
+          title="Configurar LVM do zero"
+          code={`# Instalar ferramentas LVM
+  sudo apt install -y lvm2
 
-# LV = Logical Volume (Volume Lógico)
-# "Partição virtual" criada dentro de um VG
-# É onde você formata e monta o filesystem
+  # Passo 1: Criar Physical Volumes (PV)
+  sudo pvcreate /dev/sdb
+  sudo pvcreate /dev/sdc
+  # Saída: Physical volume "/dev/sdb" successfully created.
 
-# Hierarquia:
-# PV (/dev/sdb) + PV (/dev/sdc)
-#         └──→ VG (ubuntu-vg)
-#                   ├──→ LV (ubuntu-lv) → / (raiz)
-#                   ├──→ LV (dados-lv) → /dados
-#                   └──→ LV (swap-lv) → swap
+  # Ver PVs
+  sudo pvs
+  sudo pvdisplay
 
-# Ver LVM existente no Ubuntu:
-sudo pvs          # Listar Physical Volumes
-sudo vgs          # Listar Volume Groups
-sudo lvs          # Listar Logical Volumes
-sudo pvdisplay    # Detalhes dos PVs
-sudo vgdisplay    # Detalhes dos VGs
-sudo lvdisplay    # Detalhes dos LVs`} />
+  # Passo 2: Criar Volume Group (VG)
+  sudo vgcreate meu-vg /dev/sdb /dev/sdc
+  # Combina os dois discos em um único pool
 
-      <h2>2. Criando um Ambiente LVM</h2>
-      <AlertBox type="warning">
-        Os comandos abaixo modificam partições. Faça backup antes e tenha certeza
-        do dispositivo correto (verifique com lsblk e fdisk -l).
-      </AlertBox>
-      <CodeBlock title="Configurando LVM do zero" code={`# PASSO 1: Verificar discos disponíveis
-lsblk
-fdisk -l | grep "Disk /dev"
+  # Ver VGs
+  sudo vgs
+  sudo vgdisplay meu-vg
 
-# PASSO 2: Criar Physical Volume no disco /dev/sdb
-sudo pvcreate /dev/sdb
-sudo pvcreate /dev/sdb /dev/sdc    # Múltiplos PVs de uma vez
+  # Passo 3: Criar Logical Volumes (LV)
+  sudo lvcreate -L 100G -n dados meu-vg        # 100GB
+  sudo lvcreate -L 50G -n backup meu-vg        # 50GB
+  sudo lvcreate -l 100%FREE -n logs meu-vg     # Resto do espaço
 
-# PASSO 3: Criar Volume Group
-sudo vgcreate meu-vg /dev/sdb
-sudo vgcreate meu-vg /dev/sdb /dev/sdc    # VG em múltiplos discos
+  # -L = tamanho absoluto
+  # -l = tamanho relativo (100%FREE = todo espaço livre)
 
-# PASSO 4: Criar Logical Volumes
-# -L = tamanho fixo, -l = em extents (%)
-sudo lvcreate -L 20G -n dados-lv meu-vg       # 20GB para dados
-sudo lvcreate -L 8G -n swap-lv meu-vg         # 8GB para swap
-sudo lvcreate -l 100%FREE -n extra-lv meu-vg  # Todo o espaço restante
+  # Ver LVs
+  sudo lvs
+  sudo lvdisplay
 
-# PASSO 5: Formatar e montar
-sudo mkfs.ext4 /dev/meu-vg/dados-lv
-sudo mkdir /mnt/dados
-sudo mount /dev/meu-vg/dados-lv /mnt/dados
+  # Passo 4: Formatar e montar
+  sudo mkfs.ext4 /dev/meu-vg/dados
+  sudo mkfs.ext4 /dev/meu-vg/backup
+  sudo mkfs.ext4 /dev/meu-vg/logs
 
-# Adicionar ao /etc/fstab para montar automaticamente:
-echo "/dev/meu-vg/dados-lv /mnt/dados ext4 defaults 0 2" | sudo tee -a /etc/fstab`} />
+  sudo mkdir -p /mnt/{dados,backup,logs}
+  sudo mount /dev/meu-vg/dados /mnt/dados
+  sudo mount /dev/meu-vg/backup /mnt/backup
+  sudo mount /dev/meu-vg/logs /mnt/logs
 
-      <h2>3. Expandindo e Reduzindo Volumes</h2>
-      <CodeBlock title="Redimensionamento de volumes LVM" code={`# EXPANDIR um Logical Volume (SEGURO — sem perda de dados):
-# Expandir o LV em 10GB adicionais:
-sudo lvextend -L +10G /dev/meu-vg/dados-lv
+  # Adicionar ao fstab
+  echo '/dev/meu-vg/dados  /mnt/dados  ext4  defaults  0  2' | sudo tee -a /etc/fstab`}
+        />
 
-# Expandir para usar TODO o espaço livre do VG:
-sudo lvextend -l +100%FREE /dev/meu-vg/dados-lv
+        <h2>2. Redimensionar Volumes</h2>
+        <CodeBlock
+          title="Expandir e encolher volumes lógicos"
+          code={`# === EXPANDIR (mais comum) ===
+  # Expandir LV + filesystem em um comando
+  sudo lvextend -L +50G /dev/meu-vg/dados --resizefs
+  # Adiciona 50GB e redimensiona o filesystem automaticamente
 
-# Depois de expandir o LV, expandir o filesystem:
-sudo resize2fs /dev/meu-vg/dados-lv       # Para ext4
-sudo xfs_growfs /mnt/dados                 # Para xfs (disco montado!)
+  # Expandir para usar todo espaço livre
+  sudo lvextend -l +100%FREE /dev/meu-vg/dados --resizefs
 
-# EXPANDIR e REDIMENSIONAR filesystem em um comando:
-sudo lvresize -L +10G --resizefs /dev/meu-vg/dados-lv
+  # Expandir para tamanho específico
+  sudo lvextend -L 200G /dev/meu-vg/dados --resizefs
 
-# REDUZIR um LV (CUIDADO! Pode perder dados se não fizer certo!):
-# 1. Desmontar:
-sudo umount /mnt/dados
-# 2. Verificar filesystem:
-sudo e2fsck -f /dev/meu-vg/dados-lv
-# 3. Reduzir filesystem PRIMEIRO:
-sudo resize2fs /dev/meu-vg/dados-lv 15G
-# 4. Depois reduzir o LV:
-sudo lvreduce -L 15G /dev/meu-vg/dados-lv
-# 5. Remontar:
-sudo mount /dev/meu-vg/dados-lv /mnt/dados`} />
+  # === ENCOLHER (cuidado!) ===
+  # ATENÇÃO: Sempre faça backup antes de encolher!
+  # Ext4 permite encolher, XFS NÃO permite
+  sudo umount /mnt/dados
+  sudo e2fsck -f /dev/meu-vg/dados
+  sudo lvreduce -L 80G /dev/meu-vg/dados --resizefs
+  sudo mount /dev/meu-vg/dados /mnt/dados
 
-      <h2>4. Snapshots LVM</h2>
-      <CodeBlock title="Criando e restaurando snapshots" code={`# Criar snapshot (ponto de restauração) de um LV:
-sudo lvcreate -s -L 5G -n dados-snap /dev/meu-vg/dados-lv
-# -s = snapshot
-# -L 5G = tamanho do COW (Copy-On-Write) storage
-# O snapshot cresce à medida que os dados originais mudam
+  # === ADICIONAR DISCO AO VG ===
+  # Novo disco adicionado ao servidor
+  sudo pvcreate /dev/sdd
+  sudo vgextend meu-vg /dev/sdd
+  # Agora o VG tem mais espaço!
+  sudo lvextend -l +100%FREE /dev/meu-vg/dados --resizefs`}
+        />
 
-# Ver snapshots:
-sudo lvs
-# A coluna "Attr" mostra "s" para snapshots, "o" para original
+        <h2>3. Snapshots LVM</h2>
+        <CodeBlock
+          title="Criar e gerenciar snapshots"
+          code={`# Criar snapshot (captura o estado atual)
+  sudo lvcreate -L 10G -s -n dados-snap /dev/meu-vg/dados
+  # -s = snapshot
+  # -L 10G = espaço para armazenar mudanças (não o tamanho do volume)
 
-# Montar o snapshot para verificar:
-sudo mount /dev/meu-vg/dados-snap /mnt/snapshot -o ro
+  # Listar snapshots
+  sudo lvs
 
-# Restaurar a partir do snapshot (MERGE):
-sudo umount /mnt/dados
-sudo lvconvert --merge /dev/meu-vg/dados-snap
-# Após o merge, o sistema original volta ao estado do snapshot
+  # Montar snapshot (somente leitura, para backup)
+  sudo mkdir /mnt/snap
+  sudo mount -o ro /dev/meu-vg/dados-snap /mnt/snap
+  # Fazer backup do snapshot:
+  tar czf backup.tar.gz /mnt/snap/
+  sudo umount /mnt/snap
 
-# Remover snapshot sem usar:
-sudo lvremove /dev/meu-vg/dados-snap`} />
-    </PageContainer>
-  );
-}
+  # Restaurar snapshot (reverter para o estado capturado)
+  # CUIDADO: Isso reverte TODAS as mudanças!
+  sudo umount /mnt/dados
+  sudo lvconvert --merge /dev/meu-vg/dados-snap
+  sudo mount /dev/meu-vg/dados /mnt/dados
+
+  # Remover snapshot (sem restaurar)
+  sudo lvremove /dev/meu-vg/dados-snap`}
+        />
+
+        <h2>4. Migrar Dados Entre Discos</h2>
+        <CodeBlock
+          title="Mover dados de um disco para outro sem downtime"
+          code={`# O LVM pode migrar dados entre PVs sem desmontar!
+
+  # Situação: Trocar /dev/sdb (antigo) por /dev/sdd (novo)
+
+  # 1. Adicionar novo disco ao VG
+  sudo pvcreate /dev/sdd
+  sudo vgextend meu-vg /dev/sdd
+
+  # 2. Migrar dados do disco antigo para o novo
+  sudo pvmove /dev/sdb /dev/sdd
+  # Isso move todos os dados de sdb para sdd
+  # O sistema continua funcionando durante a migração!
+
+  # 3. Remover o disco antigo do VG
+  sudo vgreduce meu-vg /dev/sdb
+  sudo pvremove /dev/sdb
+  # Agora pode remover fisicamente o disco antigo`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com LVM"
+          code={`# VG não aparece após reboot
+  sudo vgchange -ay
+  # Ativa todos os VGs
+
+  # Disco LVM de outro computador
+  sudo pvscan
+  sudo vgscan
+  sudo lvscan
+  sudo vgchange -ay
+
+  # Snapshot cheio (100% usado)
+  # O snapshot fica inválido! Remova-o:
+  sudo lvremove /dev/meu-vg/dados-snap
+  # Crie um novo com mais espaço
+
+  # Verificar integridade
+  sudo pvck /dev/sdb
+  sudo vgck meu-vg
+
+  # Remover LVM completamente
+  sudo umount /mnt/dados
+  sudo lvremove /dev/meu-vg/dados
+  sudo vgremove meu-vg
+  sudo pvremove /dev/sdb
+
+  # Ver estrutura completa
+  sudo lsblk
+  sudo pvs && sudo vgs && sudo lvs`}
+        />
+
+        <AlertBox type="info" title="Quando usar LVM?">
+          Use LVM em <strong>servidores</strong> (redimensionar sem downtime), quando tem
+          <strong>múltiplos discos</strong> (combinar em um pool), e quando precisa de
+          <strong>snapshots</strong>. Para desktops simples com um único SSD, partições
+          tradicionais são suficientes.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
