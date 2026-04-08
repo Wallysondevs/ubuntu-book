@@ -1,144 +1,274 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Netplan() {
-  return (
-    <PageContainer
-      title="Netplan — Configuração de Rede"
-      subtitle="Configure interfaces de rede, IP estático, WiFi e bonding no Ubuntu Server com Netplan."
-      difficulty="intermediario"
-      timeToRead="18 min"
-    >
-      <p>
-        O <strong>Netplan</strong> é a ferramenta de configuração de rede padrão no
-        Ubuntu desde a versão 17.10. Usa arquivos YAML e suporta NetworkManager (desktop)
-        e systemd-networkd (servidor).
-      </p>
+  export default function Netplan() {
+    return (
+      <PageContainer
+        title="Netplan — Configuração de Rede"
+        subtitle="Guia completo do Netplan no Ubuntu: configurar IP fixo, DHCP, Wi-Fi, bridges, bonds, VLANs e rotas estáticas."
+        difficulty="intermediario"
+        timeToRead="25 min"
+      >
+        <p>
+          O <strong>Netplan</strong> é o sistema de configuração de rede padrão do Ubuntu
+          desde a versão 17.10. Ele usa arquivos YAML declarativos para definir a configuração
+          de rede, que é então aplicada pelo <strong>NetworkManager</strong> (desktop) ou
+          <strong>systemd-networkd</strong> (servidor).
+        </p>
 
-      <h2>1. Estrutura do Netplan</h2>
-      <CodeBlock title="Arquivos de configuração do Netplan" code={`# Localização dos arquivos Netplan:
-ls /etc/netplan/
-# Exemplo: 01-netcfg.yaml, 00-installer-config.yaml
+        <h2>1. Entender o Netplan</h2>
+        <CodeBlock
+          title="Estrutura e arquivos do Netplan"
+          code={`# Arquivos de configuração
+  ls /etc/netplan/
+  # Saída: 01-network-manager-all.yaml (desktop)
+  # Ou:    01-netcfg.yaml (servidor)
 
-# Ver configuração atual:
-cat /etc/netplan/01-netcfg.yaml
+  # Ver configuração atual
+  cat /etc/netplan/*.yaml
 
-# FORMATO YAML — indentação é CRÍTICA (use espaços, nunca tabs!)
+  # Identificar interfaces de rede
+  ip link show
+  # Saída:
+  # 1: lo: <LOOPBACK,...>   ← loopback (localhost)
+  # 2: enp0s3: <BROADCAST,...>  ← Ethernet (en=ethernet, p0s3=PCI)
+  # 3: wlp2s0: <BROADCAST,...>  ← Wi-Fi (wl=wireless)
 
-# Aplicar configuração:
-sudo netplan apply
+  # Ver IPs atuais
+  ip addr show
+  hostname -I    # Apenas os IPs
 
-# Testar sem aplicar (reverte após 120 segundos se der problema):
-sudo netplan try`} />
+  # Renderer (backend):
+  # NetworkManager → desktop (GNOME, interface gráfica)
+  # systemd-networkd → servidor (sem GUI)
 
-      <h2>2. Configurando IP Estático</h2>
-      <AlertBox type="warning">
-        A indentação YAML é crucial. Use 2 espaços por nível, nunca tabs.
-      </AlertBox>
-      <CodeBlock title="IP estático para servidor Ubuntu" code={`# Editar o arquivo netplan:
-sudo nano /etc/netplan/01-netcfg.yaml
+  # Aplicar mudanças
+  sudo netplan apply
 
-# Configuração de IP estático para Ethernet:
-network:
-  version: 2
-  renderer: networkd    # Use 'NetworkManager' no desktop
-  ethernets:
-    ens33:              # Nome da interface (ver com: ip link show)
-      dhcp4: false      # Desabilitar DHCP
-      addresses:
-        - 192.168.1.100/24     # IP/Máscara
-      routes:
-        - to: default
-          via: 192.168.1.1    # Gateway
-      nameservers:
+  # Testar mudanças sem aplicar permanentemente
+  sudo netplan try
+  # Aplica por 120 segundos, depois reverte se não confirmar
+  # Útil para evitar perder acesso ao servidor!`}
+        />
+
+        <h2>2. Configurar IP Fixo</h2>
+        <CodeBlock
+          title="IP estático para servidor"
+          code={`# Editar (ou criar) o arquivo de configuração
+  sudo nano /etc/netplan/01-netcfg.yaml
+
+  # Conteúdo para IP fixo:
+  network:
+    version: 2
+    renderer: networkd    # ou: NetworkManager
+    ethernets:
+      enp0s3:
+        dhcp4: false
         addresses:
-          - 8.8.8.8            # DNS primário
-          - 8.8.4.4            # DNS secundário
-        search:
-          - minha-rede.local   # Domínio de busca (opcional)
+          - 192.168.1.100/24
+        routes:
+          - to: default
+            via: 192.168.1.1
+        nameservers:
+          addresses:
+            - 8.8.8.8
+            - 1.1.1.1
+          search:
+            - meudominio.local
 
-# Aplicar:
-sudo netplan apply
+  # Aplicar
+  sudo netplan apply
 
-# Verificar:
-ip addr show ens33
-ip route show`} />
+  # Verificar
+  ip addr show enp0s3
+  ip route show
+  resolvectl status`}
+        />
 
-      <CodeBlock title="Configuração com DHCP (automático)" code={`# IP via DHCP (padrão para desktop):
-network:
-  version: 2
-  renderer: NetworkManager
-  ethernets:
-    ens33:
-      dhcp4: true
-      dhcp6: false
-  wifis:
-    wlp2s0:
-      dhcp4: true
-      access-points:
-        "Nome-da-Rede-WiFi":
-          password: "senha-do-wifi"`} />
+        <h2>3. Configurar DHCP</h2>
+        <CodeBlock
+          title="IP automático via DHCP"
+          code={`# Configuração DHCP simples
+  network:
+    version: 2
+    renderer: networkd
+    ethernets:
+      enp0s3:
+        dhcp4: true
 
-      <h2>3. Múltiplas Interfaces e Bonding</h2>
-      <CodeBlock title="Configurações avançadas de rede" code={`# DUAS interfaces com IPs diferentes:
-network:
-  version: 2
-  ethernets:
-    ens33:
-      dhcp4: false
-      addresses: [192.168.1.100/24]
-      routes:
-        - to: default
-          via: 192.168.1.1
-      nameservers:
-        addresses: [8.8.8.8]
-    ens38:
-      dhcp4: false
-      addresses: [10.0.0.1/24]
-      # Interface só para rede interna, sem gateway
+  # DHCP com DNS fixo
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+        dhcp4-overrides:
+          use-dns: false
+        nameservers:
+          addresses:
+            - 1.1.1.1
+            - 8.8.8.8
 
-# BONDING (failover / balanceamento de carga):
-network:
-  version: 2
-  bonds:
-    bond0:
-      interfaces: [ens33, ens38]
-      addresses: [192.168.1.100/24]
-      routes:
-        - to: default
-          via: 192.168.1.1
-      parameters:
-        mode: active-backup     # failover
-        # mode: 802.3ad        # LACP (bonding ativo-ativo)
-        primary: ens33
-      nameservers:
-        addresses: [8.8.8.8]`} />
+  # Múltiplas interfaces
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+      enp0s8:
+        addresses:
+          - 10.0.0.100/24`}
+        />
 
-      <h2>4. Diagnóstico de Rede</h2>
-      <CodeBlock title="Comandos de diagnóstico pós-configuração" code={`# Ver interfaces e IPs:
-ip addr show           # ou: ip a
-ip link show           # Ver estado das interfaces (UP/DOWN)
+        <h2>4. Configurar Wi-Fi</h2>
+        <CodeBlock
+          title="Conectar a redes Wi-Fi via Netplan"
+          code={`# Wi-Fi com WPA2 (mais comum)
+  network:
+    version: 2
+    renderer: NetworkManager
+    wifis:
+      wlp2s0:
+        dhcp4: true
+        access-points:
+          "Nome-da-Rede":
+            password: "SenhaDoWiFi"
 
-# Ver rotas:
-ip route show          # ou: ip r
-ip route get 8.8.8.8   # Ver qual rota usa para chegar ao IP
+  # Wi-Fi com IP fixo
+  network:
+    version: 2
+    renderer: NetworkManager
+    wifis:
+      wlp2s0:
+        dhcp4: false
+        addresses:
+          - 192.168.1.50/24
+        routes:
+          - to: default
+            via: 192.168.1.1
+        nameservers:
+          addresses: [8.8.8.8, 1.1.1.1]
+        access-points:
+          "MinhaRede":
+            password: "SenhaSegura"
 
-# Testar conectividade:
-ping -c 4 google.com
-ping -c 4 8.8.8.8
+  # Proteger o arquivo (contém senha Wi-Fi!)
+  sudo chmod 600 /etc/netplan/*.yaml
 
-# Testar resolução DNS:
-nslookup google.com
-dig google.com
+  # Múltiplas redes (prioridade)
+  network:
+    version: 2
+    wifis:
+      wlp2s0:
+        dhcp4: true
+        access-points:
+          "Casa":
+            password: "senha1"
+          "Trabalho":
+            password: "senha2"
 
-# Ver configurações do NetworkManager:
-nmcli device show
-nmcli connection show
+  sudo netplan apply`}
+        />
 
-# Reiniciar networking:
-sudo systemctl restart systemd-networkd
-sudo systemctl restart NetworkManager`} />
-    </PageContainer>
-  );
-}
+        <h2>5. Bridges, Bonds e VLANs</h2>
+        <CodeBlock
+          title="Configurações avançadas de rede"
+          code={`# === BRIDGE (para KVM, containers) ===
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: false
+    bridges:
+      br0:
+        interfaces: [enp0s3]
+        dhcp4: true
+        # Ou IP fixo:
+        # addresses: [192.168.1.100/24]
+        # routes:
+        #   - to: default
+        #     via: 192.168.1.1
+
+  # === BOND (agregação de links — redundância) ===
+  network:
+    version: 2
+    ethernets:
+      enp0s3: {}
+      enp0s8: {}
+    bonds:
+      bond0:
+        interfaces: [enp0s3, enp0s8]
+        addresses: [192.168.1.100/24]
+        routes:
+          - to: default
+            via: 192.168.1.1
+        parameters:
+          mode: 802.3ad       # LACP
+          # Modos: balance-rr, active-backup, 802.3ad, balance-tlb
+
+  # === VLAN ===
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+    vlans:
+      vlan100:
+        id: 100
+        link: enp0s3
+        addresses: [10.100.0.10/24]
+
+  sudo netplan apply`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com Netplan"
+          code={`# Erro de YAML (indentação)
+  # YAML é sensível a espaços! Use 2 espaços, NUNCA tabs
+  # Validar antes de aplicar:
+  sudo netplan generate    # Verifica sintaxe
+
+  # Testar sem risco (reverte em 120s)
+  sudo netplan try
+
+  # Perdi acesso ao servidor após mudar IP
+  # Se usou 'netplan try': espere 120s, reverte automaticamente
+  # Se usou 'netplan apply': acesse via console do provedor
+
+  # Rede não funciona após netplan apply
+  # Verificar logs:
+  journalctl -u systemd-networkd -f
+  # Ou:
+  journalctl -u NetworkManager -f
+
+  # Interface não recebe IP via DHCP
+  sudo dhclient enp0s3    # Forçar DHCP manualmente
+  # Verificar se o cabo está conectado:
+  ip link show enp0s3     # UP = conectado
+
+  # Voltar para configuração padrão DHCP
+  sudo tee /etc/netplan/01-netcfg.yaml > /dev/null << 'EOF'
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+  EOF
+  sudo netplan apply
+
+  # DNS não funciona
+  resolvectl status
+  # Verificar nameservers no netplan`}
+        />
+
+        <AlertBox type="warning" title="Cuidado ao configurar rede em servidores remotos">
+          Se você está configurando um servidor remoto via SSH, sempre use <code>netplan try</code>
+          ao invés de <code>netplan apply</code>. Se a configuração estiver errada, o
+          <code>netplan try</code> reverte automaticamente após 120 segundos, salvando você
+          de ficar bloqueado fora do servidor.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
