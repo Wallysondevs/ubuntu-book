@@ -1,15 +1,23 @@
 import { Link } from "wouter";
-import { Terminal, HardDrive, BookOpen, Shield, Cpu, ChevronRight, Package } from "lucide-react";
+import { Terminal, HardDrive, BookOpen, Shield, Cpu, ChevronRight, Package, Settings, Network, Server, Globe, Code2, Cloud, Monitor } from "lucide-react";
 import { motion } from "framer-motion";
 
 const CATEGORIES = [
-  { title: "Fundamentos", desc: "História, filosofia e instalação do Ubuntu", icon: BookOpen, path: "/historia", color: "text-primary", bg: "bg-primary/10" },
-  { title: "Gerenciamento", desc: "APT, Snap, Flatpak e atualizações", icon: Package, path: "/apt", color: "text-secondary", bg: "bg-secondary/10" },
-  { title: "Sistema", desc: "FHS, processos e usuários", icon: Cpu, path: "/sistema-arquivos", color: "text-blue-500", bg: "bg-blue-500/10" },
-  { title: "Armazenamento", desc: "Discos, partições e formatação", icon: HardDrive, path: "/disco", color: "text-yellow-500", bg: "bg-yellow-500/10" },
-  { title: "Redes & SSH", desc: "Rede, SSH, firewall e conectividade", icon: Terminal, path: "/ssh", color: "text-green-500", bg: "bg-green-500/10" },
-  { title: "Segurança", desc: "UFW, fail2ban, AppArmor e hardening", icon: Shield, path: "/seguranca", color: "text-red-500", bg: "bg-red-500/10" },
-];
+    { title: "Fundamentos", desc: "História, filosofia e instalação do Ubuntu", icon: BookOpen, path: "/historia", color: "text-primary", bg: "bg-primary/10" },
+    { title: "Gerenciamento de Pacotes", desc: "APT, Snap, Flatpak, dpkg e PPAs", icon: Package, path: "/apt", color: "text-secondary", bg: "bg-secondary/10" },
+    { title: "Sistema de Arquivos", desc: "FHS, navegação, permissões, discos e LVM", icon: HardDrive, path: "/sistema-arquivos", color: "text-blue-500", bg: "bg-blue-500/10" },
+    { title: "Kernel & Boot", desc: "Kernel Linux, GRUB2 e hardware", icon: Cpu, path: "/kernel", color: "text-yellow-500", bg: "bg-yellow-500/10" },
+    { title: "Administração", desc: "Usuários, processos, systemd e cron", icon: Settings, path: "/usuarios", color: "text-purple-500", bg: "bg-purple-500/10" },
+    { title: "Terminal & Shell", desc: "Bash, variáveis, aliases e scripts", icon: Terminal, path: "/shell-bash", color: "text-green-500", bg: "bg-green-500/10" },
+    { title: "Redes & SSH", desc: "Rede, SSH, Netplan, DNS e VPN", icon: Network, path: "/ssh", color: "text-cyan-500", bg: "bg-cyan-500/10" },
+    { title: "Containers", desc: "Docker, Docker Compose e KVM", icon: Server, path: "/docker", color: "text-indigo-500", bg: "bg-indigo-500/10" },
+    { title: "Servidores Web", desc: "Nginx, Apache e PHP (LAMP/LEMP)", icon: Globe, path: "/nginx", color: "text-teal-500", bg: "bg-teal-500/10" },
+    { title: "Bancos de Dados", desc: "MySQL, MariaDB e PostgreSQL", icon: HardDrive, path: "/mysql", color: "text-amber-500", bg: "bg-amber-500/10" },
+    { title: "Desenvolvimento", desc: "Python, Node.js, Java, Git, VS Code e Vim", icon: Code2, path: "/python", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+    { title: "Segurança", desc: "UFW, AppArmor, Fail2Ban, LUKS e GPG", icon: Shield, path: "/seguranca", color: "text-red-500", bg: "bg-red-500/10" },
+    { title: "Backup & Cloud", desc: "rsync, Timeshift, Cloud-Init e Ansible", icon: Cloud, path: "/backup", color: "text-sky-500", bg: "bg-sky-500/10" },
+    { title: "Desktop & Multimídia", desc: "GNOME Extensions, KDE, gaming e Wine", icon: Monitor, path: "/gnome-extensions", color: "text-pink-500", bg: "bg-pink-500/10" },
+  ];
 
 export default function Home() {
   return (
@@ -66,8 +74,8 @@ export default function Home() {
               <div className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Comandos Explicados</div>
             </div>
             <div className="pt-4 md:pt-0">
-              <div className="text-4xl font-black text-foreground mb-2">22</div>
-              <div className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Tópicos e Categorias</div>
+              <div className="text-4xl font-black text-foreground mb-2">79</div>
+              <div className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Páginas de Conteúdo</div>
             </div>
             <div className="pt-4 md:pt-0">
               <div className="text-4xl font-black text-primary mb-2">100%</div>
