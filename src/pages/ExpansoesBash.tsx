@@ -1,116 +1,278 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function ExpansoesBash() {
-  return (
-    <PageContainer
-      title="Expansões do Bash"
-      subtitle="Domine as expansões de variáveis, globbing, brace expansion, aritmética e substituição de comandos."
-      difficulty="avancado"
-      timeToRead="20 min"
-    >
-      <h2>1. Expansão de Variáveis</h2>
-      <CodeBlock title="Manipulação de strings com variáveis" code={`# Básico:
-NOME="Ubuntu Linux"
-echo \${NOME}           # Ubuntu Linux
-echo \${#NOME}          # 12 (comprimento)
+  export default function ExpansoesBash() {
+    return (
+      <PageContainer
+        title="Expansões do Bash"
+        subtitle="Guia completo de expansões do shell Bash: variáveis, chaves, til, aritmética, command substitution, globbing e manipulação de strings."
+        difficulty="intermediario"
+        timeToRead="25 min"
+      >
+        <p>
+          As <strong>expansões do Bash</strong> são mecanismos que transformam o texto que você
+          digita antes de o comando ser executado. Dominar as expansões permite escrever comandos
+          mais curtos, poderosos e elegantes — desde renomear dezenas de arquivos em uma linha
+          até fazer cálculos e manipular strings diretamente no terminal.
+        </p>
 
-# Valor padrão se variável vazia:
-echo \${VAR:-"padrão"}  # Se VAR vazia, usa "padrão"
-echo \${VAR:="padrão"}  # Se VAR vazia, DEFINE para "padrão"
+        <h2>1. Expansão de Chaves (Brace Expansion)</h2>
+        <CodeBlock
+          title="Gerar sequências e combinações com {}"
+          code={`# Expansão de listas
+  echo {a,b,c}
+  # Saída: a b c
 
-# Substring:
-TEXTO="Hello World"
-echo \${TEXTO:0:5}      # Hello (posição 0, 5 chars)
-echo \${TEXTO:6}        # World (do caractere 6 em diante)
+  echo arquivo.{txt,pdf,csv}
+  # Saída: arquivo.txt arquivo.pdf arquivo.csv
 
-# Substituição:
-echo \${NOME/Linux/OS}  # Ubuntu OS (substituir primeira)
-echo \${NOME//i/I}      # UbUntu LInux (substituir todas)
+  # Criar múltiplos arquivos de uma vez
+  touch arquivo{1,2,3,4,5}.txt
+  # Cria: arquivo1.txt arquivo2.txt arquivo3.txt arquivo4.txt arquivo5.txt
 
-# Maiúsculas/minúsculas (Bash 4+):
-echo \${NOME^^}         # UBUNTU LINUX
-echo \${NOME,,}         # ubuntu linux
+  # Criar estrutura de diretórios
+  mkdir -p projeto/{src,tests,docs,config}
+  # Cria: projeto/src, projeto/tests, projeto/docs, projeto/config
 
-# Remover prefixo/sufixo:
-ARQUIVO="documento.pdf"
-echo \${ARQUIVO%.pdf}   # documento (remove .pdf do final)
-echo \${ARQUIVO#*/}     # (remove até primeira /)
+  # Expansão de sequência (ranges)
+  echo {1..10}
+  # Saída: 1 2 3 4 5 6 7 8 9 10
 
-CAMINHO="/home/user/arquivo.txt"
-echo \${CAMINHO##*/}    # arquivo.txt (apenas o nome do arquivo)
-echo \${CAMINHO%/*}     # /home/user (apenas o diretório)`} />
+  echo {a..z}
+  # Saída: a b c d ... x y z
 
-      <h2>2. Brace Expansion</h2>
-      <CodeBlock title="Criar múltiplos itens com {}" code={`# Criar múltiplos diretórios:
-mkdir -p projeto/{src,tests,docs,dist}
-# Cria: projeto/src, projeto/tests, projeto/docs, projeto/dist
+  echo {A..Z}
+  # Saída: A B C D ... X Y Z
 
-# Criar arquivos:
-touch arquivo_{1,2,3}.txt      # arquivo_1.txt, arquivo_2.txt, arquivo_3.txt
+  echo {01..12}
+  # Saída: 01 02 03 04 05 06 07 08 09 10 11 12 (com zero à esquerda!)
 
-# Sequências numéricas:
-echo {1..10}               # 1 2 3 4 5 6 7 8 9 10
-echo {1..10..2}            # 1 3 5 7 9 (step 2)
-echo {10..1}               # 10 9 8 ... 1 (reverso)
+  # Sequência com passo
+  echo {0..100..10}
+  # Saída: 0 10 20 30 40 50 60 70 80 90 100
 
-# Sequências de letras:
-echo {a..z}                # a b c d ... z
-echo {A..Z}                # A B C ... Z
+  echo {a..z..2}
+  # Saída: a c e g i k m o q s u w y
 
-# Combinações:
-echo {web,api,db}-{dev,prod}
-# web-dev web-prod api-dev api-prod db-dev db-prod
+  # Combinações aninhadas
+  echo {A,B}{1,2,3}
+  # Saída: A1 A2 A3 B1 B2 B3
 
-# Backup de arquivo com brace:
-cp arquivo.conf{,.bak}     # arquivo.conf e arquivo.conf.bak`} />
+  # Usos práticos:
+  # Backup de arquivo
+  cp config.yaml{,.bak}
+  # Equivale a: cp config.yaml config.yaml.bak
 
-      <h2>3. Globbing — Padrões de Arquivo</h2>
-      <CodeBlock title="Wildcards e padrões de arquivo" code={`# Wildcards básicos:
-ls *.txt           # Todos os .txt no diretório atual
-ls *.{txt,pdf}     # .txt e .pdf
-ls arquivo?.txt    # arquivo com um caractere antes de .txt
-ls arquivo[123].txt  # arquivo1.txt, arquivo2.txt ou arquivo3.txt
-ls arquivo[!0-9].txt # arquivo seguido de não-número
+  # Renomear extensão
+  mv arquivo.{txt,md}
+  # Equivale a: mv arquivo.txt arquivo.md
 
-# Globstar (requer: shopt -s globstar):
-shopt -s globstar
-ls **/*.py         # Todos os .py recursivamente
+  # Criar meses do ano
+  mkdir {01..12}-2024`}
+        />
 
-# Nullglob (não mostra erro se não encontrar):
-shopt -s nullglob
+        <h2>2. Expansão de Variáveis</h2>
+        <CodeBlock
+          title="Manipulação avançada de variáveis"
+          code={`# Expansão básica
+  nome="João"
+  echo $nome          # João
+  echo \${nome}        # João (forma segura com delimitador)
 
-# Extglob — padrões estendidos:
-shopt -s extglob
-ls !(*.txt)        # Tudo EXCETO .txt
-ls +(*.jpg|*.png)  # Arquivos .jpg OU .png`} />
+  # Valor padrão (se variável não existir)
+  echo \${EDITOR:-vim}           # Usa "vim" se EDITOR não estiver definida
+  echo \${DB_PORT:-5432}         # Usa "5432" se DB_PORT não existir
 
-      <h2>4. Aritmética e Substituição</h2>
-      <CodeBlock title="Aritmética e substituição de comandos" code={`# ARITMÉTICA com \$(( )):
-echo \$((2 + 3))        # 5
-echo \$((10 * 5))       # 50
-echo \$((10 / 3))       # 3 (inteiro)
-echo \$((10 % 3))       # 1 (resto)
+  # Atribuir valor padrão
+  echo \${EDITOR:=vim}           # Define EDITOR como "vim" se não existir
 
-# Variáveis em aritmética:
-X=5
-echo \$((X + 10))       # 15
-((X++))                   # X = X + 1
-echo \$X                 # 6
+  # Erro se variável não existir
+  \${API_KEY:?Erro: API_KEY não definida}
 
-# SUBSTITUIÇÃO DE COMANDO com \$():
-DATA=\$(date +%Y-%m-%d)
-echo "Hoje: \$DATA"
+  # Comprimento da string
+  texto="Ubuntu Linux"
+  echo \${#texto}                # 12
 
-ARQUIVOS=\$(ls -1 | wc -l)
-echo "Arquivos: \$ARQUIVOS"
+  # Substring
+  echo \${texto:0:6}             # Ubuntu (posição 0, 6 caracteres)
+  echo \${texto:7}               # Linux (da posição 7 até o final)
+  echo \${texto: -5}             # Linux (últimos 5, note o espaço!)
 
-# Aninhar substituições:
-echo "Usuário root tem UID: \$(id -u root)"
+  # Substituição de padrão
+  arquivo="foto.jpg"
+  echo \${arquivo/.jpg/.png}     # foto.png (substitui primeira ocorrência)
+  echo \${arquivo//./_}          # Substitui TODAS as ocorrências
 
-# Process substitution com <():
-diff <(sort arquivo1.txt) <(sort arquivo2.txt)  # Comparar saídas`} />
-    </PageContainer>
-  );
-}
+  # Remoção de prefixo
+  caminho="/home/user/documentos/arquivo.txt"
+  echo \${caminho##*/}           # arquivo.txt (remove tudo até último /)
+  echo \${caminho#*/}            # home/user/documentos/arquivo.txt (remove até primeiro /)
+
+  # Remoção de sufixo
+  echo \${caminho%/*}            # /home/user/documentos (remove a partir do último /)
+  echo \${caminho%%/*}           # (vazio - remove a partir do primeiro /)
+  echo \${arquivo%.*}            # foto (remove extensão)
+  echo \${arquivo##*.}           # jpg (pega apenas a extensão)
+
+  # Maiúsculas e minúsculas
+  texto="hello world"
+  echo \${texto^}                # Hello world (primeira letra maiúscula)
+  echo \${texto^^}               # HELLO WORLD (tudo maiúscula)
+  texto="HELLO"
+  echo \${texto,}                # hELLO (primeira letra minúscula)
+  echo \${texto,,}               # hello (tudo minúscula)`}
+        />
+
+        <h2>3. Command Substitution</h2>
+        <CodeBlock
+          title="Usar saída de comandos como valores"
+          code={`# Sintaxe: $(comando) ou \`comando\`
+  # $(comando) é preferível (mais legível e aninhável)
+
+  # Data em nome de arquivo
+  backup="backup-$(date +%Y%m%d).tar.gz"
+  echo $backup
+  # Saída: backup-20240715.tar.gz
+
+  # Contar arquivos
+  echo "Existem $(ls | wc -l) arquivos neste diretório"
+
+  # Usar em variáveis
+  IP=$(hostname -I | awk '{print $1}')
+  echo "Meu IP: $IP"
+
+  # Aninhar substituições
+  echo "Kernel: $(uname -r) em $(hostname)"
+
+  # Usar em condições
+  if [ $(whoami) = "root" ]; then
+    echo "Você é root!"
+  fi
+
+  # Usar em loops
+  for user in $(cut -d: -f1 /etc/passwd | head -5); do
+    echo "Usuário: $user"
+  done
+
+  # Process substitution <() — tratar saída como arquivo
+  diff <(ls dir1) <(ls dir2)
+  # Compara o conteúdo de dois diretórios
+
+  # Aritimética com $(())
+  echo $((2 + 3))       # 5
+  echo $((10 * 5))      # 50
+  echo $((100 / 3))     # 33 (inteiro)
+  echo $((2 ** 10))     # 1024 (potência)
+  echo $((15 % 4))      # 3 (módulo)
+
+  # Incremento
+  i=0
+  echo $((i++))         # 0 (retorna e incrementa)
+  echo $((++i))         # 2 (incrementa e retorna)`}
+        />
+
+        <h2>4. Globbing (Expansão de Nomes de Arquivo)</h2>
+        <CodeBlock
+          title="Padrões para selecionar arquivos"
+          code={`# * = qualquer sequência de caracteres (exceto /)
+  ls *.txt              # Todos os .txt
+  ls foto*              # Tudo que começa com "foto"
+  ls *.{jpg,png,gif}    # Todos os JPG, PNG e GIF
+
+  # ? = exatamente um caractere
+  ls arquivo?.txt       # arquivo1.txt, arquivoA.txt, etc.
+  ls ???.txt            # Nomes de 3 letras com extensão .txt
+
+  # [] = um caractere do conjunto
+  ls arquivo[123].txt   # arquivo1.txt, arquivo2.txt, arquivo3.txt
+  ls arquivo[a-z].txt   # arquivoa.txt até arquivoz.txt
+  ls arquivo[!0-9].txt  # NÃO numérico (! = negação)
+  ls [A-Z]*.txt         # Começam com maiúscula
+
+  # Globbing estendido (habilitar com shopt -s extglob)
+  shopt -s extglob
+
+  # ?(padrão) = 0 ou 1 ocorrência
+  ls ?(foto)*.jpg       # Arquivos que opcionalmente começam com "foto"
+
+  # *(padrão) = 0 ou mais
+  ls *(teste).txt       # teste.txt, testeteste.txt, etc.
+
+  # +(padrão) = 1 ou mais
+  ls +(foto).jpg        # foto.jpg, fotofoto.jpg, etc.
+
+  # @(padrão) = exatamente 1
+  ls @(foto|imagem).jpg # foto.jpg OU imagem.jpg
+
+  # !(padrão) = tudo exceto
+  ls !(*.txt)           # Todos os arquivos que NÃO são .txt
+  rm !(importante.*)    # Remove tudo EXCETO arquivos "importante.*"
+
+  # globstar (** = recursivo)
+  shopt -s globstar
+  ls **/*.py            # Todos os .py em qualquer subdiretório
+  ls **/*.{js,ts}       # Todos os JS e TS recursivamente`}
+        />
+
+        <h2>5. Expansão do Til (~)</h2>
+        <CodeBlock
+          title="Atalhos com ~"
+          code={`# ~ = diretório home do usuário atual
+  echo ~
+  # Saída: /home/usuario
+
+  cd ~                  # Ir para home
+  ls ~/documentos       # Listar documentos no home
+
+  # ~usuario = home de outro usuário
+  echo ~root            # /root
+  echo ~www-data        # /var/www
+
+  # ~+ = diretório atual (equivale a $PWD)
+  echo ~+
+
+  # ~- = diretório anterior (equivale a $OLDPWD)
+  echo ~-
+  cd ~-                 # Voltar ao diretório anterior (mesmo que cd -)`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com expansões"
+          code={`# Expansão não funciona dentro de aspas simples
+  echo '$HOME'          # Saída literal: $HOME
+  echo "$HOME"          # Saída expandida: /home/usuario
+  # Regra: aspas simples = literal, aspas duplas = expande variáveis
+
+  # Glob não encontra arquivos (retorna o padrão literal)
+  ls *.xyz              # Se não houver .xyz, mostra erro
+  # Solução: usar nullglob
+  shopt -s nullglob     # Padrão sem match retorna vazio
+  shopt -s failglob     # Padrão sem match retorna erro
+
+  # Espaços em nomes de arquivo
+  # ERRADO: for f in $(ls); do   ← quebra em espaços
+  # CERTO:
+  for f in *; do echo "$f"; done
+  # Sempre use aspas duplas ao redor de variáveis!
+
+  # Prevenir expansão (escapar)
+  echo \$HOME            # Saída: $HOME
+  echo \\*               # Saída: * (literal)
+
+  # Debug: ver como o Bash expande
+  set -x                # Ativa modo debug (mostra expansões)
+  echo {1..5}
+  set +x                # Desativa modo debug`}
+        />
+
+        <AlertBox type="info" title="Ordem das expansões no Bash">
+          O Bash processa as expansões nesta ordem: 1) Brace expansion, 2) Tilde expansion,
+          3) Parameter/variable expansion, 4) Command substitution, 5) Arithmetic expansion,
+          6) Word splitting, 7) Pathname expansion (globbing). Entender essa ordem ajuda a
+          prever o comportamento de comandos complexos.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
