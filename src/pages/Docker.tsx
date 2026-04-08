@@ -1,198 +1,283 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Docker() {
-  return (
-    <PageContainer
-      title="Docker — Containers no Ubuntu"
-      subtitle="Guia completo do Docker: instalação, imagens, containers, volumes, redes e boas práticas."
-      difficulty="intermediario"
-      timeToRead="30 min"
-    >
-      <p>
-        <strong>Docker</strong> permite empacotar aplicações e suas dependências em
-        containers isolados, garantindo que o app funcione da mesma forma em qualquer
-        ambiente — desenvolvimento, staging ou produção.
-      </p>
+  export default function Docker() {
+    return (
+      <PageContainer
+        title="Docker — Containers no Ubuntu"
+        subtitle="Guia completo do Docker: instalar, imagens, containers, volumes, networking, Dockerfile, registry e boas práticas."
+        difficulty="intermediario"
+        timeToRead="35 min"
+      >
+        <p>
+          O <strong>Docker</strong> permite empacotar aplicações com todas as suas
+          dependências em <strong>containers</strong> — ambientes isolados, leves e
+          portáveis. Um container Docker roda igual em qualquer lugar: no seu laptop,
+          no servidor, na nuvem.
+        </p>
 
-      <h2>1. Instalação do Docker no Ubuntu</h2>
-      <CodeBlock title="Instalação oficial do Docker Engine" code={`# Remover versões antigas:
-sudo apt remove docker docker-engine docker.io containerd runc
+        <h2>1. Instalação</h2>
+        <CodeBlock
+          title="Instalar Docker no Ubuntu"
+          code={`# Remover versões antigas
+  sudo apt remove -y docker docker-engine docker.io containerd runc
 
-# Instalar dependências:
-sudo apt update
-sudo apt install ca-certificates curl gnupg
+  # Instalar dependências
+  sudo apt update
+  sudo apt install -y ca-certificates curl gnupg
 
-# Adicionar chave GPG oficial do Docker:
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  # Adicionar repositório oficial do Docker
+  sudo install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
     sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+  sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-# Adicionar repositório:
-echo "deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  echo "deb [arch=$(dpkg --print-architecture) \
+    signed-by=/etc/apt/keyrings/docker.gpg] \
     https://download.docker.com/linux/ubuntu \
-    \$(. /etc/os-release && echo "\$VERSION_CODENAME") stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list
+    $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Instalar Docker:
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  # Instalar Docker
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Adicionar seu usuário ao grupo docker (sem sudo):
-sudo usermod -aG docker \$USER
-newgrp docker            # Aplicar sem logout
+  # Adicionar seu usuário ao grupo docker (evitar sudo)
+  sudo usermod -aG docker $USER
+  newgrp docker    # Aplicar sem logout
 
-# Verificar instalação:
-docker --version
-docker run hello-world`} />
+  # Verificar
+  docker --version
+  docker run hello-world`}
+        />
 
-      <h2>2. Comandos Essenciais — Containers</h2>
-      <CodeBlock title="Gerenciando containers Docker" code={`# Ver containers em execução:
-docker ps
-docker ps -a              # Todos (incluindo parados)
-docker ps -q              # Apenas IDs
+        <h2>2. Imagens e Containers</h2>
+        <CodeBlock
+          title="Gerenciar imagens e containers"
+          code={`# === IMAGENS ===
+  # Baixar imagem
+  docker pull ubuntu:24.04
+  docker pull nginx:alpine
+  docker pull postgres:16
 
-# Executar um container:
-docker run nginx                    # Executa e mostra output
-docker run -d nginx                 # Detached (background)
-docker run -d -p 8080:80 nginx      # Mapear porta host:container
-docker run -d -p 8080:80 --name meu-nginx nginx   # Com nome
+  # Listar imagens
+  docker images
 
-# Acessar terminal de um container em execução:
-docker exec -it nome-container bash
-docker exec -it nome-container sh   # Se não tiver bash
+  # Remover imagem
+  docker rmi nginx:alpine
+  docker image prune    # Remover imagens não usadas
 
-# Parar e remover containers:
-docker stop meu-nginx
-docker start meu-nginx
-docker restart meu-nginx
-docker rm meu-nginx                 # Remover container parado
-docker rm -f meu-nginx              # Forçar remoção (mesmo rodando)
+  # === CONTAINERS ===
+  # Rodar container
+  docker run ubuntu:24.04 echo "Olá!"
+  docker run -it ubuntu:24.04 bash    # Interativo com terminal
+  docker run -d nginx:alpine          # Background (detached)
+  docker run -d -p 8080:80 nginx:alpine  # Mapear porta
 
-# Ver logs do container:
-docker logs meu-nginx
-docker logs -f meu-nginx            # Seguir logs em tempo real
-docker logs --tail 50 meu-nginx     # Últimas 50 linhas
+  # Opções importantes:
+  # -d          = detached (background)
+  # -it         = interativo + terminal
+  # -p 8080:80  = porta host:container
+  # --name web  = nome do container
+  # --rm        = remover ao parar
+  # -e VAR=val  = variável de ambiente
+  # -v /host:/cont = montar volume
+  # --restart unless-stopped = reiniciar automaticamente
 
-# Inspecionar um container:
-docker inspect meu-nginx
-docker stats                        # Uso de recursos em tempo real
-docker top meu-nginx                # Processos dentro do container`} />
+  # Exemplo completo
+  docker run -d \
+    --name meu-nginx \
+    -p 80:80 \
+    -v ./site:/usr/share/nginx/html:ro \
+    --restart unless-stopped \
+    nginx:alpine
 
-      <h2>3. Imagens Docker</h2>
-      <CodeBlock title="Gerenciando imagens" code={`# Buscar imagens no Docker Hub:
-docker search nginx
-docker search ubuntu
+  # Listar containers
+  docker ps          # Rodando
+  docker ps -a       # Todos (incluindo parados)
 
-# Baixar imagem:
-docker pull nginx
-docker pull nginx:1.25              # Versão específica
-docker pull ubuntu:22.04
+  # Gerenciar containers
+  docker stop meu-nginx      # Parar
+  docker start meu-nginx     # Iniciar
+  docker restart meu-nginx   # Reiniciar
+  docker rm meu-nginx        # Remover (precisa estar parado)
+  docker rm -f meu-nginx     # Forçar remoção
 
-# Listar imagens locais:
-docker images
-docker image ls
+  # Executar comando em container rodando
+  docker exec -it meu-nginx bash
+  docker exec meu-nginx cat /etc/nginx/nginx.conf
 
-# Remover imagem:
-docker rmi nginx
-docker rmi nginx:1.25
+  # Logs
+  docker logs meu-nginx
+  docker logs -f meu-nginx    # Follow (tempo real)`}
+        />
 
-# Limpeza geral (containers parados, imagens não usadas):
-docker system prune                 # Remove tudo não usado
-docker system prune -a              # Remove TUDO incluindo imagens não usadas
-docker image prune                  # Apenas imagens dangling
+        <h2>3. Dockerfile</h2>
+        <CodeBlock
+          title="Criar imagens customizadas"
+          code={`# Dockerfile — receita para criar imagem
 
-# Ver uso de disco:
-docker system df`} />
+  # Exemplo: App Node.js
+  cat > Dockerfile << 'EOF'
+  FROM node:20-alpine
 
-      <h2>4. Volumes — Dados Persistentes</h2>
-      <AlertBox type="info">
-        Dados dentro de containers são perdidos ao removê-lo. Use volumes para persistência.
-      </AlertBox>
-      <CodeBlock title="Volumes para dados persistentes" code={`# Bind mount — pasta do host no container:
-docker run -d -v /host/pasta:/container/pasta nginx
-docker run -d -v /home/user/dados:/app/dados myapp
+  WORKDIR /app
 
-# Volume gerenciado pelo Docker (recomendado):
-docker volume create meu-volume
-docker run -d -v meu-volume:/app/dados myapp
+  COPY package*.json ./
+  RUN npm ci --only=production
 
-# Listar volumes:
-docker volume ls
+  COPY . .
 
-# Inspecionar volume:
-docker volume inspect meu-volume
+  EXPOSE 3000
 
-# Remover volume:
-docker volume rm meu-volume
-docker volume prune               # Remover todos os volumes não usados
+  USER node
 
-# Backup de volume:
-docker run --rm -v meu-volume:/dados -v \$(pwd):/backup ubuntu \
-    tar czf /backup/backup-\$(date +%Y%m%d).tar.gz -C /dados .`} />
+  CMD ["node", "server.js"]
+  EOF
 
-      <h2>5. Criando Imagens com Dockerfile</h2>
-      <CodeBlock title="Criando sua própria imagem Docker" code={`# Criar Dockerfile:
-cat > Dockerfile << 'EOF'
-# Imagem base
-FROM ubuntu:22.04
+  # Build da imagem
+  docker build -t meu-app:1.0 .
+  docker build -t meu-app:latest .
 
-# Metadados
-LABEL maintainer="voce@email.com"
+  # Multi-stage build (imagem menor)
+  cat > Dockerfile << 'EOF'
+  # Stage 1: Build
+  FROM node:20-alpine AS builder
+  WORKDIR /app
+  COPY package*.json ./
+  RUN npm ci
+  COPY . .
+  RUN npm run build
 
-# Evitar prompts interativos durante o build
-ENV DEBIAN_FRONTEND=noninteractive
+  # Stage 2: Produção
+  FROM node:20-alpine
+  WORKDIR /app
+  COPY --from=builder /app/dist ./dist
+  COPY --from=builder /app/node_modules ./node_modules
+  EXPOSE 3000
+  USER node
+  CMD ["node", "dist/server.js"]
+  EOF
 
-# Atualizar e instalar dependências
-RUN apt-get update && apt-get install -y \
-    nginx \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  docker build -t meu-app:prod .
 
-# Copiar arquivos
-COPY ./site /var/www/html
-COPY ./nginx.conf /etc/nginx/nginx.conf
+  # .dockerignore (não copiar para o container)
+  cat > .dockerignore << 'EOF'
+  node_modules
+  .git
+  .env
+  *.md
+  Dockerfile
+  docker-compose.yml
+  EOF`}
+        />
 
-# Expor porta
-EXPOSE 80
+        <h2>4. Volumes e Persistência</h2>
+        <CodeBlock
+          title="Persistir dados com volumes"
+          code={`# Containers são efêmeros — dados são perdidos ao remover!
+  # Use volumes para persistir:
 
-# Comando padrão ao iniciar o container
-CMD ["nginx", "-g", "daemon off;"]
-EOF
+  # Volume nomeado (gerenciado pelo Docker)
+  docker volume create meus-dados
+  docker run -d -v meus-dados:/var/lib/postgresql/data postgres:16
 
-# Construir imagem:
-docker build -t minha-imagem:1.0 .
-docker build -t minha-imagem:latest -f Dockerfile.prod .
+  # Bind mount (diretório do host)
+  docker run -d -v /home/user/site:/usr/share/nginx/html nginx
 
-# Ver histórico de layers:
-docker history minha-imagem:1.0
+  # Listar volumes
+  docker volume ls
 
-# Publicar no Docker Hub:
-docker login
-docker tag minha-imagem:1.0 usuario/minha-imagem:1.0
-docker push usuario/minha-imagem:1.0`} />
+  # Inspecionar volume
+  docker volume inspect meus-dados
 
-      <h2>6. Redes Docker</h2>
-      <CodeBlock title="Redes e comunicação entre containers" code={`# Listar redes:
-docker network ls
-# bridge  — padrão, containers isolados com NAT
-# host    — container usa rede do host diretamente
-# none    — sem rede
+  # Remover volume
+  docker volume rm meus-dados
+  docker volume prune    # Remover volumes não usados
 
-# Criar rede personalizada:
-docker network create minha-rede
+  # Backup de volume
+  docker run --rm -v meus-dados:/data -v $(pwd):/backup \
+    ubuntu tar czf /backup/dados-backup.tar.gz /data`}
+        />
 
-# Conectar containers à mesma rede:
-docker run -d --name app --network minha-rede minha-imagem
-docker run -d --name db --network minha-rede postgres
+        <h2>5. Networking</h2>
+        <CodeBlock
+          title="Redes Docker"
+          code={`# Listar redes
+  docker network ls
 
-# Containers na mesma rede podem se comunicar pelo nome:
-# Dentro do container 'app': ping db, curl http://db:5432
+  # Criar rede
+  docker network create minha-rede
 
-# Inspecionar rede:
-docker network inspect minha-rede`} />
-    </PageContainer>
-  );
-}
+  # Conectar containers à mesma rede
+  docker run -d --name app --network minha-rede meu-app
+  docker run -d --name db --network minha-rede postgres:16
+  # Dentro da rede, containers se comunicam pelo nome:
+  # app pode acessar db via: postgres://db:5432
+
+  # Inspecionar rede
+  docker network inspect minha-rede
+
+  # Remover rede
+  docker network rm minha-rede`}
+        />
+
+        <h2>6. Limpeza e Manutenção</h2>
+        <CodeBlock
+          title="Liberar espaço e manter o Docker limpo"
+          code={`# Ver uso de disco
+  docker system df
+
+  # Limpeza geral (containers parados, imagens não usadas, etc.)
+  docker system prune
+  docker system prune -a    # Incluindo imagens não usadas
+  docker system prune -a --volumes  # TUDO (cuidado!)
+
+  # Limpar individualmente
+  docker container prune    # Containers parados
+  docker image prune -a     # Imagens não usadas
+  docker volume prune       # Volumes não usados
+  docker network prune      # Redes não usadas`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com Docker"
+          code={`# "permission denied" ao usar docker
+  # Adicionar ao grupo docker:
+  sudo usermod -aG docker $USER
+  # Fazer logout/login ou:
+  newgrp docker
+
+  # Container reinicia em loop
+  docker logs nome-container    # Ver erro
+
+  # Porta já em uso
+  sudo ss -tlnp | grep :80
+  # Mudar a porta: -p 8080:80
+
+  # Disco cheio
+  docker system df              # Ver uso
+  docker system prune -a        # Limpar
+
+  # Container não consegue acessar a internet
+  # Verificar DNS:
+  docker run --rm alpine ping -c 1 google.com
+  # Se falhar, configurar DNS:
+  echo '{"dns": ["8.8.8.8", "1.1.1.1"]}' | sudo tee /etc/docker/daemon.json
+  sudo systemctl restart docker
+
+  # Imagem não encontrada
+  docker pull nome-da-imagem:tag
+  # Verificar no Docker Hub: hub.docker.com`}
+        />
+
+        <AlertBox type="info" title="Docker vs Máquina Virtual">
+          Containers Docker são mais leves e rápidos que VMs — compartilham o kernel do host
+          e iniciam em segundos. Use Docker para aplicações. Use VMs quando precisar de um
+          sistema operacional completamente diferente ou isolamento total de hardware.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
