@@ -1,245 +1,190 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Compressao() {
-  return (
-    <PageContainer
-      title="Compressão e Arquivamento"
-      subtitle="tar, gzip, bzip2, xz, zip, zstd — comprimindo, descomprimindo e gerenciando arquivos no Ubuntu."
-      difficulty="iniciante"
-      timeToRead="15 min"
-    >
-      <p>
-        Compressão é essencial para economizar espaço em disco, transferir arquivos pela
-        rede e criar backups. O Linux oferece várias ferramentas de compressão com
-        diferentes balanços entre velocidade e taxa de compressão.
-      </p>
+  export default function Compressao() {
+    return (
+      <PageContainer
+        title="Compressão e Arquivamento"
+        subtitle="Guia completo de compressão no Ubuntu: tar, gzip, bzip2, xz, zip, 7z, zstd — criar, extrair, listar e comparar formatos."
+        difficulty="iniciante"
+        timeToRead="20 min"
+      >
+        <p>
+          A <strong>compressão</strong> reduz o tamanho de arquivos para economizar espaço
+          e transferir mais rápido. No Linux, é comum separar <strong>arquivamento</strong>
+          (juntar vários arquivos em um — <code>tar</code>) da <strong>compressão</strong>
+          (reduzir tamanho — <code>gzip</code>, <code>xz</code>), mas o <code>tar</code>
+          pode fazer ambos em um comando.
+        </p>
 
-      <h2>tar — O Canivete Suíço do Arquivamento</h2>
-      <p>
-        O <code>tar</code> (Tape ARchive) agrupa múltiplos arquivos em um único arquivo
-        <code>.tar</code>. Combinado com um algoritmo de compressão, cria os famosos
-        <code>.tar.gz</code>, <code>.tar.bz2</code> e <code>.tar.xz</code>.
-      </p>
-      <CodeBlock
-        title="tar: criar e extrair arquivos"
-        code={`# === CRIAR ARQUIVOS ===
+        <h2>1. tar (Tape Archive)</h2>
+        <CodeBlock
+          title="O canivete suíço do arquivamento"
+          code={`# tar combina múltiplos arquivos em um (.tar)
+  # e pode comprimir com gzip, bzip2 ou xz
 
-# Criar arquivo .tar (sem compressão, apenas agrupar)
-tar -cvf arquivo.tar pasta/
+  # === CRIAR ARQUIVOS ===
+  # tar.gz (gzip — mais comum, rápido)
+  tar czf backup.tar.gz pasta/
+  tar czf backup.tar.gz arquivo1 arquivo2 pasta/
 
-# Criar .tar.gz (com compressão gzip — o mais comum)
-tar -czvf arquivo.tar.gz pasta/
+  # tar.bz2 (bzip2 — melhor compressão, mais lento)
+  tar cjf backup.tar.bz2 pasta/
 
-# Criar .tar.bz2 (compressão bzip2 — melhor compressão, mais lento)
-tar -cjvf arquivo.tar.bz2 pasta/
+  # tar.xz (xz — melhor compressão, mais lento ainda)
+  tar cJf backup.tar.xz pasta/
 
-# Criar .tar.xz (compressão xz — máxima compressão)
-tar -cJvf arquivo.tar.xz pasta/
+  # tar.zst (zstd — rápido E boa compressão, moderno)
+  tar --zstd -cf backup.tar.zst pasta/
 
-# Criar com zstd (moderno, rápido e boa compressão)
-tar -czvf arquivo.tar.zst --use-compress-program=zstd pasta/
+  # Flags essenciais:
+  # c = create (criar)
+  # x = extract (extrair)
+  # t = list (listar conteúdo)
+  # z = gzip
+  # j = bzip2
+  # J = xz
+  # f = file (nome do arquivo, sempre por último!)
+  # v = verbose (mostrar progresso)
 
-# === FLAGS DO TAR ===
-# -c = create (criar)
-# -x = extract (extrair)
-# -v = verbose (mostrar o que está sendo processado)
-# -f = file (nome do arquivo tar)
-# -z = gzip
-# -j = bzip2
-# -J = xz
+  # === EXTRAIR ===
+  tar xzf backup.tar.gz                    # Extrair no diretório atual
+  tar xzf backup.tar.gz -C /destino/       # Extrair em diretório específico
+  tar xjf backup.tar.bz2
+  tar xJf backup.tar.xz
 
-# === EXTRAIR ARQUIVOS ===
+  # Extrair arquivo específico
+  tar xzf backup.tar.gz pasta/arquivo.txt
 
-# Extrair arquivo .tar (sem compressão)
-tar -xvf arquivo.tar
+  # === LISTAR CONTEÚDO (sem extrair) ===
+  tar tzf backup.tar.gz
+  tar tjf backup.tar.bz2
+  tar tJf backup.tar.xz
 
-# Extrair arquivo .tar.gz
-tar -xzvf arquivo.tar.gz
+  # === EXCLUIR ARQUIVOS ===
+  tar czf backup.tar.gz pasta/ --exclude="*.log" --exclude="node_modules"
+  tar czf backup.tar.gz pasta/ --exclude-from=exclusoes.txt
 
-# Extrair arquivo .tar.bz2
-tar -xjvf arquivo.tar.bz2
+  # === COM PROGRESSO ===
+  tar czf backup.tar.gz pasta/ -v          # Lista cada arquivo
+  # Com barra de progresso:
+  tar cf - pasta/ | pv | gzip > backup.tar.gz`}
+        />
 
-# Extrair arquivo .tar.xz
-tar -xJvf arquivo.tar.xz
+        <h2>2. gzip, bzip2, xz</h2>
+        <CodeBlock
+          title="Comprimir arquivos individuais"
+          code={`# gzip (rápido, compressão boa)
+  gzip arquivo.txt           # Cria arquivo.txt.gz (remove original)
+  gzip -k arquivo.txt        # Manter original (-k = keep)
+  gzip -9 arquivo.txt        # Máxima compressão (1-9)
+  gunzip arquivo.txt.gz      # Descomprimir
+  zcat arquivo.txt.gz        # Ver conteúdo sem descomprimir
 
-# Extrair em diretório específico
-tar -xzvf arquivo.tar.gz -C /destino/
+  # bzip2 (mais lento, melhor compressão)
+  bzip2 arquivo.txt
+  bzip2 -k arquivo.txt
+  bunzip2 arquivo.txt.bz2
+  bzcat arquivo.txt.bz2
 
-# === VER CONTEÚDO SEM EXTRAIR ===
+  # xz (mais lento, melhor compressão de todos)
+  xz arquivo.txt
+  xz -k arquivo.txt
+  xz -9 arquivo.txt          # Máxima compressão
+  unxz arquivo.txt.xz
+  xzcat arquivo.txt.xz
 
-# Listar conteúdo de um .tar.gz
-tar -tzvf arquivo.tar.gz
+  # zstd (Zstandard — rápido E boa compressão)
+  sudo apt install -y zstd
+  zstd arquivo.txt
+  zstd -k arquivo.txt
+  zstd -19 arquivo.txt       # Máxima (1-19)
+  unzstd arquivo.txt.zst
+  zstdcat arquivo.txt.zst
 
-# === EXEMPLOS PRÁTICOS ===
+  # Comparação (arquivo de 100MB):
+  # gzip:  ~35MB, 2s
+  # bzip2: ~30MB, 8s
+  # xz:    ~25MB, 30s
+  # zstd:  ~32MB, 0.5s ← mais rápido!`}
+        />
 
-# Backup do diretório home:
-tar -czvf backup_home_\$(date +%Y%m%d).tar.gz /home/joao/
+        <h2>3. zip e 7z</h2>
+        <CodeBlock
+          title="Formatos compatíveis com Windows"
+          code={`# === ZIP (universal, compatível com Windows) ===
+  sudo apt install -y zip unzip
 
-# Extrair apenas um arquivo específico de dentro do tar:
-tar -xzvf backup.tar.gz home/joao/Documents/relatorio.pdf`}
-      />
+  # Criar
+  zip arquivo.zip arquivo.txt
+  zip -r backup.zip pasta/         # Recursivo (diretórios)
+  zip -r backup.zip pasta/ -x "*.log"  # Excluir padrão
+  zip -e secreto.zip arquivo.txt   # Com senha
 
-      <h2>gzip — Compressão Rápida</h2>
-      <CodeBlock
-        title="Comprimindo com gzip"
-        code={`# Comprimir um arquivo (substitui o original por .gz)
-gzip arquivo.txt
-# Resultado: arquivo.txt.gz (original é removido!)
+  # Extrair
+  unzip backup.zip
+  unzip backup.zip -d /destino/    # Em diretório específico
+  unzip -l backup.zip              # Listar conteúdo
+  unzip -o backup.zip              # Sobrescrever sem perguntar
 
-# Comprimir mantendo o original
-gzip -k arquivo.txt
-# Resultado: arquivo.txt.gz e arquivo.txt mantido
+  # === 7-Zip (melhor compressão) ===
+  sudo apt install -y p7zip-full
 
-# Descomprimir
-gzip -d arquivo.txt.gz
-# ou:
-gunzip arquivo.txt.gz
+  # Criar
+  7z a backup.7z pasta/
+  7z a -p backup.7z pasta/         # Com senha
+  7z a -mx=9 backup.7z pasta/     # Máxima compressão
 
-# Descomprimir mantendo o .gz
-gunzip -k arquivo.txt.gz
+  # Extrair
+  7z x backup.7z
+  7z x backup.7z -o/destino/
 
-# Ver estatísticas de compressão sem comprimir
-gzip -l arquivo.tar.gz
+  # Listar
+  7z l backup.7z
 
-# Nível de compressão (1=rápido, 9=máximo)
-gzip -9 arquivo.txt  # Máxima compressão
-gzip -1 arquivo.txt  # Mais rápido (menor compressão)
+  # === RAR (proprietário) ===
+  sudo apt install -y unrar
+  unrar x arquivo.rar              # Extrair
+  unrar l arquivo.rar              # Listar`}
+        />
 
-# Ler arquivo .gz sem descomprimir:
-zcat arquivo.txt.gz
-zless arquivo.txt.gz
-zgrep "erro" arquivo.txt.gz`}
-      />
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com compressão"
+          code={`# "tar: Removing leading '/' from member names"
+  # Normal! tar remove o / para segurança (caminhos relativos)
+  # Para manter caminhos absolutos (não recomendado):
+  tar czf backup.tar.gz -P /caminho/absoluto
 
-      <h2>bzip2 e xz — Melhor Compressão</h2>
-      <CodeBlock
-        title="bzip2 e xz para arquivos menores"
-        code={`# === BZIP2 ===
-# Comprimir (remove o original)
-bzip2 arquivo.txt
-# Resultado: arquivo.txt.bz2
+  # Arquivo corrompido
+  # Verificar integridade:
+  gzip -t arquivo.gz          # Testar gzip
+  tar tzf arquivo.tar.gz      # Testar tar.gz
+  7z t arquivo.7z             # Testar 7z
+  zip -T arquivo.zip          # Testar zip
 
-# Descomprimir
-bunzip2 arquivo.txt.bz2
+  # Arquivo muito grande para zip (>4GB)
+  # Use tar.gz, tar.xz ou 7z
 
-# Manter original:
-bzip2 -k arquivo.txt
+  # Dividir arquivo grande
+  split -b 1G backup.tar.gz backup.tar.gz.part-
+  # Juntar:
+  cat backup.tar.gz.part-* > backup.tar.gz
 
-# === XZ ===
-# Comprimir (melhor taxa de compressão, mais lento)
-xz arquivo.txt
-# Resultado: arquivo.txt.xz
+  # Compressão não reduz tamanho (arquivos já comprimidos)
+  # Vídeos, imagens e ZIPs já estão comprimidos
+  # tar sem compressão é melhor para agrupar esses arquivos:
+  tar cf backup.tar pasta-de-videos/`}
+        />
 
-# Descomprimir
-unxz arquivo.txt.xz
-xz -d arquivo.txt.xz
-
-# Manter original:
-xz -k arquivo.txt
-
-# === COMPARAÇÃO DE EFICIÊNCIA ===
-# Arquivo de 100MB:
-# gzip:  comprime em 2s  → 45MB (ratio 2.2x)
-# bzip2: comprime em 8s  → 40MB (ratio 2.5x)
-# xz:    comprime em 30s → 35MB (ratio 2.9x)
-# zstd:  comprime em 1s  → 42MB (ratio 2.4x) ← melhor custo-benefício`}
-      />
-
-      <h2>zip e unzip — Compatível com Windows</h2>
-      <CodeBlock
-        title="Criando arquivos zip"
-        code={`# Criar arquivo zip
-zip arquivo.zip arquivo1.txt arquivo2.txt
-
-# Criar zip de um diretório inteiro (recursivo)
-zip -r backup.zip pasta/
-
-# Proteger com senha
-zip -e -r privado.zip pasta-secreta/
-
-# Criar zip com máxima compressão (0-9)
-zip -9 -r arquivo.zip pasta/
-
-# Ver conteúdo de um zip sem extrair
-unzip -l arquivo.zip
-
-# Extrair arquivo zip
-unzip arquivo.zip
-
-# Extrair em diretório específico
-unzip arquivo.zip -d /destino/
-
-# Extrair arquivo específico do zip
-unzip arquivo.zip "pasta/arquivo-especifico.txt"
-
-# Extrair sem sobrescrever arquivos existentes
-unzip -n arquivo.zip
-
-# Instalar zip e unzip (se não estiver instalado)
-sudo apt install zip unzip`}
-      />
-
-      <h2>7zip — Alta Compressão</h2>
-      <CodeBlock
-        title="Usando 7zip no Ubuntu"
-        code={`# Instalar 7zip
-sudo apt install p7zip-full p7zip-rar
-
-# Criar arquivo 7z
-7z a arquivo.7z pasta/
-7z a -p arquivo.7z pasta/    # Com senha
-
-# Extrair
-7z x arquivo.7z
-
-# Extrair em diretório específico
-7z x arquivo.7z -o/destino/
-
-# Listar conteúdo
-7z l arquivo.7z
-
-# Testar integridade do arquivo
-7z t arquivo.7z
-
-# Criar arquivo com máxima compressão
-7z a -mx=9 arquivo.7z pasta/`}
-      />
-
-      <h2>Dicas Práticas de Compressão</h2>
-      <AlertBox type="info" title="Quando usar cada formato">
-        <ul className="mt-1 mb-0">
-          <li><strong>.tar.gz</strong>: Padrão Linux, compatível em todo lugar. Use para a maioria dos casos.</li>
-          <li><strong>.tar.xz</strong>: Quando o tamanho final importa muito (ex: releases de software). Mais lento.</li>
-          <li><strong>.tar.zst</strong>: Moderno, rápido e boa compressão. Cada vez mais popular (pacotes do Arch/Ubuntu 23+).</li>
-          <li><strong>.zip</strong>: Para compatibilidade com Windows e macOS.</li>
-          <li><strong>.7z</strong>: Máxima compressão, mas menos universal no Linux.</li>
-        </ul>
-      </AlertBox>
-
-      <CodeBlock
-        title="Script de backup com compressão"
-        code={`#!/bin/bash
-# Script de backup completo com compressão
-
-BACKUP_DIR="/mnt/backup"
-DATA=\$(date +%Y-%m-%d)
-ORIGEM="/home/joao"
-
-mkdir -p "\$BACKUP_DIR"
-
-echo "Iniciando backup de \$ORIGEM..."
-
-# Backup comprimido com progresso
-tar -czvf "\$BACKUP_DIR/home_\$DATA.tar.gz" \\
-    --exclude="\$ORIGEM/.cache" \\
-    --exclude="\$ORIGEM/.local/share/Trash" \\
-    "\$ORIGEM" 2>&1 | tee /tmp/backup.log
-
-echo "Backup concluído: \$BACKUP_DIR/home_\$DATA.tar.gz"
-du -sh "\$BACKUP_DIR/home_\$DATA.tar.gz"`}
-      />
-    </PageContainer>
-  );
-}
+        <AlertBox type="info" title="Qual formato usar?">
+          <strong>tar.gz</strong> — padrão Linux, rápido, bom para backups.
+          <strong>tar.xz</strong> — quando tamanho importa mais que velocidade.
+          <strong>tar.zst</strong> — melhor de dois mundos (rápido + bom ratio).
+          <strong>zip</strong> — quando precisa compartilhar com Windows.
+          <strong>7z</strong> — melhor compressão absoluta.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
