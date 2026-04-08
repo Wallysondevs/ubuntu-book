@@ -1,120 +1,290 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Vim() {
-  return (
-    <PageContainer
-      title="Vim e Neovim"
-      subtitle="Aprenda Vim do básico ao avançado: modos, atalhos, plugins e configuração do editor mais poderoso do Linux."
-      difficulty="avancado"
-      timeToRead="25 min"
-    >
-      <AlertBox type="info">
-        Vim tem uma curva de aprendizado íngreme, mas é o editor mais disponível
-        em servidores Linux. Saber o básico é essencial para qualquer administrador.
-      </AlertBox>
+  export default function Vim() {
+    return (
+      <PageContainer
+        title="Vim — Editor de Texto no Terminal"
+        subtitle="Guia completo do Vim no Ubuntu: modos, navegação, edição, busca, substituição, configuração, plugins e atalhos essenciais."
+        difficulty="intermediario"
+        timeToRead="30 min"
+      >
+        <p>
+          O <strong>Vim</strong> (Vi IMproved) é o editor de texto mais poderoso do terminal.
+          Está disponível em praticamente todo servidor Linux, tornando-o essencial para
+          administradores de sistema. Sua curva de aprendizado é íngreme, mas uma vez
+          dominado, é incrivelmente rápido e eficiente.
+        </p>
 
-      <h2>1. Instalação e Conceito de Modos</h2>
-      <CodeBlock title="Instalando Vim e entendendo os modos" code={`# Instalar:
-sudo apt install vim neovim
+        <h2>1. Modos do Vim</h2>
+        <CodeBlock
+          title="Entender os modos do Vim"
+          code={`# O Vim tem 3 modos principais:
 
-# MODOS DO VIM:
-# NORMAL  — modo padrão, para navegar e comandos
-# INSERT  — para digitar texto (como um editor normal)
-# VISUAL  — para selecionar texto
-# COMMAND — para executar comandos (:q, :w, etc.)
+  # MODO NORMAL (padrão ao abrir)
+  # - Navegação e comandos
+  # - Voltar para Normal: pressione ESC (de qualquer modo)
 
-# Entrar nos modos:
-# i     — entrar no modo INSERT (antes do cursor)
-# a     — entrar no INSERT (após o cursor)
-# v     — entrar no modo VISUAL (caractere)
-# V     — VISUAL LINE
-# Esc   — voltar ao modo NORMAL (de qualquer modo)
-# :     — entrar no modo COMMAND`} />
+  # MODO INSERT (edição de texto)
+  # - Digitar texto normalmente
+  # - Entrar: i, I, a, A, o, O
+  # - i = inserir antes do cursor
+  # - I = inserir no início da linha
+  # - a = inserir após o cursor
+  # - A = inserir no final da linha
+  # - o = nova linha abaixo
+  # - O = nova linha acima
+  # - Sair: ESC
 
-      <h2>2. Comandos Essenciais</h2>
-      <CodeBlock title="Atalhos fundamentais do Vim" code={`# SALVAR E SAIR:
-:w          — salvar
-:q          — sair (se não tiver mudanças)
-:wq ou :x  — salvar e sair
-:q!         — sair SEM salvar (forçar)
-:wqa        — salvar e sair TODOS os buffers
+  # MODO VISUAL (seleção)
+  # - Selecionar texto
+  # - v = seleção por caractere
+  # - V = seleção por linha
+  # - Ctrl+V = seleção em bloco (coluna)
+  # - Sair: ESC
 
-# NAVEGAÇÃO no modo NORMAL:
-h j k l    — ← ↓ ↑ → (esquerda, baixo, cima, direita)
-w          — próxima palavra
-b          — palavra anterior
-0          — início da linha
-\$          — fim da linha
-gg         — início do arquivo
-G          — fim do arquivo
-5G         — ir para linha 5
-Ctrl+f     — página abaixo
-Ctrl+b     — página acima
+  # MODO COMMAND (comandos :)
+  # - Entrar: : (dois pontos)
+  # - :w     = salvar
+  # - :q     = sair
+  # - :wq    = salvar e sair
+  # - :q!    = sair SEM salvar
+  # - :wq!   = salvar e sair (forçar)
+  # - ZZ     = salvar e sair (atalho no modo Normal)
 
-# EDIÇÃO no modo NORMAL:
-dd         — deletar linha
-yy         — copiar linha (yank)
-p          — colar abaixo
-P          — colar acima
-u          — desfazer (undo)
-Ctrl+r     — refazer (redo)
-x          — deletar caractere
-r          — substituir caractere
-.          — repetir último comando
+  # Abrir arquivos
+  vim arquivo.txt          # Abrir arquivo
+  vim +42 arquivo.txt      # Abrir na linha 42
+  vim +/palavra arquivo.txt  # Abrir na primeira ocorrência de "palavra"
+  vim arquivo1 arquivo2    # Abrir múltiplos arquivos`}
+        />
 
-# BUSCA:
-/palavra   — buscar para frente
-?palavra   — buscar para trás
-n          — próxima ocorrência
-N          — ocorrência anterior
-:%s/velho/novo/g  — substituir em todo o arquivo`} />
+        <h2>2. Navegação</h2>
+        <CodeBlock
+          title="Mover o cursor eficientemente"
+          code={`# === MOVIMENTO BÁSICO (modo Normal) ===
+  # h = esquerda    j = baixo    k = cima    l = direita
+  # (ou use as setas)
 
-      <h2>3. Configurando o ~/.vimrc</h2>
-      <CodeBlock title="Configuração básica do Vim" code={`# Criar/editar ~/.vimrc:
-nano ~/.vimrc
+  # === MOVIMENTO POR PALAVRAS ===
+  # w = início da próxima palavra
+  # e = final da palavra atual
+  # b = início da palavra anterior
+  # W, E, B = mesmo, mas ignora pontuação
 
-" .vimrc básico comentado:
-set number              " Mostrar números de linha
-set relativenumber      " Números relativos (útil para navegação)
-set tabstop=4           " Tab = 4 espaços
-set shiftwidth=4        " Indentação = 4 espaços
-set expandtab           " Usar espaços em vez de tabs
-set autoindent          " Indentação automática
-set smartindent         " Indentação inteligente
-set hlsearch            " Destacar resultados de busca
-set incsearch           " Busca incremental
-set ignorecase          " Busca sem diferenciar maiúsculas
-set smartcase           " Mas diferencia se usar maiúscula na busca
-set noswapfile          " Sem arquivo .swp
-set clipboard=unnamedplus  " Usar clipboard do sistema
-syntax on               " Destaque de syntax`} />
+  # === MOVIMENTO POR LINHA ===
+  # 0     = início da linha
+  # ^     = primeiro caractere não-espaço
+  # $     = final da linha
+  # gg    = primeira linha do arquivo
+  # G     = última linha
+  # 42G   = ir para linha 42
+  # :42   = ir para linha 42
 
-      <h2>4. Neovim — Vim Moderno</h2>
-      <CodeBlock title="Configurando Neovim com plugins" code={`# Instalar Neovim:
-sudo apt install neovim
-# ou versão mais recente via snap:
-sudo snap install nvim --classic
+  # === MOVIMENTO POR TELA ===
+  # Ctrl+f  = página para baixo (forward)
+  # Ctrl+b  = página para cima (backward)
+  # Ctrl+d  = meia página para baixo
+  # Ctrl+u  = meia página para cima
+  # H       = topo da tela (High)
+  # M       = meio da tela (Middle)
+  # L       = final da tela (Low)
+  # zz      = centralizar cursor na tela
 
-# Configuração do Neovim: ~/.config/nvim/init.vim
-mkdir -p ~/.config/nvim
+  # === MOVIMENTO POR BUSCA ===
+  # f{char} = ir para o próximo {char} na linha
+  # F{char} = ir para o {char} anterior na linha
+  # %       = ir para o parêntese/chave correspondente
+  # *       = buscar a palavra sob o cursor (próxima)
+  # #       = buscar a palavra sob o cursor (anterior)`}
+        />
 
-# Instalar gerenciador de plugins (vim-plug):
-sh -c 'curl -fLo "\${XDG_DATA_HOME:-\$HOME/.local/share}"/nvim/site/autoload/plug.vim \
-    --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        <h2>3. Edição</h2>
+        <CodeBlock
+          title="Comandos de edição essenciais"
+          code={`# === DELETAR ===
+  # x     = deletar caractere sob o cursor
+  # dd    = deletar linha inteira
+  # dw    = deletar palavra
+  # d$    = deletar até o final da linha
+  # d0    = deletar até o início da linha
+  # 3dd   = deletar 3 linhas
+  # dG    = deletar até o final do arquivo
 
-# ~/.config/nvim/init.vim básico:
-call plug#begin()
-Plug 'nvim-tree/nvim-tree.lua'          " Explorador de arquivos
-Plug 'nvim-lualine/lualine.nvim'        " Status bar
-Plug 'nvim-telescope/telescope.nvim'    " Busca fuzzy
-Plug 'neoclide/coc.nvim', {'branch': 'release'}  " Autocompletar
-Plug 'tpope/vim-fugitive'               " Git integração
-call plug#end()
+  # === COPIAR E COLAR ===
+  # yy    = copiar (yank) linha inteira
+  # yw    = copiar palavra
+  # y$    = copiar até o final da linha
+  # 3yy   = copiar 3 linhas
+  # p     = colar após o cursor
+  # P     = colar antes do cursor
 
-" Dentro do Neovim, instalar plugins:
-" :PlugInstall`} />
-    </PageContainer>
-  );
-}
+  # === DESFAZER E REFAZER ===
+  # u     = desfazer (undo)
+  # Ctrl+r = refazer (redo)
+  # .     = repetir último comando
+
+  # === SUBSTITUIR ===
+  # r{char} = substituir caractere sob o cursor
+  # R       = modo Replace (sobrescrever)
+  # cw      = mudar palavra (deleta e entra em Insert)
+  # cc      = mudar linha inteira
+  # c$      = mudar até o final da linha
+  # C       = mesmo que c$
+
+  # === INDENTAR ===
+  # >>    = indentar linha para direita
+  # <<    = indentar para esquerda
+  # 3>>   = indentar 3 linhas
+  # ==    = auto-indentar linha
+
+  # === OUTROS ===
+  # J     = juntar linha atual com a próxima
+  # ~     = trocar maiúscula/minúscula
+  # gUU   = toda a linha em MAIÚSCULA
+  # guu   = toda a linha em minúscula`}
+        />
+
+        <h2>4. Busca e Substituição</h2>
+        <CodeBlock
+          title="Buscar e substituir texto"
+          code={`# Buscar
+  # /texto   = buscar para frente
+  # ?texto   = buscar para trás
+  # n        = próxima ocorrência
+  # N        = ocorrência anterior
+  # /\cTexto = busca case-insensitive
+
+  # Substituir (modo Command)
+  # :s/antigo/novo/           = substituir primeiro na linha
+  # :s/antigo/novo/g          = substituir todos na linha
+  # :%s/antigo/novo/g         = substituir em todo o arquivo
+  # :%s/antigo/novo/gc        = substituir com confirmação
+  # :5,10s/antigo/novo/g      = substituir nas linhas 5-10
+
+  # Exemplos práticos:
+  # :%s/http/https/g          = trocar http por https
+  # :%s/\t/  /g               = trocar tabs por 2 espaços
+  # :%s/\s\+$//g              = remover espaços no final das linhas
+  # :%s/^/#/g                 = comentar todas as linhas (adicionar # no início)
+
+  # Regex no Vim
+  # :%s/\d\+/NUMERO/g        = trocar todos os números
+  # :%s/^\s*\n//g             = remover linhas em branco`}
+        />
+
+        <h2>5. Configuração (.vimrc)</h2>
+        <CodeBlock
+          title="Configurar o Vim"
+          code={`# Criar/editar ~/.vimrc
+  vim ~/.vimrc
+
+  # Configuração recomendada:
+  " Ativar syntax highlighting
+  syntax on
+
+  " Mostrar números de linha
+  set number
+  set relativenumber
+
+  " Tabs e indentação
+  set tabstop=4
+  set shiftwidth=4
+  set expandtab
+  set autoindent
+  set smartindent
+
+  " Busca
+  set hlsearch       " Destacar resultados
+  set incsearch      " Busca incremental
+  set ignorecase     " Ignorar maiúsculas
+  set smartcase      " Exceto se digitar maiúscula
+
+  " Visual
+  set cursorline     " Destacar linha do cursor
+  set showmatch      " Mostrar parêntese correspondente
+  set wildmenu       " Menu de autocompletar para comandos
+  set laststatus=2   " Sempre mostrar barra de status
+  set scrolloff=8    " Manter 8 linhas de contexto
+
+  " Comportamento
+  set mouse=a        " Habilitar mouse
+  set clipboard=unnamedplus  " Usar clipboard do sistema
+  set encoding=utf-8
+  set noswapfile     " Não criar arquivos .swp
+  set nobackup
+
+  " Atalhos personalizados
+  let mapleader = " "           " Leader = espaço
+  nnoremap <leader>w :w<CR>     " Espaço+w = salvar
+  nnoremap <leader>q :q<CR>     " Espaço+q = sair
+  nnoremap <leader>e :Ex<CR>    " Espaço+e = explorador de arquivos`}
+        />
+
+        <h2>6. Splits e Tabs</h2>
+        <CodeBlock
+          title="Trabalhar com múltiplos arquivos"
+          code={`# Dividir a tela (splits)
+  :split arquivo.txt    " Divisão horizontal
+  :vsplit arquivo.txt   " Divisão vertical
+  # Atalhos:
+  # Ctrl+w s   = split horizontal
+  # Ctrl+w v   = split vertical
+  # Ctrl+w w   = alternar entre splits
+  # Ctrl+w h/j/k/l = mover para split esquerda/baixo/cima/direita
+  # Ctrl+w q   = fechar split
+  # Ctrl+w =   = igualar tamanho dos splits
+
+  # Tabs
+  :tabnew arquivo.txt   " Abrir em nova tab
+  :tabnext              " Próxima tab (gt)
+  :tabprev              " Tab anterior (gT)
+  :tabclose             " Fechar tab
+
+  # Explorador de arquivos embutido
+  :Ex                   " Abrir explorador no diretório atual
+  :Sex                  " Split + explorador
+  :Vex                  " Vsplit + explorador`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com Vim"
+          code={`# "Estou preso no Vim! Como sair?"
+  # Pressione ESC (várias vezes se necessário)
+  # Depois: :q!    (sair sem salvar)
+  # Ou:     :wq    (salvar e sair)
+  # Ou:     ZZ     (salvar e sair)
+
+  # Colei texto e ficou todo indentado errado
+  # Ativar modo paste antes de colar:
+  :set paste
+  # Colar o texto
+  # Desativar:
+  :set nopaste
+
+  # Vim não tem cores/syntax highlighting
+  :syntax on
+  # Instalar Vim completo:
+  sudo apt install -y vim     # Ao invés de vim-tiny
+
+  # Clipboard não funciona (Ctrl+C/V)
+  sudo apt install -y vim-gtk3   # Vim com suporte a clipboard
+  # No .vimrc: set clipboard=unnamedplus
+
+  # Neovim — alternativa moderna ao Vim
+  sudo apt install -y neovim
+  nvim arquivo.txt
+  # Mesmos comandos, mas com melhor padrão e plugins modernos`}
+        />
+
+        <AlertBox type="info" title="Vim vs Neovim vs Nano">
+          <strong>Nano</strong> é o mais fácil (ideal para edições rápidas).
+          <strong>Vim</strong> é o mais poderoso e universal (disponível em todo servidor).
+          <strong>Neovim</strong> é o Vim modernizado (melhor para desenvolvimento).
+          Para administração de servidores, saber o básico do Vim é essencial.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
