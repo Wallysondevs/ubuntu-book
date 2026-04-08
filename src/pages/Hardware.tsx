@@ -1,139 +1,240 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Hardware() {
-  return (
-    <PageContainer
-      title="Informações de Hardware"
-      subtitle="lshw, lscpu, lspci, lsusb, inxi — diagnosticando e monitorando o hardware do seu Ubuntu."
-      difficulty="intermediario"
-      timeToRead="18 min"
-    >
-      <p>
-        O Ubuntu oferece diversas ferramentas para inspecionar hardware. Saber como
-        identificar CPU, memória, placas de vídeo, discos e dispositivos USB é
-        fundamental para diagnóstico, compra de drivers e otimização do sistema.
-      </p>
+  export default function Hardware() {
+    return (
+      <PageContainer
+        title="Hardware — Informações e Diagnóstico"
+        subtitle="Guia completo para identificar hardware no Ubuntu: CPU, memória, discos, placa de vídeo, rede, USB, sensores e drivers."
+        difficulty="iniciante"
+        timeToRead="25 min"
+      >
+        <p>
+          O Ubuntu oferece diversas ferramentas para identificar, monitorar e diagnosticar
+          o hardware do seu computador. Saber usar essas ferramentas é essencial para
+          verificar compatibilidade, diagnosticar problemas e otimizar a performance.
+        </p>
 
-      <h2>1. Visão Geral Completa — lshw e inxi</h2>
-      <CodeBlock title="Relatório completo de hardware" code={`# lshw — lista TUDO com detalhes
-sudo lshw                     # Saída completa (muito longa)
-sudo lshw -short              # Resumo em tabela
-sudo lshw -class disk         # Apenas discos
-sudo lshw -class network      # Apenas rede
-sudo lshw -class display      # Apenas GPU/vídeo
+        <h2>1. Visão Geral do Sistema</h2>
+        <CodeBlock
+          title="Informações gerais do hardware"
+          code={`# Resumo completo do hardware
+  sudo lshw -short
+  # Lista: CPU, memória, discos, rede, vídeo, etc.
 
-# Gerar relatório HTML do hardware:
-sudo lshw -html > hardware-report.html
+  # Versão detalhada (muito longo!)
+  sudo lshw > hardware-completo.txt
 
-# inxi — visão amigável e compacta (instalar se necessário)
-sudo apt install inxi
+  # Versão HTML (abre no navegador)
+  sudo lshw -html > hardware.html
 
-inxi -F                       # Relatório completo
-inxi -C                       # CPU
-inxi -G                       # GPU/vídeo
-inxi -M                       # Motherboard
-inxi -N                       # Rede
-inxi -D                       # Discos
-inxi -Fxz                     # Completo com extras, oculta dados pessoais`} />
+  # Informações do sistema
+  hostnamectl
+  # Mostra: hostname, kernel, arquitetura, etc.
 
-      <h2>2. CPU — Processador</h2>
-      <CodeBlock title="Informações detalhadas da CPU" code={`# Informações básicas:
-lscpu
-# Mostra: arquitetura, núcleos, threads, frequência, cache, flags
+  # Informações da BIOS/UEFI
+  sudo dmidecode -t bios
+  sudo dmidecode -t system    # Fabricante, modelo
 
-# Frequência atual de cada núcleo:
-cat /proc/cpuinfo | grep "cpu MHz"
+  # Resumo rápido
+  neofetch    # Se instalado: sudo apt install neofetch
+  # Ou: screenfetch`}
+        />
 
-# Temperatura da CPU (instalar sensors):
-sudo apt install lm-sensors
-sudo sensors-detect          # Configurar na primeira vez (responda YES)
-sensors                      # Ver temperaturas
+        <h2>2. CPU (Processador)</h2>
+        <CodeBlock
+          title="Informações do processador"
+          code={`# Informações detalhadas da CPU
+  lscpu
+  # Mostra: modelo, cores, threads, cache, flags
 
-# Ver governors de frequência (política de energia da CPU):
-cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-# performance = máxima frequência sempre
-# powersave   = economia de energia
-# ondemand    = ajusta conforme demanda
+  # Via /proc
+  cat /proc/cpuinfo
+  # Cada core é listado separadamente
 
-# Alterar para performance:
-echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`} />
+  # Resumo rápido
+  lscpu | grep "Model name"
+  nproc    # Número de cores/threads
 
-      <h2>3. Memória RAM</h2>
-      <CodeBlock title="Inspecionando a memória" code={`# Uso de memória:
-free -h                       # Resumo de RAM e swap
+  # Frequência atual
+  cat /proc/cpuinfo | grep "MHz"
+  # Ou: watch -n1 "grep MHz /proc/cpuinfo"
 
-# Informações detalhadas:
-sudo dmidecode -t memory      # Tipo, velocidade e slots da RAM
-cat /proc/meminfo             # Dados brutos do kernel
+  # Governador de frequência (performance vs economia)
+  cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  # Valores: performance, powersave, ondemand, schedutil
 
-# Ver pentes instalados:
-sudo dmidecode -t memory | grep -E "(Size|Type|Speed|Manufacturer)"
+  # Alterar para performance
+  echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
-# Analisar uso por processo:
-smem -r -k | head -20         # Instalar: sudo apt install smem
-ps aux --sort=-%mem | head -15 # Ver mais consumidores de RAM`} />
+  # Verificar vulnerabilidades de CPU (Spectre, Meltdown)
+  grep -r . /sys/devices/system/cpu/vulnerabilities/`}
+        />
 
-      <h2>4. GPU e Vídeo</h2>
-      <CodeBlock title="Informações sobre placa de vídeo" code={`# Ver GPU instalada:
-lspci | grep -i vga
-lspci | grep -i display
+        <h2>3. Memória RAM</h2>
+        <CodeBlock
+          title="Informações de memória"
+          code={`# Uso de memória
+  free -h
+  # Saída:
+  #               total   used   free  shared  buff/cache  available
+  # Mem:          16Gi    8.2Gi  2.1Gi  512Mi   5.7Gi      7.0Gi
+  # Swap:          4Gi    0.0Gi  4.0Gi
 
-# Para NVIDIA:
-nvidia-smi                    # Detalhes GPU, temperatura, uso
-nvidia-settings               # Interface gráfica de configuração
+  # "available" = memória realmente disponível
+  # "buff/cache" = memória usada como cache (liberável)
 
-# Para AMD:
-sudo apt install radeontop
-radeontop
+  # Detalhes dos módulos de RAM
+  sudo dmidecode -t memory
+  # Mostra: slots, tamanho por módulo, tipo (DDR4/DDR5), velocidade
 
-# Para Intel:
-sudo apt install intel-gpu-tools
-sudo intel_gpu_top
+  # Slots de memória
+  sudo dmidecode -t memory | grep -E "Size|Type:|Speed"
 
-# Driver em uso:
-lspci -k | grep -A 2 -E "(VGA|3D|Display)"
+  # Uso detalhado
+  cat /proc/meminfo
 
-# Resolução e telas conectadas:
-xrandr                        # Via X11
-wlr-randr                     # Via Wayland`} />
+  # Monitorar uso em tempo real
+  watch -n1 free -h
+  # Ou: vmstat 1`}
+        />
 
-      <h2>5. Discos e Armazenamento</h2>
-      <CodeBlock title="Diagnóstico de discos" code={`# Listar discos e partições:
-lsblk                         # Árvore de discos
-lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT
+        <h2>4. Discos e Armazenamento</h2>
+        <CodeBlock
+          title="Informações de discos"
+          code={`# Listar discos e partições
+  lsblk
+  # Saída formatada com tipo e tamanho
 
-# Informações SMART do disco (saúde):
-sudo apt install smartmontools
-sudo smartctl -a /dev/sda     # Relatório completo
-sudo smartctl -H /dev/sda     # Apenas status de saúde
-sudo smartctl -t short /dev/sda  # Executar teste rápido
+  # Espaço em disco
+  df -hT
+  # -h = human readable, -T = tipo de filesystem
 
-# Temperatura do SSD:
-sudo smartctl -A /dev/nvme0 | grep -i temp
+  # Informações SMART (saúde do disco)
+  sudo apt install -y smartmontools
+  sudo smartctl -a /dev/sda
+  # Ver: temperatura, horas de uso, erros
+  sudo smartctl -H /dev/sda    # Apenas saúde (PASSED = OK)
 
-# Informações do disco:
-sudo hdparm -I /dev/sda       # Modelo, serial, capacidades
-sudo fdisk -l                  # Partições de todos os discos`} />
+  # Benchmark de disco
+  # Velocidade de leitura:
+  sudo hdparm -tT /dev/sda
+  # Velocidade de escrita:
+  dd if=/dev/zero of=/tmp/test bs=1M count=1024 oflag=direct
+  rm /tmp/test
 
-      <h2>6. Dispositivos USB e PCI</h2>
-      <CodeBlock title="USB e dispositivos PCI" code={`# Listar dispositivos USB:
-lsusb                         # Lista simples
-lsusb -v                      # Detalhado (verboso)
-lsusb -t                      # Em formato de árvore
+  # Identificar SSD vs HDD
+  cat /sys/block/sda/queue/rotational
+  # 0 = SSD, 1 = HDD
 
-# Listar dispositivos PCI:
-lspci                         # Lista simples
-lspci -v                      # Detalhado
-lspci -k                      # Com drivers do kernel em uso
+  # Informações detalhadas de disco
+  sudo hdparm -I /dev/sda
 
-# Monitorar conexão/desconexão de USB em tempo real:
-sudo udevadm monitor
+  # NVMe
+  sudo nvme list
+  sudo nvme smart-log /dev/nvme0n1`}
+        />
 
-# Ver eventos recentes de hardware:
-dmesg | grep -i usb | tail -20
-journalctl -k | grep -i usb`} />
-    </PageContainer>
-  );
-}
+        <h2>5. Placa de Vídeo (GPU)</h2>
+        <CodeBlock
+          title="Informações e drivers de vídeo"
+          code={`# Identificar GPU
+  lspci | grep -i vga
+  lspci | grep -i 3d    # GPU dedicada NVIDIA
+
+  # Detalhes
+  sudo lshw -c video
+
+  # NVIDIA
+  nvidia-smi    # Se driver NVIDIA instalado
+  # Mostra: modelo, memória, uso, temperatura
+
+  # Instalar driver NVIDIA (recomendado)
+  ubuntu-drivers list
+  sudo ubuntu-drivers install
+  # Ou versão específica:
+  sudo apt install nvidia-driver-535
+
+  # AMD/Intel
+  glxinfo | grep "OpenGL renderer"
+  # Instalar: sudo apt install mesa-utils
+
+  # Verificar driver em uso
+  lspci -k | grep -A 2 VGA`}
+        />
+
+        <h2>6. Dispositivos USB e Rede</h2>
+        <CodeBlock
+          title="USB, rede e outros dispositivos"
+          code={`# Dispositivos USB
+  lsusb
+  # Lista todos os dispositivos USB conectados
+  lsusb -t    # Estrutura em árvore
+
+  # Dispositivos PCI
+  lspci
+  lspci -v    # Detalhado
+
+  # Interfaces de rede
+  ip link show
+  lspci | grep -i net     # Placa de rede
+  lsusb | grep -i net     # Adaptador USB de rede
+  iwconfig                 # Info de Wi-Fi
+
+  # Bluetooth
+  hciconfig -a
+  bluetoothctl show
+
+  # Sensores de temperatura
+  sudo apt install -y lm-sensors
+  sudo sensors-detect    # Detectar sensores (responda YES)
+  sensors
+  # Mostra temperatura da CPU, GPU, disco
+
+  # Monitorar hardware em tempo real
+  sudo apt install -y htop
+  htop
+  # Ou: btop (mais bonito)
+  sudo apt install -y btop
+  btop`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns de hardware"
+          code={`# Hardware não reconhecido
+  # Verificar no dmesg:
+  dmesg | tail -30
+  dmesg | grep -i error
+
+  # Driver de Wi-Fi não funciona
+  # Identificar a placa:
+  lspci | grep -i wireless
+  # Instalar drivers:
+  sudo ubuntu-drivers install
+
+  # USB não detectado
+  # Verificar dmesg ao conectar:
+  dmesg -w    # Modo "watch" — mostra em tempo real
+  # Conectar o USB e ver a saída
+
+  # Verificar logs de hardware
+  journalctl -b | grep -i error
+  journalctl -b | grep -i firmware
+
+  # Testar memória RAM (erros de memória)
+  # Reiniciar → GRUB → "Memory test (memtest86+)"
+  # Ou via terminal:
+  sudo apt install -y memtester
+  sudo memtester 1G 1    # Testar 1GB, 1 vez`}
+        />
+
+        <AlertBox type="info" title="Ferramentas gráficas de hardware">
+          Para uma visão gráfica: <code>hardinfo</code> (Informações do Sistema),
+          <code>gnome-disks</code> (Discos), <code>nvidia-settings</code> (GPU NVIDIA).
+          Instale com <code>sudo apt install hardinfo gnome-disk-utility</code>.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
