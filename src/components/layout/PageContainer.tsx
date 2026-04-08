@@ -56,7 +56,7 @@ export function PageContainer({ title, subtitle, difficulty, timeToRead, childre
           )}
         </header>
 
-        <div className="prose prose-invert max-w-none">
+        <div className="prose prose-invert max-w-none page-content">
           {children}
         </div>
       </motion.div>
