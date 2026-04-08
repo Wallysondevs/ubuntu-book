@@ -1,141 +1,280 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Git() {
-  return (
-    <PageContainer
-      title="Git — Controle de Versão Completo"
-      subtitle="Domine o Git no Ubuntu: do básico ao avançado — branches, merge, rebase, stash, tags e fluxos de trabalho."
-      difficulty="intermediario"
-      timeToRead="30 min"
-    >
-      <p>
-        O <strong>Git</strong> é o sistema de controle de versão mais usado no mundo.
-        Essencial para qualquer desenvolvedor, permite rastrear mudanças, colaborar
-        e reverter erros.
-      </p>
+  export default function Git() {
+    return (
+      <PageContainer
+        title="Git — Controle de Versão"
+        subtitle="Guia completo do Git no Ubuntu: instalar, configurar, branches, merge, rebase, stash, reset, tags, GitHub e workflows profissionais."
+        difficulty="iniciante"
+        timeToRead="35 min"
+      >
+        <p>
+          O <strong>Git</strong> é o sistema de controle de versão mais usado no mundo.
+          Ele rastreia todas as mudanças no seu código, permite colaborar com outros
+          desenvolvedores, reverter para versões anteriores e trabalhar em múltiplas
+          funcionalidades simultaneamente com branches.
+        </p>
 
-      <h2>1. Instalação e Configuração Inicial</h2>
-      <CodeBlock title="Instalando e configurando o Git" code={`# Instalar Git mais recente (via PPA):
-sudo add-apt-repository ppa:git-core/ppa
-sudo apt update && sudo apt install git
+        <h2>1. Instalação e Configuração</h2>
+        <CodeBlock
+          title="Instalar e configurar o Git"
+          code={`# Instalar Git
+  sudo apt install -y git
 
-# Configuração inicial OBRIGATÓRIA:
-git config --global user.name "Seu Nome"
-git config --global user.email "voce@email.com"
-git config --global core.editor nano           # Editor padrão
-git config --global init.defaultBranch main    # Branch padrão
+  # Verificar versão
+  git --version
 
-# Ver configurações:
-git config --list
-git config --global --list`} />
+  # Configuração inicial (obrigatório!)
+  git config --global user.name "Seu Nome"
+  git config --global user.email "seu@email.com"
 
-      <h2>2. Comandos Essenciais</h2>
-      <CodeBlock title="Workflow básico do Git" code={`# Criar repositório:
-git init meu-projeto
-cd meu-projeto
+  # Configurações recomendadas
+  git config --global init.defaultBranch main
+  git config --global core.editor "nano"    # Ou vim, code
+  git config --global pull.rebase false     # Merge ao fazer pull
+  git config --global color.ui auto
+  git config --global core.autocrlf input   # Normalizar fim de linha
 
-# Clonar repositório existente:
-git clone https://github.com/usuario/repo.git
-git clone git@github.com:usuario/repo.git      # Via SSH
+  # Ver todas as configurações
+  git config --list
+  git config --global --list
 
-# Status e diferenças:
-git status                    # Ver o que mudou
-git diff                      # Ver mudanças não staged
-git diff --staged             # Ver mudanças staged (prontas para commit)
+  # Configurar SSH para GitHub/GitLab
+  ssh-keygen -t ed25519 -C "seu@email.com"
+  cat ~/.ssh/id_ed25519.pub
+  # Copie e adicione em GitHub → Settings → SSH Keys
 
-# Adicionar ao staging:
-git add arquivo.txt           # Arquivo específico
-git add .                     # Tudo no diretório atual
-git add -p                    # Interativo (escolher partes)
+  # Testar conexão
+  ssh -T git@github.com
+  # Saída: "Hi usuario! You've successfully authenticated"`}
+        />
 
-# Fazer commit:
-git commit -m "feat: adicionar login de usuário"
-git commit -am "fix: corrigir bug no formulário"  # add + commit
+        <h2>2. Operações Básicas</h2>
+        <CodeBlock
+          title="Comandos essenciais do dia a dia"
+          code={`# Criar repositório
+  mkdir meu-projeto && cd meu-projeto
+  git init
 
-# Histórico:
-git log
-git log --oneline
-git log --oneline --graph --all
-git log -n 5                  # Últimos 5 commits`} />
+  # Clonar repositório existente
+  git clone https://github.com/usuario/repo.git
+  git clone git@github.com:usuario/repo.git    # Via SSH
 
-      <h2>3. Branches e Merge</h2>
-      <CodeBlock title="Trabalhando com branches" code={`# Listar branches:
-git branch                    # Locais
-git branch -r                 # Remotas
-git branch -a                 # Todas
+  # Status (ver mudanças)
+  git status
+  git status -s    # Formato curto
 
-# Criar e mudar de branch:
-git branch feature-login
-git checkout feature-login
-git checkout -b feature-login  # Criar E ir — equivalente aos dois acima
-git switch -c feature-login    # Sintaxe moderna
+  # Adicionar arquivos ao staging
+  git add arquivo.txt      # Arquivo específico
+  git add .                # Todos os arquivos
+  git add *.py             # Padrão
+  git add -p               # Interativo (escolher partes)
 
-# Fazer merge:
-git checkout main
-git merge feature-login
-git merge --no-ff feature-login   # Sempre criar merge commit
+  # Commit
+  git commit -m "Mensagem descritiva"
+  git commit -am "Mensagem"   # Add + commit (só tracked files)
 
-# Resolver conflitos:
-# 1. git merge feature-login
-# 2. Ver arquivos conflitantes: git status
-# 3. Editar os arquivos (remover marcadores <<<<, ====, >>>>)
-# 4. git add arquivo-resolvido.txt
-# 5. git commit
+  # Ver histórico
+  git log
+  git log --oneline          # Uma linha por commit
+  git log --oneline -20      # Últimos 20
+  git log --graph --oneline  # Com grafo de branches
+  git log --stat             # Com arquivos modificados
+  git log -p arquivo.txt     # Histórico de um arquivo
 
-# Deletar branch:
-git branch -d feature-login       # Após merge
-git branch -D feature-login       # Forçar (sem merge)`} />
+  # Diferenças
+  git diff                   # Working dir vs staging
+  git diff --staged          # Staging vs último commit
+  git diff main..develop     # Entre branches
+  git diff HEAD~3            # Últimos 3 commits`}
+        />
 
-      <h2>4. Remoto — GitHub/GitLab</h2>
-      <CodeBlock title="Sincronizando com repositório remoto" code={`# Adicionar remote:
-git remote add origin https://github.com/usuario/repo.git
-git remote -v                           # Ver remotes configurados
+        <h2>3. Branches</h2>
+        <CodeBlock
+          title="Trabalhar com branches"
+          code={`# Criar branch
+  git branch feature/login
+  git checkout -b feature/login    # Criar e mudar
+  git switch -c feature/login      # Git 2.23+ (alternativa moderna)
 
-# Enviar para remoto:
-git push origin main
-git push -u origin main                 # -u = setar upstream padrão
-git push                                # Após -u, pode omitir origin main
+  # Listar branches
+  git branch        # Locais
+  git branch -a     # Locais + remotas
+  git branch -v     # Com último commit
 
-# Buscar atualizações:
-git fetch origin                        # Baixa sem integrar
-git pull                                # fetch + merge automático
-git pull --rebase                       # fetch + rebase (histórico limpo)
+  # Mudar de branch
+  git checkout main
+  git switch main    # Git 2.23+
 
-# SSH Keys (mais seguro que HTTPS):
-ssh-keygen -t ed25519 -C "voce@email.com"
-cat ~/.ssh/id_ed25519.pub               # Copie para GitHub → Settings → SSH
+  # Merge (juntar branches)
+  git checkout main
+  git merge feature/login
+  # Se não houver conflito: merge automático
+  # Se houver conflito: resolver manualmente
 
-# Configurar SSH para GitHub:
-nano ~/.ssh/config
-# Host github.com
-#     IdentityFile ~/.ssh/id_ed25519`} />
+  # Deletar branch
+  git branch -d feature/login      # Se já foi merged
+  git branch -D feature/login      # Forçar (mesmo sem merge)
 
-      <h2>5. Recursos Avançados</h2>
-      <CodeBlock title="Stash, rebase, tags e mais" code={`# STASH — guardar mudanças temporariamente:
-git stash                          # Guardar mudanças não commitadas
-git stash save "trabalho em progresso"
-git stash list                     # Ver stashes
-git stash pop                      # Restaurar último stash
-git stash drop                     # Deletar stash sem restaurar
+  # Branch remota
+  git push -u origin feature/login  # Push e track
+  git push origin --delete feature/login  # Deletar remota
 
-# REBASE — reorganizar histórico:
-git rebase main                    # Rebase da branch atual sobre main
-git rebase -i HEAD~3               # Rebase interativo — reescrever 3 commits
+  # Renomear branch
+  git branch -m nome-antigo nome-novo`}
+        />
 
-# TAGS — marcar versões:
-git tag v1.0.0
-git tag -a v1.0.0 -m "Versão 1.0.0 — lançamento inicial"
-git push origin --tags
+        <h2>4. Merge e Conflitos</h2>
+        <CodeBlock
+          title="Resolver conflitos de merge"
+          code={`# Merge: integrar mudanças de outra branch
+  git checkout main
+  git merge feature/login
 
-# CHERRY-PICK — trazer commit específico:
-git cherry-pick abc1234            # Trazer apenas este commit
+  # Se houver conflito:
+  # Auto-merging arquivo.txt
+  # CONFLICT (content): Merge conflict in arquivo.txt
 
-# RESET e REVERT:
-git reset HEAD~1                   # Desfazer último commit (manter mudanças)
-git reset --hard HEAD~1            # Desfazer e PERDER mudanças
-git revert abc1234                 # Criar novo commit que desfaz abc1234`} />
-    </PageContainer>
-  );
-}
+  # O arquivo terá marcadores de conflito:
+  <<<<<<< HEAD
+  código da branch main
+  =======
+  código da feature/login
+  >>>>>>> feature/login
+
+  # 1. Editar o arquivo removendo os marcadores
+  # 2. Escolher qual código manter (ou combinar)
+  # 3. Adicionar e commitar
+  git add arquivo.txt
+  git commit -m "Resolver conflito em arquivo.txt"
+
+  # Abortar o merge (voltar ao estado anterior)
+  git merge --abort
+
+  # === REBASE (alternativa ao merge) ===
+  git checkout feature/login
+  git rebase main
+  # Reaplica seus commits em cima do main
+  # Resulta em histórico linear (mais limpo)
+  # NUNCA faça rebase de commits já publicados!
+
+  # Rebase interativo (editar commits)
+  git rebase -i HEAD~3
+  # Permite: squash, reword, reorder, drop commits`}
+        />
+
+        <h2>5. Stash, Reset e Revert</h2>
+        <CodeBlock
+          title="Salvar temporariamente, desfazer mudanças"
+          code={`# === STASH (guardar mudanças temporariamente) ===
+  git stash                  # Guardar mudanças
+  git stash save "mensagem"  # Com descrição
+  git stash list             # Listar stashes
+  git stash pop              # Restaurar e remover
+  git stash apply            # Restaurar sem remover
+  git stash drop stash@{0}   # Remover um stash
+  git stash clear            # Remover todos
+
+  # === RESET (desfazer commits) ===
+  git reset HEAD~1            # Desfazer último commit (mantém arquivos)
+  git reset --soft HEAD~1     # Desfazer commit (mantém no staging)
+  git reset --hard HEAD~1     # Desfazer commit (PERDE mudanças!)
+  git reset HEAD arquivo.txt  # Remover do staging
+
+  # === REVERT (desfazer commit criando novo commit) ===
+  git revert abc1234          # Reverte um commit específico
+  # Seguro para commits já publicados (não reescreve histórico)
+
+  # === CHECKOUT (restaurar arquivo) ===
+  git checkout -- arquivo.txt      # Descartar mudanças locais
+  git restore arquivo.txt          # Git 2.23+ (alternativa moderna)
+  git restore --staged arquivo.txt # Remover do staging
+
+  # === CHERRY-PICK (aplicar commit específico) ===
+  git cherry-pick abc1234     # Aplica um commit de outra branch`}
+        />
+
+        <h2>6. Trabalhando com Remotos</h2>
+        <CodeBlock
+          title="Push, pull e repositórios remotos"
+          code={`# Ver remotos
+  git remote -v
+
+  # Adicionar remoto
+  git remote add origin https://github.com/usuario/repo.git
+
+  # Push (enviar commits)
+  git push origin main
+  git push -u origin main    # -u = definir upstream (só na primeira vez)
+  git push                   # Após definir upstream
+
+  # Pull (baixar e integrar)
+  git pull                   # Fetch + merge
+  git pull --rebase          # Fetch + rebase
+
+  # Fetch (baixar sem integrar)
+  git fetch origin           # Baixar mudanças
+  git fetch --all            # De todos os remotos
+
+  # Tags (marcar versões)
+  git tag v1.0.0
+  git tag -a v1.0.0 -m "Versão 1.0.0"    # Tag anotada
+  git push origin v1.0.0                   # Push da tag
+  git push origin --tags                   # Push de todas as tags
+
+  # .gitignore (ignorar arquivos)
+  cat > .gitignore << 'EOF'
+  node_modules/
+  .env
+  *.log
+  .venv/
+  __pycache__/
+  .DS_Store
+  dist/
+  build/
+  EOF`}
+        />
+
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com Git"
+          code={`# Fiz commit na branch errada
+  git stash          # Guardar mudanças
+  git checkout branch-certa
+  git stash pop      # Restaurar na branch certa
+
+  # Preciso mudar a mensagem do último commit
+  git commit --amend -m "Nova mensagem"
+  # CUIDADO: Não faça isso se já fez push!
+
+  # Arquivo grande no histórico (repositório pesado)
+  # Verificar:
+  git rev-list --objects --all | sort -k 2 | head
+  # Usar git-filter-repo para remover
+
+  # "detached HEAD"
+  git checkout main    # Voltar para a branch
+
+  # Desfazer git add (remover do staging)
+  git restore --staged .
+
+  # Recuperar commit deletado
+  git reflog             # Mostra histórico de HEADs
+  git checkout abc1234   # Restaurar commit
+
+  # Push rejeitado (non-fast-forward)
+  git pull --rebase
+  git push`}
+        />
+
+        <AlertBox type="info" title="Workflow recomendado">
+          Use <strong>Git Flow</strong> para projetos grandes (main, develop, feature/*,
+          release/*, hotfix/*) ou <strong>GitHub Flow</strong> para projetos menores
+          (main + feature branches com Pull Requests). O importante é: nunca commite
+          diretamente na main em equipe — sempre use branches e Pull Requests.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
