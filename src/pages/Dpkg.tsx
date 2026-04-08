@@ -1,130 +1,147 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { AlertBox } from "@/components/ui/AlertBox";
+  import { CodeBlock } from "@/components/ui/CodeBlock";
+  import { AlertBox } from "@/components/ui/AlertBox";
 
-export default function Dpkg() {
-  return (
-    <PageContainer
-      title="dpkg — Gerenciador de Pacotes Baixo Nível"
-      subtitle="O dpkg é a base do sistema de pacotes do Ubuntu/Debian. Entenda como instalar, remover e inspecionar pacotes .deb."
-      difficulty="avancado"
-      timeToRead="18 min"
-    >
-      <p>
-        O <strong>dpkg</strong> (Debian Package) é a ferramenta de baixo nível que
-        instala e gerencia pacotes <code>.deb</code>. O APT usa o dpkg por baixo dos panos,
-        mas há situações em que você precisará usá-lo diretamente.
-      </p>
+  export default function Dpkg() {
+    return (
+      <PageContainer
+        title="dpkg — Gerenciador de Pacotes de Baixo Nível"
+        subtitle="Guia completo do dpkg no Ubuntu: instalar .deb, listar pacotes, verificar arquivos, reconfigurar e resolver problemas de pacotes."
+        difficulty="intermediario"
+        timeToRead="20 min"
+      >
+        <p>
+          O <strong>dpkg</strong> é o gerenciador de pacotes de baixo nível do Debian/Ubuntu.
+          Enquanto o <code>apt</code> resolve dependências automaticamente, o dpkg trabalha
+          diretamente com arquivos <code>.deb</code>. É útil para instalar pacotes baixados
+          manualmente, diagnosticar problemas e inspecionar o sistema de pacotes.
+        </p>
 
-      <h2>1. Instalando Pacotes .deb Manualmente</h2>
-      <CodeBlock title="Instalação de arquivos .deb" code={`# Baixar um pacote .deb (exemplo: Google Chrome)
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        <h2>1. Instalar e Remover Pacotes</h2>
+        <CodeBlock
+          title="Gerenciar pacotes .deb com dpkg"
+          code={`# Instalar um pacote .deb
+  sudo dpkg -i pacote.deb
+  # Se faltar dependências:
+  sudo apt install -f   # Instalar dependências faltantes
 
-# Instalar o .deb:
-sudo dpkg -i google-chrome-stable_current_amd64.deb
+  # Instalar múltiplos .deb de uma vez
+  sudo dpkg -i *.deb
+  sudo apt install -f
 
-# Se der erro de dependências:
-sudo apt install -f
-# -f = --fix-broken: instala dependências faltando e finaliza a instalação
+  # Remover pacote (mantém configurações)
+  sudo dpkg -r nome-do-pacote
 
-# Instalar e resolver deps automaticamente (recomendado):
-sudo apt install ./google-chrome-stable_current_amd64.deb
-# O ./ no início faz o apt tratar como arquivo local, não nome de pacote`} />
+  # Remover pacote completamente (incluindo configurações)
+  sudo dpkg -P nome-do-pacote
+  # P = purge
 
-      <h2>2. Inspecionando Pacotes</h2>
-      <CodeBlock title="Consultas essenciais do dpkg" code={`# Listar TODOS os pacotes instalados:
-dpkg -l
-dpkg --list
+  # Reconfiguar um pacote
+  sudo dpkg-reconfigure nome-do-pacote
+  # Exemplos úteis:
+  sudo dpkg-reconfigure locales       # Configurar idiomas
+  sudo dpkg-reconfigure tzdata        # Configurar fuso horário
+  sudo dpkg-reconfigure keyboard-configuration  # Teclado`}
+        />
 
-# Filtrar por status:
-# ii = instalado corretamente
-# rc = removido mas configs restantes
-# un = desconhecido / não instalado
-dpkg -l | grep "^rc"    # Pacotes removidos com configs sobrando
-dpkg -l | grep "^ii"    # Pacotes instalados
+        <h2>2. Listar e Buscar Pacotes</h2>
+        <CodeBlock
+          title="Consultar o banco de dados de pacotes"
+          code={`# Listar todos os pacotes instalados
+  dpkg -l
+  # Saída: ii = instalado, rc = removido com configs mantidas
 
-# Buscar pacote pelo nome:
-dpkg -l | grep firefox
-dpkg -l "*chrome*"       # Com wildcard
+  # Filtrar por nome
+  dpkg -l | grep nginx
+  dpkg -l "python3*"
 
-# Ver arquivos instalados por um pacote:
-dpkg -L nginx
-dpkg -L bash | head -20
+  # Verificar se um pacote está instalado
+  dpkg -s nginx
+  # Mostra: versão, descrição, dependências, etc.
 
-# Ver informações (status) de um pacote:
-dpkg -s nginx
-dpkg --status firefox
+  # Listar arquivos de um pacote instalado
+  dpkg -L nginx
+  # Mostra todos os arquivos instalados pelo pacote
 
-# Descobrir qual pacote instalou um arquivo:
-dpkg -S /usr/bin/ls
-dpkg -S /etc/nginx/nginx.conf
+  # Descobrir qual pacote instalou um arquivo
+  dpkg -S /usr/bin/git
+  # Saída: git: /usr/bin/git
 
-# Ver conteúdo de um .deb SEM instalar:
-dpkg -c pacote.deb     # listar arquivos dentro do .deb
-dpkg -I pacote.deb     # informações do pacote .deb`} />
+  # Buscar qual pacote fornece um arquivo
+  dpkg -S /etc/nginx/nginx.conf
+  # Saída: nginx-common: /etc/nginx/nginx.conf
 
-      <h2>3. Removendo Pacotes</h2>
-      <AlertBox type="warning">
-        Use <code>dpkg --purge</code> com cuidado. Remove configurações que podem
-        ser difíceis de recriar.
-      </AlertBox>
-      <CodeBlock title="Remoção com dpkg" code={`# Remover pacote (mantém arquivos de configuração):
-sudo dpkg -r nome-do-pacote
-# Equivalente ao: sudo apt remove
+  # Listar pacotes por tamanho
+  dpkg-query -W --showformat='\${Installed-Size}\t\${Package}\n' | sort -rn | head -20
 
-# Remover pacote E suas configurações (purge):
-sudo dpkg -P nome-do-pacote
-sudo dpkg --purge nome-do-pacote
-# Equivalente ao: sudo apt purge
+  # Ver informações de um .deb (sem instalar)
+  dpkg -I pacote.deb
+  dpkg -c pacote.deb   # Listar conteúdo do .deb`}
+        />
 
-# Limpar todos os pacotes removidos (status "rc"):
-dpkg -l | grep "^rc" | awk '{print $2}' | xargs sudo dpkg --purge
-# Isso limpa o banco de dados de pacotes antigos removidos`} />
+        <h2>3. Resolver Problemas</h2>
+        <CodeBlock
+          title="Corrigir problemas com dpkg"
+          code={`# Erro: "dpkg was interrupted"
+  sudo dpkg --configure -a
 
-      <h2>4. Reconfiguração e Reparo</h2>
-      <CodeBlock title="Reconfigurando e reparando pacotes" code={`# Reconfigurar um pacote (refaz a configuração interativa):
-sudo dpkg-reconfigure tzdata            # Fuso horário
-sudo dpkg-reconfigure locales           # Idiomas
-sudo dpkg-reconfigure keyboard-configuration  # Teclado
-sudo dpkg-reconfigure grub-pc           # GRUB
+  # Erro: "Sub-process /usr/bin/dpkg returned an error"
+  sudo apt install -f     # Tentar corrigir dependências
+  sudo dpkg --configure -a
 
-# Verificar integridade de arquivos instalados:
-sudo dpkg -V                  # Verifica TODOS os pacotes
-sudo dpkg -V nginx            # Verifica apenas nginx
-# Saída vazia = tudo OK
-# Letras antes do nome = o que foi alterado
+  # Forçar instalação (ignorar dependências — use com cuidado!)
+  sudo dpkg -i --force-depends pacote.deb
 
-# Reparar banco de dados dpkg corrompido:
-sudo dpkg --configure -a      # Configurar pacotes pendentes
-sudo apt install -f           # Corrigir dependências quebradas
+  # Forçar remoção de pacote travado
+  sudo dpkg --remove --force-remove-reinstreq pacote-travado
 
-# Forçar instalação (ignorar erros — USE COM CUIDADO!):
-sudo dpkg -i --force-overwrite pacote.deb
-sudo dpkg -i --force-all pacote.deb`} />
+  # Verificar integridade de todos os pacotes
+  sudo dpkg --audit
 
-      <h2>5. Repositórios e Fontes de Pacotes</h2>
-      <CodeBlock title="Estrutura de repositórios Debian/Ubuntu" code={`# Ver repositórios configurados:
-cat /etc/apt/sources.list
-ls /etc/apt/sources.list.d/
+  # Verificar se arquivos de um pacote estão intactos
+  sudo dpkg --verify nginx
+  # Se não mostrar nada, tudo OK
 
-# Formato de uma linha de repositório:
-# deb [opções] url distribuição componentes
-# deb https://archive.ubuntu.com/ubuntu noble main restricted universe multiverse
+  # Reinstalar pacote (substituir arquivos corrompidos)
+  sudo apt install --reinstall nginx
 
-# Componentes:
-# main        — software livre suportado pela Canonical
-# restricted  — drivers proprietários (nvidia, etc)
-# universe    — software livre mantido pela comunidade
-# multiverse  — software proprietário ou de licença restrita
+  # Extrair .deb sem instalar
+  dpkg-deb -x pacote.deb /tmp/extraido/
+  # Útil para inspecionar o conteúdo
 
-# Atualizar lista de repositórios:
-sudo apt update
+  # Criar .deb a partir de diretório
+  dpkg-deb --build diretorio pacote.deb`}
+        />
 
-# Adicionar repositório manualmente:
-sudo add-apt-repository "deb http://repo.exemplo.com/ubuntu focal main"
+        <h2>Troubleshooting</h2>
+        <CodeBlock
+          title="Problemas comuns com dpkg"
+          code={`# Lock file travado
+  # "Could not get lock /var/lib/dpkg/lock"
+  # Esperar outro processo terminar ou:
+  sudo rm /var/lib/dpkg/lock-frontend
+  sudo rm /var/lib/dpkg/lock
+  sudo dpkg --configure -a
 
-# Importar chave GPG de um repositório:
-curl -fsSL https://chave-repo.gpg | sudo gpg --dearmor -o /usr/share/keyrings/chave-repo.gpg`} />
-    </PageContainer>
-  );
-}
+  # Pacote em estado inconsistente
+  sudo dpkg --remove --force-remove-reinstreq nome-pacote
+  sudo apt update
+  sudo apt install -f
+
+  # Listar pacotes quebrados
+  dpkg -l | grep -E "^(iU|iF|iH)"
+
+  # Banco de dados dpkg corrompido
+  # Restaurar backup:
+  sudo cp /var/backups/dpkg.status.0 /var/lib/dpkg/status
+  sudo apt update`}
+        />
+
+        <AlertBox type="info" title="dpkg vs apt">
+          Use <code>apt</code> para o dia a dia — ele chama o dpkg internamente e resolve
+          dependências. Use <code>dpkg</code> quando precisar instalar <code>.deb</code>
+          baixados manualmente, diagnosticar problemas de pacotes ou quando o apt falhar.
+        </AlertBox>
+      </PageContainer>
+    );
+  }
