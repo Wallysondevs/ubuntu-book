@@ -100,6 +100,11 @@ import Backup from "@/pages/Backup";
 import Timeshift from "@/pages/Timeshift";
 import CloudInit from "@/pages/CloudInit";
 import Ansible from "@/pages/Ansible";
+import Multipass from "@/pages/Multipass";
+import LXD from "@/pages/LXD";
+import UbuntuPro from "@/pages/UbuntuPro";
+import UnattendedUpgrades from "@/pages/UnattendedUpgrades";
+import ZFSZsys from "@/pages/ZFSZsys";
 
 // DESKTOP & MULTIMÍDIA
 import GNOMEExtensions from "@/pages/GNOMEExtensions";
@@ -233,6 +238,11 @@ function Router() {
         <Route path="/timeshift" component={Timeshift} />
         <Route path="/cloud-init" component={CloudInit} />
         <Route path="/ansible" component={Ansible} />
+        <Route path="/multipass" component={Multipass} />
+        <Route path="/lxd" component={LXD} />
+        <Route path="/ubuntu-pro" component={UbuntuPro} />
+        <Route path="/unattended-upgrades" component={UnattendedUpgrades} />
+        <Route path="/zfs" component={ZFSZsys} />
 
         {/* DESKTOP & MULTIMÍDIA */}
         <Route path="/gnome-extensions" component={GNOMEExtensions} />

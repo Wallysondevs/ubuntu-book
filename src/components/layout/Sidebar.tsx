@@ -102,6 +102,8 @@ const NAVIGATION = [
       { path: "/docker", label: "Docker", icon: Container },
       { path: "/docker-compose", label: "Docker Compose", icon: Container },
       { path: "/kvm", label: "KVM (Máquinas Virtuais)", icon: Server },
+      { path: "/multipass", label: "Multipass (VMs Ubuntu)", icon: Server },
+      { path: "/lxd", label: "LXD & Incus", icon: Container },
     ]
   },
   {
@@ -147,6 +149,9 @@ const NAVIGATION = [
       { path: "/timeshift", label: "Timeshift (Snapshots)", icon: RotateCcw },
       { path: "/cloud-init", label: "Ubuntu Server & Cloud", icon: Cloud },
       { path: "/ansible", label: "Ansible", icon: Wrench },
+      { path: "/ubuntu-pro", label: "Ubuntu Pro & Livepatch", icon: Shield },
+      { path: "/unattended-upgrades", label: "Updates Automáticos", icon: RotateCcw },
+      { path: "/zfs", label: "ZFS Storage", icon: Layers },
     ]
   },
   {
