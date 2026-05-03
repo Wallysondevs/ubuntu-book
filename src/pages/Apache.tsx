@@ -10,6 +10,28 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server ou Desktop com acesso <code>sudo</code>. Porta 80 e 443 livres
+          (pare nginx/lighttpd se já estiverem rodando). Útil ter visto <a href="#/systemd">systemd</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Apache HTTP Server</strong> — servidor web com mais de 25 anos. No Ubuntu
+          o pacote chama <code>apache2</code> e o serviço também.
+        </p>
+        <p>
+          <strong>Virtual Host</strong> — configuração que permite servir vários sites no mesmo IP.
+          Ficam em <code>/etc/apache2/sites-available/</code>.
+        </p>
+        <p>
+          <strong>Módulo</strong> — extensão (<code>mod_rewrite</code>, <code>mod_ssl</code>, <code>mod_php</code>).
+          Ative com <code>a2enmod</code>, desative com <code>a2dismod</code>.
+        </p>
+        <p>
+          <strong>DocumentRoot</strong> — pasta raiz pública de um site. Padrão Ubuntu: <code>/var/www/html</code>.
+        </p>
+
         <p>
           O <strong>Apache HTTP Server</strong> é o servidor web mais usado do mundo, servindo
           mais de 30% de todos os sites. É extremamente maduro, flexível e bem documentado.

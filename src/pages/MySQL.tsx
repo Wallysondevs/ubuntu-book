@@ -10,6 +10,26 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server/Desktop com <code>sudo</code>. Conhecer SQL básico ajuda mas não é obrigatório.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>MySQL</strong> — sistema de banco relacional open-source. <strong>MariaDB</strong>
+          é o fork (a Oracle comprou MySQL em 2009; o criador original criou MariaDB).
+        </p>
+        <p>
+          <strong>InnoDB</strong> — engine padrão. Suporta transações, foreign keys, row-level locking.
+        </p>
+        <p>
+          <strong>my.cnf</strong> — arquivo de configuração principal. No Ubuntu fica em
+          <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code>.
+        </p>
+        <p>
+          <strong>mysqldump</strong> — utilitário para backup lógico (gera <code>.sql</code> textual).
+        </p>
+
         <p>
           O <strong>MySQL</strong> é o banco de dados relacional open source mais popular do mundo,
           usado por WordPress, Facebook, Twitter e milhões de aplicações web. O <strong>MariaDB</strong>

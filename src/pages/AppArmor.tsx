@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu (vem habilitado por padrão), <code>sudo</code>. AppArmor pode quebrar apps customizados — sempre teste em modo <em>complain</em> antes do <em>enforce</em>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>AppArmor</strong> — MAC (Mandatory Access Control) baseado em caminhos de arquivo. Padrão do Ubuntu desde a 7.04.
+        </p>
+        <p>
+          <strong>Profile</strong> — política que define o que um binário pode acessar. Fica em <code>/etc/apparmor.d/</code>.
+        </p>
+        <p>
+          <strong>enforce / complain</strong> — modos: <em>enforce</em> bloqueia, <em>complain</em> apenas registra no log.
+        </p>
+        <p>
+          <strong>aa-status</strong> — mostra perfis carregados e seus modos.
+        </p>
+
         <p>
           O <strong>AppArmor</strong> (Application Armor) é o sistema de segurança mandatória
           (MAC) padrão do Ubuntu. Ele restringe o que cada programa pode fazer no sistema —

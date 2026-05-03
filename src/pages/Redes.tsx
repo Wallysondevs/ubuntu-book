@@ -10,6 +10,27 @@ export default function Redes() {
       difficulty="intermediario"
       timeToRead="25 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu com terminal. Alguns comandos exigem <code>sudo</code>. Útil saber a diferença entre Wi-Fi e Ethernet.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Interface</strong> — dispositivo de rede: <code>eth0</code>/<code>enp3s0</code> (cabo), <code>wlan0</code>/<code>wlp2s0</code> (Wi-Fi), <code>lo</code> (loopback).
+      </p>
+      <p>
+        <strong>IP</strong> — endereço único na rede. IPv4: <code>192.168.0.10</code>; IPv6: <code>2001:db8::1</code>.
+      </p>
+      <p>
+        <strong>Gateway</strong> — roteador padrão para sair da rede local.
+      </p>
+      <p>
+        <strong>ip / ifconfig</strong> — <code>ip</code> é o moderno; <code>ifconfig</code> é legado mas ainda comum.
+      </p>
+      <p>
+        <strong>ping / traceroute / ss</strong> — testar conectividade, rastrear rota, listar sockets abertos.
+      </p>
+
       <p>
         No Ubuntu, a rede é gerenciada principalmente pelo <strong>NetworkManager</strong> — ao
         contrário do Arch Linux, onde você configura tudo manualmente. Ainda assim, dominar as

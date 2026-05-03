@@ -10,6 +10,29 @@ export default function Apt() {
       difficulty="iniciante"
       timeToRead="25 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu instalado (qualquer versão LTS ou intermediária). Acesso a um terminal e
+        usuário com permissão <code>sudo</code>. Não precisa saber gerenciar pacotes — vamos do zero.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Pacote</strong> — arquivo <code>.deb</code> empacotado com binários, libs,
+        configs e metadados. Ubuntu/Debian distribuem todo software como pacotes.
+      </p>
+      <p>
+        <strong>Repositório</strong> — servidor que hospeda pacotes. <code>/etc/apt/sources.list</code>
+        e arquivos em <code>/etc/apt/sources.list.d/</code> listam quais repositórios o APT consulta.
+      </p>
+      <p>
+        <strong>Dependência</strong> — outro pacote que o seu pacote precisa para funcionar.
+        APT resolve dependências automaticamente; <code>dpkg</code> não.
+      </p>
+      <p>
+        <strong>Cache APT</strong> — banco local em <code>/var/lib/apt/lists/</code> com a lista
+        de pacotes disponíveis. <code>apt update</code> renova esse cache.
+      </p>
+
       <p>
         O <strong>APT</strong> (Advanced Package Tool) é o gerenciador de pacotes do Ubuntu e de
         todas as distribuições baseadas em Debian. Ele é responsável por instalar, remover e

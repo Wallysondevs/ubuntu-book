@@ -10,6 +10,27 @@ export default function SistemaArquivos() {
       difficulty="iniciante"
       timeToRead="20 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu instalado. Útil ter visto <a href="#/disco">Disco</a> e <a href="#/particoes">Partições</a>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Filesystem</strong> — formato de organização de dados em uma partição.
+      </p>
+      <p>
+        <strong>ext4</strong> — padrão do Ubuntu. Maduro, rápido, journal, sem chamuras.
+      </p>
+      <p>
+        <strong>btrfs / zfs</strong> — filesystems modernos com snapshots, compressão e checksums embutidos.
+      </p>
+      <p>
+        <strong>xfs</strong> — escala bem em arquivos grandes; padrão do RHEL.
+      </p>
+      <p>
+        <strong>FHS</strong> — Filesystem Hierarchy Standard — define onde cada coisa mora (<code>/etc</code>, <code>/var</code>, <code>/usr</code>).
+      </p>
+
       <p>
         No Linux, tudo começa em <strong>/</strong> (barra) — a raiz. Diferente do Windows
         que tem letras de drive (C:, D:, E:), no Linux existe apenas uma árvore de diretórios

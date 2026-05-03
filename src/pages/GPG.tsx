@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>gpg</code> (já vem instalado). Útil ter um par de chaves gerado para os exemplos.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>GPG</strong> — GNU Privacy Guard — implementação livre do OpenPGP. Para criptografia e assinatura.
+        </p>
+        <p>
+          <strong>Par de chaves</strong> — chave privada (segredo) + chave pública (compartilhar). Assinaturas usam a privada; criptografia usa a pública do destinatário.
+        </p>
+        <p>
+          <strong>Keyring</strong> — base local de chaves conhecidas. <code>~/.gnupg/</code>.
+        </p>
+        <p>
+          <strong>Web of Trust</strong> — modelo de confiança descentralizado: você assina chaves de quem confia.
+        </p>
+        <p>
+          <strong>Keyserver</strong> — servidor que guarda chaves públicas. Ex.: <code>keys.openpgp.org</code>.
+        </p>
+
         <p>
           O <strong>GPG</strong> (GNU Privacy Guard) é a implementação livre do padrão OpenPGP.
           Ele permite <em>criptografar</em> arquivos e mensagens (só o destinatário pode ler),

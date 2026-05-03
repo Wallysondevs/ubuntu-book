@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="20 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal e <code>sudo</code>. Útil ter visto <a href="#/apt">APT</a> e <a href="#/dpkg">dpkg</a>.
+          PPAs vêm de pessoas (não da Canonical) — sempre verifique o autor antes de adicionar.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>PPA (Personal Package Archive)</strong> — repositório pessoal hospedado no Launchpad.
+          Permite distribuir <code>.deb</code> compilados para versões específicas do Ubuntu.
+        </p>
+        <p>
+          <strong>add-apt-repository</strong> — comando que adiciona um PPA, baixa a chave GPG
+          e atualiza a lista de fontes em <code>/etc/apt/sources.list.d/</code>.
+        </p>
+        <p>
+          <strong>ppa-purge</strong> — remove um PPA <em>e</em> reverte os pacotes para a versão oficial.
+        </p>
+        <p>
+          <strong>Launchpad</strong> — plataforma da Canonical que hospeda PPAs, código e bug tracking.
+        </p>
+
         <p>
           Os <strong>PPAs</strong> (Personal Package Archives) são repositórios mantidos pela
           comunidade no Launchpad, permitindo instalar software que não está nos repositórios

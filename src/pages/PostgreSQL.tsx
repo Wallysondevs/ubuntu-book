@@ -10,6 +10,28 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server/Desktop com <code>sudo</code>. SQL básico ajuda. PostgreSQL é mais
+          rigoroso com tipos e SQL-padrão que o MySQL — vale ter paciência se vem do MySQL.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>PostgreSQL</strong> — banco objeto-relacional open-source, em desenvolvimento
+          ativo desde 1986. Conhecido pelo respeito ao SQL-padrão e por features avançadas (JSONB, CTEs, window functions).
+        </p>
+        <p>
+          <strong>Cluster</strong> — instância do PostgreSQL com vários bancos. No Ubuntu, gerenciado
+          via <code>pg_lsclusters</code>, <code>pg_createcluster</code>, <code>pg_dropcluster</code>.
+        </p>
+        <p>
+          <strong>Role</strong> — usuário/grupo (PostgreSQL unifica os dois conceitos).
+        </p>
+        <p>
+          <strong>pg_hba.conf</strong> — controle de autenticação por host/usuário/banco.
+          O método <code>peer</code> usa o usuário do SO; <code>md5</code>/<code>scram-sha-256</code> usam senha.
+        </p>
+
         <p>
           O <strong>PostgreSQL</strong> é o banco de dados relacional open source mais avançado
           do mundo. Suporta JSON, full-text search, tipos geoespaciais (PostGIS), replicação,

@@ -10,6 +10,28 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="20 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal e <code>sudo</code>. Útil ter visto <a href="#/apt">APT</a>
+          (o apt usa o dpkg por baixo).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>dpkg</strong> — gerenciador de pacotes <em>baixo nível</em> do Debian/Ubuntu.
+          Instala arquivos <code>.deb</code> sem resolver dependências.
+        </p>
+        <p>
+          <strong>.deb</strong> — formato de pacote binário do Debian.
+        </p>
+        <p>
+          <strong>apt</strong> — gerenciador <em>alto nível</em>: baixa dos repositórios e resolve
+          dependências chamando o dpkg.
+        </p>
+        <p>
+          <strong>dpkg-reconfigure</strong> — refaz as perguntas de pós-instalação de um pacote
+          (timezone, teclado, locale).
+        </p>
+
         <p>
           O <strong>dpkg</strong> é o gerenciador de pacotes de baixo nível do Debian/Ubuntu.
           Enquanto o <code>apt</code> resolve dependências automaticamente, o dpkg trabalha

@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="20 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal e <code>sudo</code>. Conhecer caminho de arquivos (<code>/</code>, <code>/home</code>).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Partição</strong> — fatia lógica de um disco físico. Cada partição vira um device em <code>/dev</code> (<code>/dev/sda1</code>, <code>/dev/nvme0n1p1</code>).
+        </p>
+        <p>
+          <strong>Filesystem</strong> — formato em que a partição armazena arquivos. Padrão Ubuntu: <code>ext4</code>. Outros: <code>btrfs</code>, <code>xfs</code>, <code>zfs</code>.
+        </p>
+        <p>
+          <strong>Mount point</strong> — pasta onde a partição é "encaixada" na árvore. <code>/</code>, <code>/home</code>, <code>/boot</code> são exemplos.
+        </p>
+        <p>
+          <strong>Inode</strong> — estrutura que guarda metadados (dono, permissões, tamanho) de um arquivo. Acabar inode = não consegue criar mais arquivo, mesmo com espaço sobrando.
+        </p>
+
         <p>
           Gerenciar o espaço em disco é fundamental para manter o sistema saudável.
           Disco cheio causa falhas em serviços, travamentos e perda de dados. Este guia

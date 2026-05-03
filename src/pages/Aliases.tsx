@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="15 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal aberto. Útil ter visto <a href="#/shell-bash">Shell Bash</a> e <a href="#/variaveis-ambiente">Variáveis de Ambiente</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Alias</strong> — atalho que substitui um comando longo por um nome curto. Existe só na sessão atual ou no shell que o definiu.
+        </p>
+        <p>
+          <strong>~/.bashrc</strong> — arquivo lido a cada nova shell interativa. É onde aliases pessoais ficam permanentes.
+        </p>
+        <p>
+          <strong>unalias</strong> — remove um alias da sessão atual.
+        </p>
+        <p>
+          <strong>function</strong> — alternativa ao alias quando você precisa de argumentos posicionais ou lógica condicional.
+        </p>
+
         <p>
           Um <strong>alias</strong> é um atalho para um comando ou sequência de comandos.
           Em vez de digitar comandos longos e complexos repetidamente, você cria um nome

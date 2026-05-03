@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Desktop, <code>sudo</code>, espaço em disco para snapshots. Não é backup de dados pessoais — é snapshot do sistema!
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Timeshift</strong> — equivalente Linux do System Restore do Windows. Snapshot do sistema (não do <code>/home</code> por padrão).
+        </p>
+        <p>
+          <strong>rsync mode</strong> — funciona em qualquer filesystem. Snapshots incrementais com hard links.
+        </p>
+        <p>
+          <strong>btrfs mode</strong> — usa snapshots nativos do Btrfs — instantâneo e barato.
+        </p>
+        <p>
+          <strong>Boot snapshot</strong> — agendado automaticamente no boot — útil antes de upgrades.
+        </p>
+
         <p>
           O <strong>Timeshift</strong> é a ferramenta de restauração do sistema mais popular no
           Ubuntu/Linux. Funciona como o "Restauração do Sistema" do Windows ou o Time Machine

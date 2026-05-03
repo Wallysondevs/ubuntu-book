@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Acesso a um servidor VPN (próprio ou de provedor).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>VPN</strong> — Virtual Private Network — túnel criptografado por uma rede pública.
+        </p>
+        <p>
+          <strong>OpenVPN</strong> — protocolo open-source clássico. Usa SSL/TLS.
+        </p>
+        <p>
+          <strong>WireGuard</strong> — protocolo moderno, rápido, com configuração mínima. Embutido no kernel desde 5.6.
+        </p>
+        <p>
+          <strong>Split tunneling</strong> — manda só parte do tráfego pelo VPN; o resto vai direto.
+        </p>
+        <p>
+          <strong>Kill switch</strong> — bloqueia tráfego fora do VPN se o túnel cair.
+        </p>
+
         <p>
           Uma <strong>VPN</strong> (Virtual Private Network) cria um túnel criptografado entre
           seu computador e um servidor, protegendo seu tráfego de rede. Usos comuns: acessar

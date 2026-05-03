@@ -10,6 +10,29 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Espaço extra (HD externo, NAS, S3, outro servidor SSH)
+          para armazenar o backup. <code>rsync</code> já vem instalado.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Backup completo</strong> — copia tudo. Demora mais e ocupa mais espaço.
+        </p>
+        <p>
+          <strong>Incremental</strong> — copia só o que mudou desde o último backup.
+        </p>
+        <p>
+          <strong>Diferencial</strong> — copia o que mudou desde o último backup completo.
+        </p>
+        <p>
+          <strong>3-2-1</strong> — regra ouro: 3 cópias dos dados, 2 mídias diferentes, 1 fora do site.
+        </p>
+        <p>
+          <strong>rsync</strong> — utilitário que sincroniza diretórios transferindo só o delta.
+          Aceita SSH como transporte.
+        </p>
+
         <p>
           <strong>Backup</strong> é a prática mais importante de qualquer administrador de sistema.
           Sem backup, um disco queimado, um ransomware ou um <code>rm -rf</code> acidental pode

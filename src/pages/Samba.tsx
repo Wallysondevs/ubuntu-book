@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server/Desktop, <code>sudo</code>. Útil ter rede local com Windows ou outros Linux para testar.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Samba</strong> — implementação livre dos protocolos SMB/CIFS — compartilhar arquivos com Windows.
+        </p>
+        <p>
+          <strong>SMB / CIFS</strong> — protocolo de compartilhamento de arquivos do Windows.
+        </p>
+        <p>
+          <strong>smb.conf</strong> — arquivo de configuração principal — <code>/etc/samba/smb.conf</code>.
+        </p>
+        <p>
+          <strong>smbpasswd</strong> — define a senha Samba do usuário (separada da senha do sistema).
+        </p>
+        <p>
+          <strong>Workgroup</strong> — grupo de máquinas Windows na mesma rede. Padrão: <code>WORKGROUP</code>.
+        </p>
+
         <p>
           O <strong>Samba</strong> implementa o protocolo SMB/CIFS, permitindo que máquinas
           Linux compartilhem arquivos e impressoras com Windows, macOS e outros sistemas na

@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Pode pedir reboot ou re-login após mudar locale.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Locale</strong> — conjunto de regras de idioma, formato de data, moeda e codificação (<code>pt_BR.UTF-8</code>).
+        </p>
+        <p>
+          <strong>LANG / LC_*</strong> — LANG é o fallback geral; LC_TIME, LC_NUMERIC etc. sobrescrevem por categoria.
+        </p>
+        <p>
+          <strong>locale-gen</strong> — gera os arquivos binários a partir das definições escolhidas em <code>/etc/locale.gen</code>.
+        </p>
+        <p>
+          <strong>Timezone</strong> — fuso horário. Configure com <code>timedatectl set-timezone America/Sao_Paulo</code>.
+        </p>
+
         <p>
           A <strong>localização</strong> (locale) define como o sistema exibe datas, números,
           moeda, idioma de menus e mensagens de erro. No Ubuntu, isso é controlado por variáveis

@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com Docker Engine instalado (<a href="#/docker">Docker</a>). Plugin compose: <code>sudo apt install docker-compose-plugin</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Docker Compose</strong> — ferramenta para definir e rodar aplicações multi-container via YAML.
+        </p>
+        <p>
+          <strong>docker-compose.yml</strong> — arquivo declarativo com services, networks, volumes.
+        </p>
+        <p>
+          <strong>Service</strong> — definição de um container (imagem, env, portas, volumes, dependências).
+        </p>
+        <p>
+          <strong>compose vs swarm</strong> — Compose é desenvolvimento local; Swarm/Kubernetes são produção em cluster.
+        </p>
+
         <p>
           O <strong>Docker Compose</strong> permite definir e executar aplicações
           multi-container com um único arquivo YAML. Em vez de rodar vários comandos

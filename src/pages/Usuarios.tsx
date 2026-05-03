@@ -10,6 +10,27 @@ export default function Usuarios() {
       difficulty="intermediario"
       timeToRead="20 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu com <code>sudo</code>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Usuário</strong> — identidade no sistema com UID, home e shell. Definido em <code>/etc/passwd</code>.
+      </p>
+      <p>
+        <strong>Grupo</strong> — coleção de usuários para compartilhar permissões. <code>/etc/group</code>.
+      </p>
+      <p>
+        <strong>Senha hash</strong> — vai em <code>/etc/shadow</code> (só root lê).
+      </p>
+      <p>
+        <strong>useradd vs adduser</strong> — <code>useradd</code> é baixo nível; <code>adduser</code> é o script amigável do Debian/Ubuntu (cria home, pede senha).
+      </p>
+      <p>
+        <strong>sudo</strong> — executar comando como outro usuário (geralmente root). Configurado em <code>/etc/sudoers</code>.
+      </p>
+
       <p>
         O Linux é um sistema multiusuário. Entender como criar, modificar e gerenciar usuários e
         grupos é fundamental tanto para uso pessoal quanto para administrar servidores Ubuntu.

@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal e <code>sudo</code>. Saber editar arquivos de texto com nano/vim.
+          Útil ter visto <a href="#/systemd">systemd</a> para entender timers.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>cron</strong> — daemon que executa comandos em horários pré-definidos.
+          Roda em segundo plano desde os anos 70.
+        </p>
+        <p>
+          <strong>crontab</strong> — arquivo de tabela de tarefas. Cada usuário tem o seu, em
+          <code>/var/spool/cron/crontabs/&lt;usuario&gt;</code>. Edite com <code>crontab -e</code>.
+        </p>
+        <p>
+          <strong>systemd timer</strong> — alternativa moderna ao cron. Mais flexível (eventos, dependências, log no journal).
+        </p>
+        <p>
+          <strong>Sintaxe cron</strong> — 5 campos: minuto (0-59), hora (0-23), dia do mês (1-31), mês (1-12), dia da semana (0-7, 0 e 7 = domingo).
+        </p>
+
         <p>
           O <strong>cron</strong> é o agendador de tarefas padrão do Linux. Permite executar
           comandos e scripts automaticamente em horários e intervalos definidos — backups

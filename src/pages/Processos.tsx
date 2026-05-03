@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal. Comandos básicos não exigem sudo; matar processos de outro usuário sim.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Processo</strong> — instância em execução de um programa. Cada um tem PID único.
+        </p>
+        <p>
+          <strong>PID / PPID</strong> — process ID e parent process ID. PID 1 é o init (systemd no Ubuntu).
+        </p>
+        <p>
+          <strong>ps / top / htop</strong> — listar processos. <code>htop</code> é interativo e colorido (<code>sudo apt install htop</code>).
+        </p>
+        <p>
+          <strong>Sinal</strong> — mensagem para o processo: <code>SIGTERM</code> pede para encerrar, <code>SIGKILL</code> mata sem dó.
+        </p>
+        <p>
+          <strong>nice / renice</strong> — ajusta prioridade do scheduler. -20 = mais prioridade, 19 = menos.
+        </p>
+
         <p>
           Todo programa em execução no Linux é um <strong>processo</strong>. Cada processo
           tem um <strong>PID</strong> (Process ID) único, um dono, prioridade e consome

@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu 18.04+ (Netplan substituiu o ifupdown). <code>sudo</code>. Útil ter visto <a href="#/redes">Redes</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Netplan</strong> — renderer YAML que gera configs para NetworkManager (Desktop) ou networkd (Server).
+        </p>
+        <p>
+          <strong>/etc/netplan/*.yaml</strong> — configs declarativas. Indentação importa (YAML).
+        </p>
+        <p>
+          <strong>netplan apply</strong> — aplica a config. <code>netplan try</code> testa e desfaz se você não confirmar.
+        </p>
+        <p>
+          <strong>Renderer</strong> — quem realmente aplica: <code>NetworkManager</code> no Desktop, <code>networkd</code> no Server.
+        </p>
+
         <p>
           O <strong>Netplan</strong> é o sistema de configuração de rede padrão do Ubuntu
           desde a versão 17.10. Ele usa arquivos YAML declarativos para definir a configuração

@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Vamos instalar Zsh + Oh My Zsh.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Zsh</strong> — Z shell — shell mais moderno que Bash, com features extras (autocomplete inteligente, glob avançado).
+        </p>
+        <p>
+          <strong>Oh My Zsh</strong> — framework de configs e plugins para Zsh. Quase obrigatório.
+        </p>
+        <p>
+          <strong>Powerlevel10k</strong> — tema poderoso e rápido — prompt informativo com Git, k8s, etc.
+        </p>
+        <p>
+          <strong>~/.zshrc</strong> — equivalente do <code>.bashrc</code>.
+        </p>
+        <p>
+          <strong>chsh</strong> — muda seu shell padrão. <code>chsh -s $(which zsh)</code>.
+        </p>
+
         <p>
           O <strong>Zsh</strong> (Z Shell) é um shell avançado compatível com Bash, mas com
           recursos extras como autocompletar inteligente, correção de erros, globbing avançado

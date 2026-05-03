@@ -10,6 +10,31 @@ export default function Permissoes() {
       difficulty="intermediario"
       timeToRead="20 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Saber abrir o terminal e navegar entre pastas (<code>cd</code>, <code>ls</code>).
+        Conhecer a diferença entre arquivo e diretório. Útil ter feito o capítulo de
+        <a href="#/usuarios"> Usuários e Grupos</a>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Permissão</strong> — define quem pode ler (r), escrever (w) e executar (x)
+        cada arquivo. No Linux, tudo (inclusive dispositivos e diretórios) tem permissões.
+      </p>
+      <p>
+        <strong>Octal</strong> — notação numérica das permissões (0-7). 7=rwx, 6=rw-, 5=r-x, 4=r--.
+        <code>chmod 755</code> = dono rwx, grupo r-x, outros r-x.
+      </p>
+      <p>
+        <strong>umask</strong> — máscara que define as permissões padrão de arquivos novos.
+        Ubuntu padrão é 022 (arquivos nascem 644, diretórios 755).
+      </p>
+      <p>
+        <strong>Setuid / Setgid / Sticky bit</strong> — permissões especiais. Setuid faz o
+        binário rodar como o dono (ex.: <code>passwd</code>). Sticky em diretório (<code>/tmp</code>)
+        impede que um usuário apague arquivo de outro.
+      </p>
+
       <p>
         O sistema de permissões do Linux é um dos seus recursos mais poderosos e importantes
         para segurança. Ele controla quem pode ler, escrever e executar cada arquivo ou

@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com CPU que suporte virtualização (VT-x/AMD-V) — verifique com <code>egrep -c "(vmx|svm)" /proc/cpuinfo</code>. Acesso <code>sudo</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>KVM</strong> — Kernel-based Virtual Machine — hypervisor tipo 1 embutido no kernel Linux.
+        </p>
+        <p>
+          <strong>QEMU</strong> — emulador que combina com o KVM para fornecer hardware virtual à VM.
+        </p>
+        <p>
+          <strong>libvirt</strong> — API de alto nível para gerenciar VMs (KVM, Xen, LXC).
+        </p>
+        <p>
+          <strong>virt-manager</strong> — GUI para libvirt — equivalente livre ao VMware Workstation.
+        </p>
+        <p>
+          <strong>virsh</strong> — CLI do libvirt — para automação e servidores.
+        </p>
+
         <p>
           O <strong>KVM</strong> (Kernel-based Virtual Machine) é o hipervisor nativo do Linux,
           integrado diretamente ao kernel. Combinado com o <strong>QEMU</strong>, permite criar

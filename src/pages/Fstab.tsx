@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Cuidado: erro em <code>/etc/fstab</code> pode impedir o boot — sempre tenha um pendrive live por perto. Use <code>mount -a</code> para testar antes de reiniciar.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>fstab</strong> — file system table — arquivo <code>/etc/fstab</code> com partições montadas no boot.
+        </p>
+        <p>
+          <strong>UUID</strong> — identificador único da partição. Sempre prefira UUID a <code>/dev/sdaN</code> (que pode mudar).
+        </p>
+        <p>
+          <strong>Mount options</strong> — <code>defaults</code>, <code>noatime</code>, <code>ro</code>, <code>user</code>, <code>nofail</code> — controlam comportamento.
+        </p>
+        <p>
+          <strong>dump / pass</strong> — últimos campos: <code>dump</code> (backup, quase sempre 0) e <code>pass</code> (ordem do fsck no boot).
+        </p>
+
         <p>
           O arquivo <strong>/etc/fstab</strong> (File System Table) define quais sistemas de
           arquivos são montados automaticamente no boot do sistema. Cada linha descreve uma

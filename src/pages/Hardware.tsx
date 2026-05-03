@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu instalado, terminal. Alguns comandos exigem <code>sudo</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>lshw</strong> — lista hardware detalhado (CPU, RAM, disco, rede, USB).
+        </p>
+        <p>
+          <strong>lscpu / lsblk / lspci / lsusb</strong> — versões focadas em CPU / blocos / PCI / USB.
+        </p>
+        <p>
+          <strong>dmidecode</strong> — lê tabelas SMBIOS/DMI da BIOS — útil para placa-mãe e RAM.
+        </p>
+        <p>
+          <strong>inxi</strong> — resumo amigável e colorido de tudo. <code>sudo apt install inxi</code>.
+        </p>
+
         <p>
           O Ubuntu oferece diversas ferramentas para identificar, monitorar e diagnosticar
           o hardware do seu computador. Saber usar essas ferramentas é essencial para

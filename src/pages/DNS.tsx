@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Útil ter visto <a href="#/redes">Redes</a> e <a href="#/netplan">Netplan</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>DNS</strong> — sistema que traduz nomes (<code>google.com</code>) em IPs (<code>142.250.x.x</code>).
+        </p>
+        <p>
+          <strong>systemd-resolved</strong> — resolvedor DNS padrão do Ubuntu moderno. Fica em <code>127.0.0.53</code>.
+        </p>
+        <p>
+          <strong>/etc/resolv.conf</strong> — arquivo legado — no Ubuntu é um symlink gerado pelo systemd-resolved.
+        </p>
+        <p>
+          <strong>dig / nslookup / host</strong> — utilitários para consultar DNS manualmente. <code>dig</code> é o mais informativo.
+        </p>
+
         <p>
           O <strong>DNS</strong> (Domain Name System) é o sistema que traduz nomes de domínio
           (como <code>google.com</code>) em endereços IP (como <code>142.250.218.46</code>).

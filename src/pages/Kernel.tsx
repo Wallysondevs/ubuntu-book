@@ -10,6 +10,28 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu instalado, <code>sudo</code>, espaço em <code>/boot</code> (mínimo 500 MB livres).
+          Trocar de kernel pode quebrar drivers proprietários (NVIDIA, Wi-Fi). Tenha sempre
+          o kernel anterior listado no GRUB para fallback.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Kernel</strong> — núcleo do sistema operacional. Conversa com o hardware e
+          gerencia processos, memória, I/O. No Ubuntu chama <code>linux-image-*</code>.
+        </p>
+        <p>
+          <strong>HWE (Hardware Enablement)</strong> — kernels mais novos portados para LTS,
+          dão suporte a hardware recente. <code>linux-generic-hwe-24.04</code>.
+        </p>
+        <p>
+          <strong>Mainline</strong> — kernel "puro" do kernel.org, sem patches do Ubuntu. Para os curiosos.
+        </p>
+        <p>
+          <strong>Módulo do kernel</strong> — driver carregável dinamicamente (<code>modprobe</code>, <code>lsmod</code>).
+        </p>
+
         <p>
           O <strong>kernel</strong> é o coração do sistema operacional. Ele gerencia todo o
           hardware (CPU, memória, discos, rede), processos, sistemas de arquivos e segurança.

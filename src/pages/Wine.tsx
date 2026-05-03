@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Desktop, <code>sudo</code>. Algumas apps Windows simplesmente não funcionam — verifique no AppDB do Wine antes.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Wine</strong> — Wine Is Not an Emulator — implementa a API do Windows no Linux.
+        </p>
+        <p>
+          <strong>Prefix</strong> — pasta com "C:\\" virtual. Padrão: <code>~/.wine/</code>. Cada app pode ter o seu.
+        </p>
+        <p>
+          <strong>winetricks</strong> — script que automatiza instalação de DLLs e fontes do Windows.
+        </p>
+        <p>
+          <strong>Proton</strong> — fork do Wine usado pelo Steam para rodar jogos Windows.
+        </p>
+        <p>
+          <strong>Lutris</strong> — frontend que gerencia prefixes e instala jogos automaticamente.
+        </p>
+
         <p>
           O <strong>Wine</strong> (Wine Is Not an Emulator) é uma camada de compatibilidade que
           permite executar aplicativos Windows no Linux sem emulação. Diferente de uma máquina

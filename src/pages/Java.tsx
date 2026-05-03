@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Vamos usar OpenJDK do repositório oficial (<code>openjdk-XX-jdk</code>).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>JDK</strong> — Java Development Kit — compilador <code>javac</code> + runtime + ferramentas.
+        </p>
+        <p>
+          <strong>JRE</strong> — Java Runtime Environment — só para rodar (sem compilar). Hoje quase obsoleto.
+        </p>
+        <p>
+          <strong>OpenJDK</strong> — implementação livre de referência. Padrão no Ubuntu.
+        </p>
+        <p>
+          <strong>update-alternatives</strong> — sistema do Debian que escolhe qual Java é o padrão quando há vários instalados.
+        </p>
+        <p>
+          <strong>JAVA_HOME</strong> — variável que aponta para a raiz do JDK ativo. Muitos builds (Maven, Gradle) precisam dela.
+        </p>
+
         <p>
           O <strong>Java</strong> é uma das linguagens de programação mais utilizadas no mundo,
           especialmente em aplicações empresariais, desenvolvimento Android, servidores web e

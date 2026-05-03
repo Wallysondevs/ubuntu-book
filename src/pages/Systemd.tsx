@@ -10,6 +10,30 @@ export default function Systemd() {
       difficulty="intermediario"
       timeToRead="25 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu 16.04+ (qualquer versão moderna usa systemd). Acesso <code>sudo</code>.
+        Conhecer terminal básico.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>systemd</strong> — sistema de init que substituiu o SysVinit. Cuida de
+        inicialização, serviços, logs (journald), timers, sockets, montagens.
+      </p>
+      <p>
+        <strong>Unit</strong> — qualquer "coisa" gerenciada pelo systemd. Tipos:
+        <code>.service</code>, <code>.timer</code>, <code>.socket</code>, <code>.mount</code>,
+        <code>.target</code>, <code>.path</code>.
+      </p>
+      <p>
+        <strong>Target</strong> — agrupamento de units que define um estado do sistema.
+        <code>multi-user.target</code> = modo servidor; <code>graphical.target</code> = com GUI.
+      </p>
+      <p>
+        <strong>Journal</strong> — log binário centralizado mantido pelo <code>journald</code>.
+        Lê-se com <code>journalctl</code>.
+      </p>
+
       <p>
         O <strong>systemd</strong> é o sistema de inicialização (init system) e gerenciador de
         serviços do Ubuntu (desde o Ubuntu 15.04). Ele substitui o antigo SysVinit e é responsável

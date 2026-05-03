@@ -10,6 +10,27 @@ export default function Seguranca() {
       difficulty="avancado"
       timeToRead="30 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu Server ou Desktop exposto à internet. <code>sudo</code>. Útil ter visto <a href="#/ssh">SSH</a>, <a href="#/fail2ban">Fail2Ban</a>, <a href="#/usuarios">Usuários</a>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Hardening</strong> — processo de reduzir superfície de ataque do sistema.
+      </p>
+      <p>
+        <strong>UFW</strong> — Uncomplicated Firewall — frontend amigável para o iptables/nftables. Padrão do Ubuntu.
+      </p>
+      <p>
+        <strong>AppArmor</strong> — MAC baseado em paths. Habilitado por padrão.
+      </p>
+      <p>
+        <strong>unattended-upgrades</strong> — aplica patches de segurança automaticamente.
+      </p>
+      <p>
+        <strong>Princípio do menor privilégio</strong> — dar a cada usuário/serviço só o que ele precisa, nada mais.
+      </p>
+
       <p>
         O Ubuntu tem várias camadas de segurança ativadas por padrão — mais do que a maioria
         das distribuições Linux. Ainda assim, existem configurações importantes a fazer

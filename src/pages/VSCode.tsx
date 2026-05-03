@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Desktop, <code>sudo</code>. Recomendado instalar via repo oficial Microsoft (assim o <code>apt</code> atualiza junto).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>VS Code</strong> — editor de código gratuito da Microsoft, baseado em Electron. Open source (MIT).
+        </p>
+        <p>
+          <strong>VSCodium</strong> — rebuild de código aberto sem telemetria Microsoft.
+        </p>
+        <p>
+          <strong>Extensions</strong> — plugins para linguagens, temas e ferramentas. Marketplace integrado.
+        </p>
+        <p>
+          <strong>Remote SSH</strong> — editar arquivos em servidor remoto como se fossem locais.
+        </p>
+        <p>
+          <strong>settings.json</strong> — config em JSON — sincroniza com sua conta.
+        </p>
+
         <p>
           O <strong>Visual Studio Code</strong> (VS Code) é o editor de código mais popular do
           mundo — gratuito, open source (pela Microsoft) e extremamente extensível. Suporta

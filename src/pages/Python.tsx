@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu já vem com Python 3 instalado. Útil saber editar arquivos no terminal.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Python</strong> — linguagem de programação interpretada, generalista, com sintaxe limpa.
+        </p>
+        <p>
+          <strong>python3 / python</strong> — no Ubuntu moderno, <code>python</code> não existe por padrão — use <code>python3</code>. Pacote <code>python-is-python3</code> cria o alias.
+        </p>
+        <p>
+          <strong>pip</strong> — gerenciador de pacotes do Python. Pacote <code>python3-pip</code>.
+        </p>
+        <p>
+          <strong>venv</strong> — ambiente virtual isolado. Sempre use venv para projetos.
+        </p>
+        <p>
+          <strong>PEP 668</strong> — desde Ubuntu 23.04 não dá pra <code>pip install</code> global — força uso de venv.
+        </p>
+
         <p>
           O <strong>Python</strong> já vem pré-instalado no Ubuntu (é usado internamente pelo
           sistema). No entanto, é importante saber gerenciar versões, ambientes virtuais e

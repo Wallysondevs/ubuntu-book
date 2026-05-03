@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal aberto. Vim já vem instalado por padrão (versão tiny);
+          para a versão completa: <code>sudo apt install vim</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Modo</strong> — Vim é modal. Os 4 principais: Normal (navegação), Insert (digitação),
+          Visual (seleção), Command-line (<code>:</code> comandos).
+        </p>
+        <p>
+          <strong>Buffer</strong> — arquivo aberto em memória. Você pode ter vários simultaneamente.
+        </p>
+        <p>
+          <strong>~/.vimrc</strong> — arquivo de configuração pessoal do Vim.
+        </p>
+        <p>
+          <strong>Registrador</strong> — "área de transferência" nomeada do Vim. <code>"ay</code>
+          copia para o registrador <code>a</code>.
+        </p>
+
         <p>
           O <strong>Vim</strong> (Vi IMproved) é o editor de texto mais poderoso do terminal.
           Está disponível em praticamente todo servidor Linux, tornando-o essencial para

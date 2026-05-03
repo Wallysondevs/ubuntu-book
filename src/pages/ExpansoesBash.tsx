@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal Bash. Útil ter visto <a href="#/shell-bash">Shell Bash</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Expansão</strong> — transformação que o Bash faz na linha <em>antes</em> de executar o comando.
+        </p>
+        <p>
+          <strong>Brace expansion</strong> — <code>{"{1..5}"}</code> vira <code>1 2 3 4 5</code>. Acontece <em>antes</em> de tudo.
+        </p>
+        <p>
+          <strong>Tilde expansion</strong> — <code>~</code> vira <code>$HOME</code>; <code>~user</code> vira o home do usuário.
+        </p>
+        <p>
+          <strong>Glob</strong> — <code>*</code>, <code>?</code>, <code>[]</code> — casamento de padrões em nomes de arquivos.
+        </p>
+        <p>
+          <strong>Command substitution</strong> — <code>$(comando)</code> ou <code>`comando`</code> — substitui pela saída.
+        </p>
+
         <p>
           As <strong>expansões do Bash</strong> são mecanismos que transformam o texto que você
           digita antes de o comando ser executado. Dominar as expansões permite escrever comandos

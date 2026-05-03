@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Imagem Ubuntu Cloud (já vem com cloud-init). Útil ter conta na cloud (AWS/GCP/Azure/DigitalOcean) ou usar localmente com <code>cloud-localds</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>cloud-init</strong> — padrão de inicialização para imagens cloud. Lê metadados na primeira boot e configura usuários, SSH, pacotes, scripts.
+        </p>
+        <p>
+          <strong>user-data</strong> — YAML que você passa para a VM dizendo o que fazer na primeira boot.
+        </p>
+        <p>
+          <strong>datasource</strong> — de onde o cloud-init lê os metadados (EC2, NoCloud, OpenStack, etc.).
+        </p>
+        <p>
+          <strong>#cloud-config</strong> — primeira linha obrigatória do user-data YAML.
+        </p>
+
         <p>
           O <strong>Cloud-Init</strong> é a ferramenta padrão para provisionamento automático de
           instâncias em nuvem. Quando você cria uma VM na AWS, Google Cloud, Azure, DigitalOcean

@@ -10,6 +10,25 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu instalado, <code>sudo</code>. Útil ter visto <a href="#/systemd">systemd</a>.
+          Cuidado: erros em GRUB podem deixar o sistema sem boot — sempre teste em VM antes.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>UEFI / BIOS</strong> — firmware que inicia o hardware antes do sistema. UEFI é o moderno (gpt, secure boot); BIOS é o legado.
+        </p>
+        <p>
+          <strong>GRUB</strong> — bootloader padrão do Ubuntu. Escolhe qual kernel/sistema iniciar.
+        </p>
+        <p>
+          <strong>initramfs</strong> — sistema de arquivos mínimo carregado em RAM antes do root real. Permite carregar drivers (LUKS, LVM, NVMe).
+        </p>
+        <p>
+          <strong>Target</strong> — alvo do systemd que define o estado do boot. <code>graphical.target</code> = com GUI; <code>multi-user.target</code> = só CLI; <code>rescue.target</code> = monouser.
+        </p>
+
         <p>
           Entender o processo de boot é essencial para diagnosticar problemas de
           inicialização, configurar dual boot, otimizar o tempo de boot e recuperar

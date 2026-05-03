@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal. Útil ter visto <a href="#/shell-bash">Shell Bash</a> e <a href="#/expansoes-bash">Expansões</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Shebang</strong> — primeira linha <code>#!/bin/bash</code> que diz qual interpretador usar.
+        </p>
+        <p>
+          <strong>chmod +x</strong> — dá permissão de execução para o script.
+        </p>
+        <p>
+          <strong>{"$1, $2, $@"}</strong> — argumentos posicionais e a lista completa.
+        </p>
+        <p>
+          <strong>set -euo pipefail</strong> — boas práticas: erra ao primeiro erro, ao usar var indefinida, e dentro de pipe.
+        </p>
+        <p>
+          <strong>Função</strong> — bloco reutilizável definido com <code>{"nome() { ... }"}</code>.
+        </p>
+
         <p>
           <strong>Scripts Bash</strong> automatizam tarefas repetitivas no terminal. Um script
           é simplesmente um arquivo de texto com uma sequência de comandos que o Bash executa

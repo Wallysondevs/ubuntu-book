@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Cuidado <strong>extremo</strong>: ferramentas de particionamento podem destruir dados — sempre teste em VM ou disco vazio. Útil ter visto <a href="#/disco">Disco</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Tabela de partições</strong> — MBR (legado, máx 2 TB, 4 primárias) ou GPT (moderno, ilimitada).
+        </p>
+        <p>
+          <strong>Partição primária / estendida / lógica</strong> — conceitos do MBR. GPT só tem partições "comuns".
+        </p>
+        <p>
+          <strong>parted / gdisk / fdisk</strong> — ferramentas CLI. <code>fdisk</code> agora suporta GPT também.
+        </p>
+        <p>
+          <strong>mkfs</strong> — formata uma partição com um filesystem (<code>mkfs.ext4</code>, <code>mkfs.xfs</code>).
+        </p>
+
         <p>
           <strong>Particionamento</strong> é o processo de dividir um disco em seções
           independentes, cada uma com seu próprio sistema de arquivos. Entender partições é

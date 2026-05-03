@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Cuidado: criptografar disco existente <em>destrói</em> os dados — backup antes! Útil ter visto <a href="#/disco">Disco</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>LUKS</strong> — Linux Unified Key Setup — padrão de criptografia full-disk no Linux.
+        </p>
+        <p>
+          <strong>cryptsetup</strong> — ferramenta CLI para criar e gerenciar volumes LUKS.
+        </p>
+        <p>
+          <strong>Header</strong> — metadados (algoritmo, slots de chave) no início do volume. Backup é vital.
+        </p>
+        <p>
+          <strong>Key slot</strong> — LUKS suporta até 8 senhas/keyfiles diferentes para o mesmo volume.
+        </p>
+        <p>
+          <strong>/etc/crypttab</strong> — equivalente do fstab para volumes criptografados — lista o que abrir no boot.
+        </p>
+
         <p>
           O <strong>LUKS</strong> (Linux Unified Key Setup) é o padrão de criptografia de disco
           no Linux. Ele protege seus dados criptografando partições inteiras — se alguém roubar

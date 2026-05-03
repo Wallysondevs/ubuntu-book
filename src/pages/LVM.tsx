@@ -10,6 +10,25 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="avancado"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server (LVM raramente em Desktop), <code>sudo</code>, ao menos um disco/partição
+          livre para experimentar. Útil ter feito <a href="#/disco">Disco</a> e <a href="#/particoes">Partições</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>PV (Physical Volume)</strong> — disco/partição física registrada no LVM (<code>/dev/sda2</code> vira PV).
+        </p>
+        <p>
+          <strong>VG (Volume Group)</strong> — pool de PVs. É a "piscina" de espaço total.
+        </p>
+        <p>
+          <strong>LV (Logical Volume)</strong> — volume lógico criado dentro de uma VG. Você formata e monta como se fosse uma partição.
+        </p>
+        <p>
+          <strong>Snapshot</strong> — cópia point-in-time de um LV. Útil para backup consistente sem parar o serviço.
+        </p>
+
         <p>
           O <strong>LVM</strong> (Logical Volume Manager) adiciona uma camada de abstração
           entre discos físicos e sistemas de arquivos. Com LVM, você pode redimensionar

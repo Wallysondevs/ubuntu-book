@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server, <code>sudo</code>, SSH habilitado. Útil ter visto <a href="#/ssh">SSH</a>
+          e <a href="#/systemd">systemd</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Fail2Ban</strong> — daemon Python que monitora logs e bane IPs suspeitos
+          via iptables/nftables/UFW. Defesa em profundidade contra brute-force.
+        </p>
+        <p>
+          <strong>Jail</strong> — regra que combina filtro + ação. Cada serviço (sshd, apache, postfix) tem sua jail.
+        </p>
+        <p>
+          <strong>Filter</strong> — expressão regular que reconhece falhas no log do serviço.
+        </p>
+        <p>
+          <strong>jail.local</strong> — sobrescreve <code>jail.conf</code>. Sempre edite o
+          <code>.local</code>, nunca o <code>.conf</code> (atualizações sobrescrevem).
+        </p>
+
         <p>
           O <strong>Fail2Ban</strong> monitora logs do sistema em busca de tentativas de login
           falhadas e bloqueia automaticamente os IPs ofensores usando o firewall (iptables/nftables).

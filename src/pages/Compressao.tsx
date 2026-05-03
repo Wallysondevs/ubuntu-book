@@ -10,6 +10,26 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="20 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal. <code>tar</code>, <code>gzip</code>, <code>zip</code> já vêm
+          instalados. Para <code>7z</code>: <code>sudo apt install p7zip-full</code>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>tar</strong> — "tape archive". Junta vários arquivos em um só (não comprime sozinho).
+        </p>
+        <p>
+          <strong>gzip / bzip2 / xz / zstd</strong> — algoritmos de compressão. <code>gzip</code> é
+          rápido; <code>xz</code> comprime mais; <code>zstd</code> é o moderno equilibrado.
+        </p>
+        <p>
+          <strong>.tar.gz / .tgz</strong> — arquivo tar comprimido com gzip. Padrão Linux.
+        </p>
+        <p>
+          <strong>zip</strong> — formato Windows-friendly. Comprime e arquiva em um só passo.
+        </p>
+
         <p>
           A <strong>compressão</strong> reduz o tamanho de arquivos para economizar espaço
           e transferir mais rápido. No Linux, é comum separar <strong>arquivamento</strong>

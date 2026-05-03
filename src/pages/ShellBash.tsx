@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal aberto (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd>).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Shell</strong> — programa que interpreta seus comandos. Bash é o padrão do Ubuntu.
+        </p>
+        <p>
+          <strong>Prompt</strong> — o que o shell desenha esperando comando. Geralmente <code>usuario@host:caminho$</code>.
+        </p>
+        <p>
+          <strong>Built-in</strong> — comando interno do shell (<code>cd</code>, <code>echo</code>, <code>export</code>) — não vira processo separado.
+        </p>
+        <p>
+          <strong>Histórico</strong> — <code>history</code> + <kbd>Ctrl</kbd>+<kbd>R</kbd> para busca incremental.
+        </p>
+        <p>
+          <strong>Tab completion</strong> — <kbd>Tab</kbd> autocompleta comandos, paths e até argumentos quando o pacote <code>bash-completion</code> está instalado.
+        </p>
+
         <p>
           O <strong>Bash</strong> (Bourne Again SHell) é o shell padrão do Ubuntu — é o
           programa que interpreta seus comandos no terminal. Dominar o Bash vai além de

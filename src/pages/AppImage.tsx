@@ -10,6 +10,24 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="25 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Desktop. Não exige <code>sudo</code> — basta marcar como executável.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>AppImage</strong> — formato portátil: app + dependências em um único arquivo executável (sem instalar).
+        </p>
+        <p>
+          <strong>FUSE</strong> — sistema de arquivos em userspace que o AppImage usa para se montar em runtime.
+        </p>
+        <p>
+          <strong>AppImageLauncher</strong> — utilitário que integra AppImages ao menu de aplicativos.
+        </p>
+        <p>
+          <strong>Sandbox</strong> — AppImage <em>não</em> isola por padrão (diferente de Snap/Flatpak). É só empacotamento.
+        </p>
+
         <p>
           O <strong>AppImage</strong> é um formato de distribuição de software para Linux onde
           o aplicativo inteiro — binário, bibliotecas e recursos — vem em um <em>único arquivo</em>.

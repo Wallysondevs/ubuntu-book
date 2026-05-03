@@ -10,6 +10,24 @@ export default function ManipulacaoArquivos() {
       difficulty="iniciante"
       timeToRead="20 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu com terminal aberto. Útil ter visto <a href="#/navegacao">Navegação</a> e <a href="#/permissoes">Permissões</a>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>cp / mv / rm</strong> — copiar, mover, remover. <code>-r</code> para diretórios; <code>-i</code> pergunta antes de sobrescrever.
+      </p>
+      <p>
+        <strong>ln</strong> — cria links. <code>-s</code> = symlink (atalho); sem <code>-s</code> = hard link (mesmo inode).
+      </p>
+      <p>
+        <strong>touch</strong> — cria arquivo vazio ou atualiza mtime/atime de um existente.
+      </p>
+      <p>
+        <strong>stat</strong> — mostra todos os metadados (inode, links, datas, permissões).
+      </p>
+
       <p>
         Manipular arquivos é uma das atividades mais básicas e importantes no terminal Linux.
         Esses comandos parecem simples mas têm opções poderosas que economizam muito tempo

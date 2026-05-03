@@ -10,6 +10,33 @@ export default function Ssh() {
       difficulty="intermediario"
       timeToRead="45 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu (cliente). Outra máquina/servidor com SSH para conectar (pode ser uma VM,
+        Raspberry Pi, VPS ou contêiner). Conhecer terminal básico e ter <code>sudo</code>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>SSH (Secure Shell)</strong> — protocolo de conexão remota criptografada.
+        Substitui telnet/rlogin. Porta padrão 22 (TCP).
+      </p>
+      <p>
+        <strong>Chave pública/privada</strong> — par de arquivos que substitui senhas.
+        A pública (<code>id_ed25519.pub</code>) vai no servidor; a privada fica no seu PC e nunca sai.
+      </p>
+      <p>
+        <strong>known_hosts</strong> — arquivo em <code>~/.ssh/</code> que guarda a impressão
+        digital dos servidores conhecidos. Evita ataques man-in-the-middle.
+      </p>
+      <p>
+        <strong>SSH agent</strong> — processo que mantém suas chaves descriptografadas em memória.
+        Você digita a senha da chave uma vez por sessão.
+      </p>
+      <p>
+        <strong>Tunneling / Port forwarding</strong> — redireciona uma porta local através do SSH.
+        Útil para acessar bancos privados, Redis, painéis admin atrás de firewall.
+      </p>
+
       <p>
         O <strong>SSH (Secure Shell)</strong> é o protocolo padrão para acesso remoto seguro a sistemas Linux.
         Toda comunicação é criptografada, tornando-o seguro mesmo em redes públicas. No Ubuntu,

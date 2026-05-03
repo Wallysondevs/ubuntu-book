@@ -10,6 +10,24 @@ export default function PrimeirosPassos() {
       difficulty="iniciante"
       timeToRead="20 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu instalado (Desktop ou Server). Acesso a teclado e tela, ou SSH se for Server.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Sessão</strong> — sua conta de usuário logada — gráfica ou terminal.
+      </p>
+      <p>
+        <strong>Terminal</strong> — aplicativo onde você digita comandos. Atalho: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd>.
+      </p>
+      <p>
+        <strong>Sudo</strong> — executar comando como root. Pede sua senha (não a do root).
+      </p>
+      <p>
+        <strong>Atualização</strong> — <code>sudo apt update</code> (lista) seguido de <code>sudo apt upgrade</code> (aplica).
+      </p>
+
       <p>
         Parabéns pela instalação! O Ubuntu já vem bastante completo, mas há algumas configurações
         importantes a fazer logo após a primeira inicialização. Siga estes passos em ordem

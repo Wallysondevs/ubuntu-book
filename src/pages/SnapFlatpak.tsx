@@ -10,6 +10,27 @@ export default function SnapFlatpak() {
       difficulty="iniciante"
       timeToRead="15 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu Desktop. Snap já vem; Flatpak instala com <code>sudo apt install flatpak gnome-software-plugin-flatpak</code>.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>Snap</strong> — formato de pacote universal da Canonical. Auto-update, sandbox, store própria.
+      </p>
+      <p>
+        <strong>Flatpak</strong> — formato universal mantido pela comunidade. Padrão no Fedora; Flathub é a store.
+      </p>
+      <p>
+        <strong>Sandbox</strong> — o app roda isolado e só vê o que a política permite (Portals).
+      </p>
+      <p>
+        <strong>AppImage</strong> — formato sem instalação (<a href="#/appimage">AppImage</a>) — simples mas sem sandbox real.
+      </p>
+      <p>
+        <strong>Quando usar qual</strong> — Snap para apps oficiais Ubuntu/server, Flatpak para apps gráficos da comunidade.
+      </p>
+
       <p>
         Além do APT (para pacotes .deb), o Ubuntu suporta dois formatos modernos de distribuição
         de aplicativos: <strong>Snap</strong> (criado pela Canonical) e <strong>Flatpak</strong>

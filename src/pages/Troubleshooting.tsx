@@ -10,6 +10,27 @@ export default function Troubleshooting() {
       difficulty="intermediario"
       timeToRead="25 min"
     >
+      <AlertBox type="info" title="Pré-requisitos">
+        Ubuntu instalado, <code>sudo</code>. Tenha um pendrive Ubuntu live para emergências de boot.
+      </AlertBox>
+
+      <h2>Glossário rápido</h2>
+      <p>
+        <strong>journalctl</strong> — primeiro lugar pra olhar — <code>journalctl -xe</code> mostra erros recentes com contexto.
+      </p>
+      <p>
+        <strong>dmesg</strong> — mensagens do kernel — útil para hardware/driver.
+      </p>
+      <p>
+        <strong>systemctl status</strong> — estado de um serviço + últimas linhas de log.
+      </p>
+      <p>
+        <strong>Modo recovery</strong> — menu do GRUB → Advanced → recovery mode → root shell.
+      </p>
+      <p>
+        <strong>Live USB</strong> — boot externo para reparar instalação quebrada.
+      </p>
+
       <p>
         Todo sistema Linux vai apresentar problemas em algum momento. A habilidade de
         diagnosticar e resolver esses problemas é o que separa um usuário experiente de um

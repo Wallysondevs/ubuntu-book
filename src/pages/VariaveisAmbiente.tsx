@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="20 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal Bash.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Variável de ambiente</strong> — par chave=valor herdado por processos filhos. <code>printenv</code> lista todas.
+        </p>
+        <p>
+          <strong>export</strong> — marca a variável para ser exportada aos filhos.
+        </p>
+        <p>
+          <strong>PATH</strong> — lista de diretórios onde o shell procura executáveis.
+        </p>
+        <p>
+          <strong>~/.bashrc vs ~/.profile</strong> — <em>bashrc</em> roda em cada shell interativo; <em>profile</em> só no login.
+        </p>
+        <p>
+          <strong>/etc/environment</strong> — variáveis globais do sistema (formato KEY=value, sem export).
+        </p>
+
         <p>
           <strong>Variáveis de ambiente</strong> são valores dinâmicos que afetam o
           comportamento de processos no sistema. Elas armazenam configurações como caminhos

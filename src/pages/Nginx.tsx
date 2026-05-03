@@ -10,6 +10,28 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu Server/Desktop, <code>sudo</code>, portas 80/443 livres. Apache parado se já
+          rodando na 80 (<code>sudo systemctl stop apache2</code>).
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Nginx</strong> — servidor web event-driven, criado para resolver o "C10K problem"
+          (10 mil conexões simultâneas). Hoje serve mais de 33% dos sites top-1M.
+        </p>
+        <p>
+          <strong>Server block</strong> — equivalente Nginx do "virtual host" do Apache.
+          Ficam em <code>/etc/nginx/sites-available/</code>.
+        </p>
+        <p>
+          <strong>Upstream</strong> — grupo de servidores backend para load balancing.
+        </p>
+        <p>
+          <strong>Proxy reverso</strong> — Nginx recebe a requisição e repassa para um app server
+          (Node, PHP-FPM, Python WSGI). Padrão moderno de produção.
+        </p>
+
         <p>
           O <strong>Nginx</strong> (pronuncia-se "engine-x") é o servidor web mais popular
           do mundo, usado por sites como Netflix, Airbnb e WordPress.com. Além de servir

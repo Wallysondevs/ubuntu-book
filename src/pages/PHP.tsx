@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Útil ter visto <a href="#/apache">Apache</a> ou <a href="#/nginx">Nginx</a> se for rodar via web.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>PHP</strong> — linguagem de scripting voltada para web, executada no servidor.
+        </p>
+        <p>
+          <strong>PHP-FPM</strong> — FastCGI Process Manager — recomendado em produção (com Nginx ou Apache event).
+        </p>
+        <p>
+          <strong>mod_php</strong> — módulo Apache que roda PHP no mesmo processo (mais simples, menos performático).
+        </p>
+        <p>
+          <strong>Ondrej PPA</strong> — PPA mais usado para múltiplas versões PHP no Ubuntu (<code>ppa:ondrej/php</code>).
+        </p>
+        <p>
+          <strong>composer</strong> — gerenciador de pacotes PHP — equivalente ao npm/pip.
+        </p>
+
         <p>
           O <strong>PHP</strong> é uma das linguagens mais utilizadas para desenvolvimento web,
           alimentando mais de 75% dos sites do mundo, incluindo WordPress, Laravel, Drupal e

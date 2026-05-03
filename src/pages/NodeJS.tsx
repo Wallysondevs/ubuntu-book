@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Recomendado instalar via NodeSource ou nvm — o pacote do Ubuntu costuma ser antigo.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Node.js</strong> — runtime JavaScript fora do navegador, baseado no V8 do Chrome.
+        </p>
+        <p>
+          <strong>npm</strong> — Node Package Manager — gerenciador de pacotes oficial.
+        </p>
+        <p>
+          <strong>nvm</strong> — Node Version Manager — instala várias versões do Node lado a lado.
+        </p>
+        <p>
+          <strong>NodeSource</strong> — repositório APT mantido oficialmente para versões recentes do Node no Ubuntu.
+        </p>
+        <p>
+          <strong>package.json</strong> — manifesto do projeto: dependências, scripts, metadados.
+        </p>
+
         <p>
           O <strong>Node.js</strong> é um runtime JavaScript construído sobre o motor V8 do Chrome,
           permitindo executar JavaScript fora do navegador. É a base de frameworks como Express,

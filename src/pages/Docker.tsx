@@ -10,6 +10,31 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu 20.04+, kernel 4.x+ (qualquer versão moderna), 4 GB RAM mínimo. Acesso <code>sudo</code>.
+          Conhecer terminal e conceitos básicos de processos.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Container</strong> — processo isolado com seu próprio sistema de arquivos, rede e
+          PID, mas compartilhando o kernel do host. Mais leve que VM.
+        </p>
+        <p>
+          <strong>Imagem</strong> — template imutável a partir do qual containers são criados.
+          Construída em camadas (cada instrução do Dockerfile = 1 camada).
+        </p>
+        <p>
+          <strong>Dockerfile</strong> — receita de texto que descreve como montar uma imagem.
+        </p>
+        <p>
+          <strong>Volume</strong> — área de armazenamento gerenciada pelo Docker, persiste mesmo
+          após o container ser removido.
+        </p>
+        <p>
+          <strong>Registry</strong> — servidor de imagens. Docker Hub é o público padrão.
+        </p>
+
         <p>
           O <strong>Docker</strong> permite empacotar aplicações com todas as suas
           dependências em <strong>containers</strong> — ambientes isolados, leves e

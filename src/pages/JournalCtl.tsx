@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="intermediario"
         timeToRead="30 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com <code>sudo</code>. Já vem instalado junto com systemd. Útil ter visto <a href="#/systemd">Systemd</a>.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>journalctl</strong> — cliente para ler o journal binário do systemd.
+        </p>
+        <p>
+          <strong>journal</strong> — log estruturado, indexado e binário, mantido pelo <code>systemd-journald</code>.
+        </p>
+        <p>
+          <strong>Persistente vs volátil</strong> — sem <code>/var/log/journal/</code> os logs morrem no reboot. Crie a pasta para persistir.
+        </p>
+        <p>
+          <strong>Unidade</strong> — filtre logs por serviço com <code>-u nome.service</code>.
+        </p>
+        <p>
+          <strong>Prioridades</strong> — 0=emerg ... 7=debug. Filtre com <code>-p err</code>.
+        </p>
+
         <p>
           O <strong>journalctl</strong> é a ferramenta para acessar os logs do systemd journal,
           o sistema centralizado de logs do Ubuntu. Ele captura logs do kernel, serviços systemd,

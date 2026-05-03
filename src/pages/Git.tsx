@@ -10,6 +10,27 @@ import { PageContainer } from "@/components/layout/PageContainer";
         difficulty="iniciante"
         timeToRead="35 min"
       >
+        <AlertBox type="info" title="Pré-requisitos">
+          Ubuntu com terminal. Instale com <code>sudo apt install git</code>. Útil ter conta no GitHub/GitLab/Bitbucket.
+        </AlertBox>
+
+        <h2>Glossário rápido</h2>
+        <p>
+          <strong>Git</strong> — sistema de controle de versão distribuído criado por Linus Torvalds para o kernel Linux.
+        </p>
+        <p>
+          <strong>Repositório</strong> — pasta com <code>.git/</code> dentro — guarda toda a história.
+        </p>
+        <p>
+          <strong>Commit</strong> — snapshot atômico do projeto com hash SHA-1 único.
+        </p>
+        <p>
+          <strong>Branch</strong> — ponteiro móvel para um commit. <code>main</code>/<code>master</code> é o padrão.
+        </p>
+        <p>
+          <strong>Remote</strong> — repositório em outro lugar (GitHub, servidor próprio). <code>origin</code> é o nome padrão.
+        </p>
+
         <p>
           O <strong>Git</strong> é o sistema de controle de versão mais usado no mundo.
           Ele rastreia todas as mudanças no seu código, permite colaborar com outros
