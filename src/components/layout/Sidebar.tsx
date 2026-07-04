@@ -7,6 +7,9 @@ import {
   Monitor, Music, Gamepad2, Lock, Wrench, RotateCcw,
   Globe, Container, Wifi, Archive, Key, Layers
 } from "lucide-react";
+import { Check } from "lucide-react";
+import { UbuntuLogo } from "@/components/ui/UbuntuLogo";
+import { useProgress } from "@/lib/course";
 
 const NAVIGATION = [
   {
@@ -180,6 +183,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const [location] = useLocation();
+  const { has } = useProgress();
 
   return (
     <>
@@ -197,12 +201,10 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         <div className="p-6">
           <div className="flex items-center justify-between lg:justify-center mb-8">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <Terminal className="w-5 h-5 text-primary" />
-              </div>
+              <UbuntuLogo size={40} className="drop-shadow-[0_4px_12px_rgba(233,84,32,0.4)]" />
               <div>
-                <h1 className="font-bold text-sm">Ubuntu</h1>
-                <p className="text-xs text-muted-foreground">Livro Completo</p>
+                <h1 className="font-bold text-sm">Curso de Ubuntu</h1>
+                <p className="text-xs text-muted-foreground">26.04 LTS · Resolute Raccoon</p>
               </div>
             </Link>
             <button
@@ -236,6 +238,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                         >
                           <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                           <span className="truncate">{item.label}</span>
+                          {has(item.path) && <Check className="w-3.5 h-3.5 ml-auto text-green-500 flex-shrink-0" />}
                         </Link>
                       </li>
                     );
