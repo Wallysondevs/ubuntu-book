@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Ssh() {
   return (
@@ -97,6 +98,24 @@ ssh usuario@servidor.exemplo.com "df -h && uptime"
 ssh -o ServerAliveInterval=60 usuario@servidor.exemplo.com`}
       />
 
+      <p>Conectando de verdade — e os dois erros mais comuns de SSH:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "ssh deploy@203.0.113.10" },
+          { type: "out", text: "The authenticity of host '203.0.113.10' cant be established." },
+          { type: "out", text: "ED25519 key fingerprint is SHA256:9x2a...  Are you sure? (yes/no) yes" },
+          { type: "ok", text: "Welcome to Ubuntu 26.04 LTS (GNU/Linux 7.0 x86_64)" },
+          { type: "comment", text: "# erro 1 — sua chave nao esta autorizada no servidor:" },
+          { type: "cmd", text: "ssh deploy@203.0.113.10" },
+          { type: "err", text: "deploy@203.0.113.10: Permission denied (publickey)." },
+          { type: "warn", text: "-> envie sua chave publica: ssh-copy-id deploy@203.0.113.10" },
+          { type: "comment", text: "# erro 2 — o servico SSH esta fora do ar ou porta errada:" },
+          { type: "cmd", text: "ssh deploy@203.0.113.10" },
+          { type: "err", text: "ssh: connect to host 203.0.113.10 port 22: Connection refused" },
+          { type: "warn", text: "-> o sshd nao esta rodando ou usa outra porta. Veja systemctl e UFW." },
+        ]}
+      />
       <h2>3. Geração de Chaves SSH</h2>
       <p>
         Autenticar com chaves SSH é mais seguro e prático do que usar senhas. O par de chaves consiste

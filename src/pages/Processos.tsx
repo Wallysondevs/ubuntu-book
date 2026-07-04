@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
   import { CodeBlock } from "@/components/ui/CodeBlock";
   import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
   export default function Processos() {
     return (
@@ -120,6 +121,21 @@ import { PageContainer } from "@/components/layout/PageContainer";
   nmon                     # Monitor IBM (sudo apt install nmon)`}
         />
 
+      <p>Localizando e encerrando um processo — e o erro quando falta permissão:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "ps aux | grep firefox" },
+          { type: "out", text: "wallyson  4821  8.4  3.1  /usr/lib/firefox/firefox" },
+          { type: "out", text: "wallyson  4990  0.0  0.0  grep --color=auto firefox" },
+          { type: "cmd", text: "kill 4821" },
+          { type: "ok", text: "(processo 4821 encerrado)" },
+          { type: "comment", text: "# tentando matar um processo de outro dono (root):" },
+          { type: "cmd", text: "kill 812" },
+          { type: "err", text: "bash: kill: (812) - Operacao nao permitida" },
+          { type: "warn", text: "-> processos de outro usuario exigem privilegio: sudo kill 812" },
+        ]}
+      />
         <h2>3. Sinais e Kill</h2>
         <CodeBlock
           title="Enviar sinais a processos"

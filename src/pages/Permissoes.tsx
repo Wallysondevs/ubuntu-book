@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Permissoes() {
   return (
@@ -78,6 +79,22 @@ export default function Permissoes() {
 # ---  = sem nenhuma permissão               = 0+0+0 = 0`}
       />
 
+      <p>Na prática, lendo permissões e esbarrando numa negada:</p>
+      <Terminal
+        user="joao"
+        title="joao@ubuntu: ~/projeto"
+        lines={[
+          { type: "cmd", text: "ls -l" },
+          { type: "out", text: "total 8" },
+          { type: "out", text: "-rw-r--r-- 1 joao  joao   220 jul  4 10:00 notas.txt" },
+          { type: "out", text: "-rwxr-xr-x 1 joao  joao  1820 jul  4 10:01 deploy.sh" },
+          { type: "out", text: "-rw------- 1 root  root    64 jul  4 09:12 segredo.env" },
+          { type: "comment", text: "# tentando ler um arquivo que pertence ao root:" },
+          { type: "cmd", text: "cat segredo.env" },
+          { type: "err", text: "cat: segredo.env: Permissao negada" },
+          { type: "warn", text: "-> dono e root e mais ninguem pode ler (-rw-------). Use: sudo cat segredo.env" },
+        ]}
+      />
       <h2>chmod — Mudar Permissões</h2>
 
       <h3>Modo Numérico (Octal)</h3>

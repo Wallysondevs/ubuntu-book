@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Navegacao() {
   return (
@@ -38,6 +39,21 @@ export default function Navegacao() {
 # joao@ubuntu:/etc$    ← você está em /etc`}
       />
 
+      <p>Veja como fica no terminal, inclusive um erro típico:</p>
+      <Terminal
+        user="joao"
+        title="joao@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "pwd" },
+          { type: "out", text: "/home/joao" },
+          { type: "cmd", text: "cd /etc/nginx  &&  pwd" },
+          { type: "out", text: "/etc/nginx" },
+          { type: "comment", text: "# e quando o caminho nao existe:" },
+          { type: "cmd", text: "cd /etc/ngnix" },
+          { type: "err", text: "bash: cd: /etc/ngnix: Arquivo ou diretorio inexistente" },
+          { type: "warn", text: "-> erro de digitacao (ngnix != nginx). Use Tab para autocompletar." },
+        ]}
+      />
       <h2>ls — Listar Conteúdo do Diretório</h2>
       <CodeBlock
         title="Todas as flags do ls explicadas"

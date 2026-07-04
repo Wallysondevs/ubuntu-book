@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Usuarios() {
   return (
@@ -66,6 +67,20 @@ w          # Versão mais detalhada (mostra o que cada um está fazendo)
 last       # Histórico de logins`}
       />
 
+      <p>Vendo sua identidade — e o erro clássico de quem não está no sudo:</p>
+      <Terminal
+        user="maria"
+        title="maria@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "id" },
+          { type: "out", text: "uid=1001(maria) gid=1001(maria) grupos=1001(maria)" },
+          { type: "comment", text: "# maria NAO faz parte do grupo sudo:" },
+          { type: "cmd", text: "sudo apt install htop" },
+          { type: "out", text: "[sudo] senha para maria:" },
+          { type: "err", text: "maria is not in the sudoers file. This incident will be reported." },
+          { type: "warn", text: "-> um admin precisa adicionar: sudo usermod -aG sudo maria" },
+        ]}
+      />
       <h2>Arquivos Fundamentais</h2>
       <CodeBlock
         title="Os arquivos de usuários do sistema"

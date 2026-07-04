@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
   import { CodeBlock } from "@/components/ui/CodeBlock";
   import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
   export default function Docker() {
     return (
@@ -77,6 +78,22 @@ import { PageContainer } from "@/components/layout/PageContainer";
   docker run hello-world`}
         />
 
+      <p>Primeiro container — e o erro nº 1 de todo iniciante no Docker:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "docker run hello-world" },
+          { type: "err", text: "docker: permission denied while trying to connect to the Docker daemon socket" },
+          { type: "err", text: "at unix:///var/run/docker.sock ... connect: permission denied" },
+          { type: "warn", text: "-> seu usuario nao esta no grupo docker. Resolva com:" },
+          { type: "cmd", text: "sudo usermod -aG docker $USER  &&  newgrp docker" },
+          { type: "comment", text: "# agora funciona:" },
+          { type: "cmd", text: "docker run hello-world" },
+          { type: "out", text: "Unable to find image 'hello-world:latest' locally" },
+          { type: "out", text: "latest: Pulling from library/hello-world" },
+          { type: "ok", text: "Hello from Docker! Esta instalacao esta funcionando corretamente." },
+        ]}
+      />
         <h2>2. Imagens e Containers</h2>
         <CodeBlock
           title="Gerenciar imagens e containers"

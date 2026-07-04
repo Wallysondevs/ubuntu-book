@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Apt() {
   return (
@@ -85,6 +86,22 @@ sudo apt full-upgrade -y
 apt list --upgradable`}
       />
 
+      <p>Rodando de verdade, a saída fica assim:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "sudo apt update && sudo apt upgrade -y" },
+          { type: "out", text: "[sudo] senha para wallyson:" },
+          { type: "out", text: "Atingido:1 http://br.archive.ubuntu.com/ubuntu resolute InRelease" },
+          { type: "out", text: "Obter:2 http://security.ubuntu.com/ubuntu resolute-security InRelease [126 kB]" },
+          { type: "out", text: "Baixados 126 kB em 1s (98,7 kB/s)" },
+          { type: "out", text: "Lendo listas de pacotes... Pronto" },
+          { type: "out", text: "Os seguintes pacotes serao atualizados:" },
+          { type: "out", text: "  firefox libssl3 python3.13 systemd tzdata (42 no total)" },
+          { type: "ok", text: "42 atualizados, 0 novos, 0 a remover. 187 MB de arquivos." },
+          { type: "ok", text: "Sistema atualizado com sucesso." },
+        ]}
+      />
       <AlertBox type="danger" title="Sempre faça apt update antes de instalar">
         Se você rodar <code>sudo apt install alguma-coisa</code> sem antes fazer
         <code>sudo apt update</code>, pode instalar uma versão desatualizada do pacote ou
@@ -123,6 +140,27 @@ sudo apt install --no-install-recommends python3
 # Pacotes recomendados são opcionais — sem esta flag, o apt os instala automaticamente`}
       />
 
+      <p>Na prática, incluindo quando dá errado:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "sudo apt install htop" },
+          { type: "out", text: "Lendo listas de pacotes... Pronto" },
+          { type: "out", text: "Os NOVOS pacotes a seguir serao instalados:" },
+          { type: "out", text: "  htop" },
+          { type: "out", text: "0 atualizados, 1 novos instalados, 0 a remover." },
+          { type: "ok", text: "Configurando htop (3.3.0-1) ... ok" },
+          { type: "comment", text: "# erro comum 1 — nome de pacote errado:" },
+          { type: "cmd", text: "sudo apt install htopp" },
+          { type: "err", text: "E: Impossivel encontrar o pacote htopp" },
+          { type: "warn", text: "-> digitou errado. Use 'apt search htop' para achar o nome certo." },
+          { type: "comment", text: "# erro comum 2 — o dpkg travado por outro processo:" },
+          { type: "cmd", text: "sudo apt install nginx" },
+          { type: "err", text: "E: Nao foi possivel obter trava /var/lib/dpkg/lock-frontend" },
+          { type: "err", text: "   Em uso pelo processo unattended-upgr (pid 1423)" },
+          { type: "warn", text: "-> o Ubuntu esta aplicando updates automaticos. Espere e tente de novo." },
+        ]}
+      />
       <h2>3. Busca e Informações</h2>
       <CodeBlock
         title="Pesquisar e inspecionar pacotes"

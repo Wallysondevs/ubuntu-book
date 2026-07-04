@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function PrimeirosPassos() {
   return (
@@ -67,6 +68,22 @@ sudo apt autoclean
 # Usa apt clean (sem "auto") para apagar o cache inteiro.`}
       />
 
+      <p>Executando de verdade, a saída é mais ou menos esta:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "sudo apt update" },
+          { type: "out", text: "Atingido:1 http://br.archive.ubuntu.com/ubuntu resolute InRelease" },
+          { type: "out", text: "Obter:2 http://br.archive.ubuntu.com/ubuntu resolute-updates InRelease [126 kB]" },
+          { type: "out", text: "Lendo listas de pacotes... Pronto" },
+          { type: "ok", text: "42 pacotes podem ser atualizados. Execute 'apt list --upgradable'." },
+          { type: "comment", text: "# se a rede estiver fora, o erro e este:" },
+          { type: "cmd", text: "sudo apt update" },
+          { type: "err", text: "Err:1 http://br.archive.ubuntu.com/ubuntu resolute InRelease" },
+          { type: "err", text: "  Temporary failure resolving 'br.archive.ubuntu.com'" },
+          { type: "warn", text: "-> sem internet/DNS. Veja a licao de Redes para diagnosticar." },
+        ]}
+      />
       <AlertBox type="info" title="apt update vs apt upgrade">
         <code>apt update</code> apenas atualiza a <em>lista</em> de pacotes disponíveis (como
         verificar se há atualizações). Não instala nada. <code>apt upgrade</code> de fato

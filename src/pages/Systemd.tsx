@@ -1,6 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Systemd() {
   return (
@@ -119,6 +120,23 @@ systemctl --failed
         <code>enable --now</code> = faz os dois ao mesmo tempo. É o mais usado na prática.
       </AlertBox>
 
+      <p>Um serviço que falha ao iniciar — e como o systemd te mostra isso:</p>
+      <Terminal
+        title="wallyson@ubuntu: ~"
+        lines={[
+          { type: "cmd", text: "systemctl start nginx" },
+          { type: "err", text: "Failed to start nginx.service: Access denied" },
+          { type: "warn", text: "-> operacoes que mudam estado precisam de sudo:" },
+          { type: "cmd", text: "sudo systemctl start nginx" },
+          { type: "err", text: "Job for nginx.service failed because the control process exited with error code." },
+          { type: "err", text: "See 'systemctl status nginx.service' and 'journalctl -xeu nginx.service'." },
+          { type: "cmd", text: "systemctl status nginx.service" },
+          { type: "out", text: "  nginx.service - A high performance web server and reverse proxy" },
+          { type: "err", text: "     Active: failed (Result: exit-code) since Sat 2026-07-04 20:31:02" },
+          { type: "out", text: "  nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)" },
+          { type: "warn", text: "-> a porta 80 ja esta ocupada (ex: apache rodando). Pare o outro servico." },
+        ]}
+      />
       <h2>journalctl: Lendo os Logs do Sistema</h2>
       <p>
         O systemd centraliza todos os logs do sistema no <strong>journal</strong>. O comando
