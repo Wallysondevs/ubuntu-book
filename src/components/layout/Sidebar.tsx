@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import {
@@ -9,7 +10,16 @@ import {
 } from "lucide-react";
 import { Check } from "lucide-react";
 import { UbuntuLogo } from "@/components/ui/UbuntuLogo";
-import { useProgress } from "@/lib/course";
+import { useProgress, TOTAL_LESSONS } from "@/lib/course";
+import {
+  LEVELS,
+  LEVEL_COUNTS,
+  LEVEL_LABEL,
+  LEVEL_SHORT,
+  LEVEL_TEXT,
+  LEVEL_PILL,
+  type Nivel,
+} from "@/lib/levels";
 
 const NAVIGATION = [
   {
@@ -170,11 +180,25 @@ const NAVIGATION = [
   {
     title: "Extras",
     items: [
+      { path: "/glossario", label: "Glossário", icon: BookOpen },
       { path: "/troubleshooting", label: "Troubleshooting", icon: Settings },
       { path: "/referencias", label: "Referências", icon: BookOpen },
     ]
   }
 ];
+
+const CHAVE_NIVEL = "ubuntu-sidebar-nivel";
+type Filtro = Nivel | "todos";
+const FILTROS: Filtro[] = ["todos", "iniciante", "intermediario", "avancado"];
+
+function lerNivel(): Filtro {
+  try {
+    const raw = localStorage.getItem(CHAVE_NIVEL) as Filtro | null;
+    return raw && FILTROS.includes(raw) ? raw : "todos";
+  } catch {
+    return "todos";
+  }
+}
 
 interface SidebarProps {
   isOpen: boolean;
@@ -184,6 +208,30 @@ interface SidebarProps {
 export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const [location] = useLocation();
   const { has } = useProgress();
+  const [nivel, setNivel] = useState<Filtro>(lerNivel);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAVE_NIVEL, nivel);
+    } catch {
+      /* sem localStorage: o filtro vale so nesta sessao */
+    }
+  }, [nivel]);
+
+  // A Home fica sempre visivel; secao sem topico do nivel escolhido desaparece.
+  const secoes = useMemo(
+    () =>
+      NAVIGATION.map((section) => ({
+        ...section,
+        items:
+          nivel === "todos"
+            ? section.items
+            : section.items.filter(
+                (i) => i.path === "/" || LEVELS[i.path] === nivel,
+              ),
+      })).filter((section) => section.items.length > 0),
+    [nivel],
+  );
 
   return (
     <>
@@ -215,8 +263,37 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             </button>
           </div>
 
+          {/* Filtro por nivel */}
+          <div className="mb-6 flex items-center gap-1 text-[10px]">
+            <span className="text-muted-foreground mr-0.5">nível:</span>
+            {FILTROS.map((f) => {
+              const ativo = nivel === f;
+              const total = f === "todos" ? TOTAL_LESSONS : LEVEL_COUNTS[f];
+              return (
+                <button
+                  key={f}
+                  onClick={() => setNivel(f)}
+                  title={`${f === "todos" ? "Todos os tópicos" : LEVEL_LABEL[f]} (${total})`}
+                  className={cn(
+                    "px-1.5 py-0.5 rounded border transition-colors",
+                    ativo
+                      ? cn(
+                          "border-transparent font-bold",
+                          f === "todos"
+                            ? "bg-primary/15 text-primary"
+                            : LEVEL_PILL[f],
+                        )
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {f === "todos" ? "todos" : LEVEL_SHORT[f]} {total}
+                </button>
+              );
+            })}
+          </div>
+
           <nav className="space-y-6">
-            {NAVIGATION.map((section) => (
+            {secoes.map((section) => (
               <div key={section.title}>
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
                   {section.title}
@@ -238,6 +315,19 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                         >
                           <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                           <span className="truncate">{item.label}</span>
+                          {item.path !== "/" && LEVELS[item.path] && (
+                            <span
+                              className={cn(
+                                "shrink-0 text-[9px] font-bold",
+                                isActive
+                                  ? "text-primary-foreground/70"
+                                  : LEVEL_TEXT[LEVELS[item.path]],
+                              )}
+                              title={LEVEL_LABEL[LEVELS[item.path]]}
+                            >
+                              {LEVEL_SHORT[LEVELS[item.path]]}
+                            </span>
+                          )}
                           {has(item.path) && <Check className="w-3.5 h-3.5 ml-auto text-green-500 flex-shrink-0" />}
                         </Link>
                       </li>

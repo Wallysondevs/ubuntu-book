@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,113 +7,116 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 
 import Home from "@/pages/Home";
-import Historia from "@/pages/Historia";
-import Filosofia from "@/pages/Filosofia";
-import Instalacao from "@/pages/Instalacao";
-import PrimeirosPassos from "@/pages/PrimeirosPassos";
-import AmbienteGrafico from "@/pages/AmbienteGrafico";
-import Apt from "@/pages/Apt";
-import SnapFlatpak from "@/pages/SnapFlatpak";
-import Systemd from "@/pages/Systemd";
-import SistemaArquivos from "@/pages/SistemaArquivos";
-import Navegacao from "@/pages/Navegacao";
-import ManipulacaoArquivos from "@/pages/ManipulacaoArquivos";
-import Visualizacao from "@/pages/Visualizacao";
-import Permissoes from "@/pages/Permissoes";
-import Usuarios from "@/pages/Usuarios";
-import Processos from "@/pages/Processos";
-import Redes from "@/pages/Redes";
-import Ssh from "@/pages/Ssh";
-import Disco from "@/pages/Disco";
-import ShellBash from "@/pages/ShellBash";
-import Redirecionamento from "@/pages/Redirecionamento";
-import Compressao from "@/pages/Compressao";
-import Avancado from "@/pages/Avancado";
-import Seguranca from "@/pages/Seguranca";
-import Troubleshooting from "@/pages/Troubleshooting";
-import Referencias from "@/pages/Referencias";
+const Historia = lazy(() => import("@/pages/Historia"));
+const Filosofia = lazy(() => import("@/pages/Filosofia"));
+const Instalacao = lazy(() => import("@/pages/Instalacao"));
+const PrimeirosPassos = lazy(() => import("@/pages/PrimeirosPassos"));
+const AmbienteGrafico = lazy(() => import("@/pages/AmbienteGrafico"));
+const Apt = lazy(() => import("@/pages/Apt"));
+const SnapFlatpak = lazy(() => import("@/pages/SnapFlatpak"));
+const Systemd = lazy(() => import("@/pages/Systemd"));
+const SistemaArquivos = lazy(() => import("@/pages/SistemaArquivos"));
+const Navegacao = lazy(() => import("@/pages/Navegacao"));
+const ManipulacaoArquivos = lazy(() => import("@/pages/ManipulacaoArquivos"));
+const Visualizacao = lazy(() => import("@/pages/Visualizacao"));
+const Permissoes = lazy(() => import("@/pages/Permissoes"));
+const Usuarios = lazy(() => import("@/pages/Usuarios"));
+const Processos = lazy(() => import("@/pages/Processos"));
+const Redes = lazy(() => import("@/pages/Redes"));
+const Ssh = lazy(() => import("@/pages/Ssh"));
+const Disco = lazy(() => import("@/pages/Disco"));
+const ShellBash = lazy(() => import("@/pages/ShellBash"));
+const Redirecionamento = lazy(() => import("@/pages/Redirecionamento"));
+const Compressao = lazy(() => import("@/pages/Compressao"));
+const Avancado = lazy(() => import("@/pages/Avancado"));
+const Seguranca = lazy(() => import("@/pages/Seguranca"));
+const Glossario = lazy(() => import("@/pages/Glossario"));
+const Troubleshooting = lazy(() => import("@/pages/Troubleshooting"));
+const Referencias = lazy(() => import("@/pages/Referencias"));
 
 // KERNEL & BOOT
-import Kernel from "@/pages/Kernel";
-import Boot from "@/pages/Boot";
+const Kernel = lazy(() => import("@/pages/Kernel"));
+const Boot = lazy(() => import("@/pages/Boot"));
 
 // SHELL & PERSONALIZAÇÃO
-import VariaveisAmbiente from "@/pages/VariaveisAmbiente";
-import Aliases from "@/pages/Aliases";
-import ManPages from "@/pages/ManPages";
-import ExpansoesBash from "@/pages/ExpansoesBash";
-import ScriptsBash from "@/pages/ScriptsBash";
-import Zsh from "@/pages/Zsh";
-import Cron from "@/pages/Cron";
+const VariaveisAmbiente = lazy(() => import("@/pages/VariaveisAmbiente"));
+const Aliases = lazy(() => import("@/pages/Aliases"));
+const ManPages = lazy(() => import("@/pages/ManPages"));
+const ExpansoesBash = lazy(() => import("@/pages/ExpansoesBash"));
+const ScriptsBash = lazy(() => import("@/pages/ScriptsBash"));
+const Zsh = lazy(() => import("@/pages/Zsh"));
+const Cron = lazy(() => import("@/pages/Cron"));
 
 // HARDWARE & SISTEMA
-import Hardware from "@/pages/Hardware";
-import Localizacao from "@/pages/Localizacao";
-import JournalCtl from "@/pages/JournalCtl";
-import IOStat from "@/pages/IOStat";
+const Hardware = lazy(() => import("@/pages/Hardware"));
+const Localizacao = lazy(() => import("@/pages/Localizacao"));
+const JournalCtl = lazy(() => import("@/pages/JournalCtl"));
+const IOStat = lazy(() => import("@/pages/IOStat"));
 
 // PACOTES
-import Dpkg from "@/pages/Dpkg";
-import PPA from "@/pages/PPA";
-import CodigoFonte from "@/pages/CodigoFonte";
-import AppImage from "@/pages/AppImage";
+const Dpkg = lazy(() => import("@/pages/Dpkg"));
+const PPA = lazy(() => import("@/pages/PPA"));
+const CodigoFonte = lazy(() => import("@/pages/CodigoFonte"));
+const AppImage = lazy(() => import("@/pages/AppImage"));
 
 // SISTEMA DE ARQUIVOS AVANÇADO
-import LVM from "@/pages/LVM";
-import Fstab from "@/pages/Fstab";
-import Particoes from "@/pages/Particoes";
+const LVM = lazy(() => import("@/pages/LVM"));
+const Fstab = lazy(() => import("@/pages/Fstab"));
+const Particoes = lazy(() => import("@/pages/Particoes"));
 
 // REDE AVANÇADA
-import Netplan from "@/pages/Netplan";
-import DNS from "@/pages/DNS";
-import VPN from "@/pages/VPN";
-import Samba from "@/pages/Samba";
+const Netplan = lazy(() => import("@/pages/Netplan"));
+const DNS = lazy(() => import("@/pages/DNS"));
+const VPN = lazy(() => import("@/pages/VPN"));
+const Samba = lazy(() => import("@/pages/Samba"));
 
 // CONTAINERS & VIRTUALIZAÇÃO
-import Docker from "@/pages/Docker";
-import DockerCompose from "@/pages/DockerCompose";
-import KVM from "@/pages/KVM";
+const Docker = lazy(() => import("@/pages/Docker"));
+const DockerCompose = lazy(() => import("@/pages/DockerCompose"));
+const KVM = lazy(() => import("@/pages/KVM"));
 
 // SERVIDORES
-import Nginx from "@/pages/Nginx";
-import Apache from "@/pages/Apache";
-import MySQL from "@/pages/MySQL";
-import PostgreSQL from "@/pages/PostgreSQL";
-import PHP from "@/pages/PHP";
+const Nginx = lazy(() => import("@/pages/Nginx"));
+const Apache = lazy(() => import("@/pages/Apache"));
+const MySQL = lazy(() => import("@/pages/MySQL"));
+const PostgreSQL = lazy(() => import("@/pages/PostgreSQL"));
+const PHP = lazy(() => import("@/pages/PHP"));
 
 // DESENVOLVIMENTO
-import Python from "@/pages/Python";
-import NodeJS from "@/pages/NodeJS";
-import Java from "@/pages/Java";
-import Git from "@/pages/Git";
-import VSCode from "@/pages/VSCode";
-import Vim from "@/pages/Vim";
+const Python = lazy(() => import("@/pages/Python"));
+const NodeJS = lazy(() => import("@/pages/NodeJS"));
+const Java = lazy(() => import("@/pages/Java"));
+const Git = lazy(() => import("@/pages/Git"));
+const VSCode = lazy(() => import("@/pages/VSCode"));
+const Vim = lazy(() => import("@/pages/Vim"));
 
 // SEGURANÇA
-import AppArmor from "@/pages/AppArmor";
-import Fail2Ban from "@/pages/Fail2Ban";
-import LUKS from "@/pages/LUKS";
-import GPG from "@/pages/GPG";
+const AppArmor = lazy(() => import("@/pages/AppArmor"));
+const Fail2Ban = lazy(() => import("@/pages/Fail2Ban"));
+const LUKS = lazy(() => import("@/pages/LUKS"));
+const GPG = lazy(() => import("@/pages/GPG"));
 
 // BACKUP & CLOUD
-import Backup from "@/pages/Backup";
-import Timeshift from "@/pages/Timeshift";
-import CloudInit from "@/pages/CloudInit";
-import Ansible from "@/pages/Ansible";
-import Multipass from "@/pages/Multipass";
-import LXD from "@/pages/LXD";
-import UbuntuPro from "@/pages/UbuntuPro";
-import UnattendedUpgrades from "@/pages/UnattendedUpgrades";
-import ZFSZsys from "@/pages/ZFSZsys";
+const Backup = lazy(() => import("@/pages/Backup"));
+const Timeshift = lazy(() => import("@/pages/Timeshift"));
+const CloudInit = lazy(() => import("@/pages/CloudInit"));
+const Ansible = lazy(() => import("@/pages/Ansible"));
+const Multipass = lazy(() => import("@/pages/Multipass"));
+const LXD = lazy(() => import("@/pages/LXD"));
+const UbuntuPro = lazy(() => import("@/pages/UbuntuPro"));
+const UnattendedUpgrades = lazy(() => import("@/pages/UnattendedUpgrades"));
+const ZFSZsys = lazy(() => import("@/pages/ZFSZsys"));
 
 // DESKTOP & MULTIMÍDIA
-import GNOMEExtensions from "@/pages/GNOMEExtensions";
-import AmbientesAlternativos from "@/pages/AmbientesAlternativos";
-import Multimedia from "@/pages/Multimedia";
-import Gaming from "@/pages/Gaming";
-import Wine from "@/pages/Wine";
+const GNOMEExtensions = lazy(() => import("@/pages/GNOMEExtensions"));
+const AmbientesAlternativos = lazy(() => import("@/pages/AmbientesAlternativos"));
+const Multimedia = lazy(() => import("@/pages/Multimedia"));
+const Gaming = lazy(() => import("@/pages/Gaming"));
+const Wine = lazy(() => import("@/pages/Wine"));
 
 import NotFound from "@/pages/not-found";
+
+import { CommandPalette } from "@/components/layout/CommandPalette";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +132,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground flex">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      <CommandPalette />
 
       <div className="flex-1 lg:pl-72 flex flex-col min-w-0 transition-all duration-300">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
@@ -140,9 +144,20 @@ function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function CarregandoTopico() {
+  return (
+    <div className="flex items-center justify-center py-24 px-6">
+      <div className="font-mono text-sm text-muted-foreground">
+        <span className="text-primary">●</span> carregando tópico...
+      </div>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Layout>
+      <Suspense fallback={<CarregandoTopico />}>
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/historia" component={Historia} />
@@ -168,6 +183,7 @@ function Router() {
         <Route path="/compressao" component={Compressao} />
         <Route path="/avancado" component={Avancado} />
         <Route path="/seguranca" component={Seguranca} />
+        <Route path="/glossario" component={Glossario} />
         <Route path="/troubleshooting" component={Troubleshooting} />
         <Route path="/referencias" component={Referencias} />
 
@@ -253,6 +269,7 @@ function Router() {
 
         <Route component={NotFound} />
       </Switch>
+      </Suspense>
     </Layout>
   );
 }

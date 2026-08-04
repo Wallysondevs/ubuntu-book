@@ -170,6 +170,7 @@ export const MODULES: Module[] = [
   {
     title: "Extras",
     lessons: [
+      { path: "/glossario", label: "Glossário" },
       { path: "/troubleshooting", label: "Troubleshooting" },
       { path: "/referencias", label: "Referências" },
     ],
