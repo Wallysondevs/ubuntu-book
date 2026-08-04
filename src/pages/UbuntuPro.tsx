@@ -150,6 +150,89 @@ journalctl -u snap.canonical-livepatch.canonical-livepatchd
 sudo pro detach`}
       />
 
+      <h2>Attach em escala: token, cloud-init e Landscape</h2>
+      <p>
+        Anexar uma maquina a mao funciona para a primeira. Para a decima, o
+        token entra no provisionamento e nunca em um comando digitado no
+        historico do shell.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# Attach nao interativo, lendo o token de arquivo
+sudo pro attach --attach-config /etc/ubuntu-advantage/attach.yaml
+
+# attach.yaml: define token e quais servicos ligar de saida
+# token: SEU_TOKEN
+# enable_services: [esm-infra, esm-apps, livepatch, usg]
+
+# No provisionamento de uma VM, via cloud-init
+# ubuntu_advantage:
+#   token: SEU_TOKEN
+#   enable: [esm-infra, esm-apps, livepatch]
+
+# Conferir o resultado do outro lado
+sudo pro status --all
+sudo pro api u.pro.status.is_attached.v1
+
+# Soltar a maquina (ao desativar um servidor, libere a licenca)
+sudo pro detach --assume-yes`}
+      />
+
+      <AlertBox type="danger" title="Token no historico do shell e vazamento">
+        <code>pro attach SEU_TOKEN</code> deixa o token no
+        <code> ~/.bash_history</code>, nos logs de auditoria e em qualquer
+        gravacao de terminal. Use <code>--attach-config</code> com arquivo
+        <code> 600 </code>de dono root, ou o bloco do cloud-init.
+      </AlertBox>
+
+      <h2>Auditar o que o Pro realmente esta cobrindo</h2>
+      <p>
+        A pergunta pratica nao e "esta ativo?", e "quantos pacotes deste
+        servidor sairiam de suporte sem o Pro?". Isso da para medir.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# Panorama por pacote instalado
+pro security-status
+
+# Quantos pacotes vem de cada origem
+pro security-status --format json | \\
+  python3 -c "import json,sys; d=json.load(sys.stdin); print(d['summary'])"
+
+# Pacotes que so recebem correcao com esm-apps
+pro security-status --esm-apps
+
+# CVEs pendentes na maquina, com o utilitario oficial
+sudo apt install ubuntu-security-tools 2>/dev/null || true
+pro fix CVE-2024-3094           # aplica a correcao de um CVE especifico
+pro fix --dry-run USN-6700-1    # simula, sem instalar nada
+
+# Data em que esta release sai do suporte padrao
+ubuntu-distro-info --supported-esm
+ls /var/lib/ubuntu-advantage/`}
+      />
+
+      <h2>Quando o Pro nao resolve o seu problema</h2>
+      <p>
+        Ele estende suporte de seguranca. Ele nao atualiza versao de software,
+        nao substitui backup e nao conserta configuracao ruim.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# esm-apps corrige seguranca, mas mantem a versao antiga do pacote
+apt policy nginx
+# Se voce precisa da versao nova, o caminho e PPA, snap, container ou upgrade de release
+
+# Livepatch cobre so o kernel, e so alguns CVEs
+canonical-livepatch status --verbose
+
+# Reboot ainda e necessario quando o kernel muda de verdade
+ls /var/run/reboot-required 2>/dev/null && cat /var/run/reboot-required.pkgs
+
+# Conferir o que o unattended-upgrades ja aplica sem Pro nenhum
+grep -r "Allowed-Origins" -A6 /etc/apt/apt.conf.d/50unattended-upgrades`}
+      />
+
       <h2>Armadilhas comuns</h2>
       <AlertBox type="danger" title="Container herda token do host">
         Containers LXD/Docker copiam <code>/etc/ubuntu-advantage/</code>

@@ -184,6 +184,125 @@ lxc export web web-backup-$(date +%F).tar.gz
 lxc import web-backup-2026-05-03.tar.gz`}
       />
 
+      <h2>Storage pools e volumes</h2>
+      <p>
+        O pool é onde os discos dos containers moram; o volume é um pedaço
+        desse pool que você pode montar onde quiser, inclusive em mais de um
+        container.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`lxc storage list
+lxc storage info default
+
+# Pool novo em ZFS, com tamanho fixo
+lxc storage create rapido zfs size=50GB
+
+# Container usando o pool novo
+lxc launch ubuntu:24.04 db -s rapido
+
+# Volume dedicado para os dados do banco
+lxc storage volume create rapido dados-mysql
+lxc config device add db dados disk \\
+  pool=rapido source=dados-mysql path=/var/lib/mysql
+
+# Snapshot do volume, independente do container
+lxc storage volume snapshot rapido dados-mysql antes-migracao
+lxc storage volume list rapido`}
+      />
+
+      <h2>Transformar um container em imagem propria</h2>
+      <p>
+        Ajuste um container uma vez, publique como imagem e todos os próximos
+        nascem prontos. É o equivalênte do <code>docker commit</code>, mas para
+        máquinas inteiras.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# Preparar e publicar (o container precisa estar parado)
+lxc launch ubuntu:24.04 base
+lxc exec base -- apt-get update
+lxc exec base -- apt-get install -y nginx certbot
+lxc stop base
+lxc publish base --alias ubuntu-nginx
+
+# Usar
+lxc image list
+lxc launch ubuntu-nginx web2
+
+# Levar a imagem para outro host
+lxc image export ubuntu-nginx .
+lxc image import ubuntu-nginx.tar.gz --alias ubuntu-nginx
+
+# Limpar imagens antigas
+lxc image delete ubuntu-nginx`}
+      />
+
+      <h2>LXD tambem roda VMs</h2>
+      <p>
+        Com <code>--vm</code> o mesmo comando cria uma máquina virtual com
+        kernel próprio, via QEMU. Útil quando o container não serve: kernel
+        diferente, módulo específico, teste de boot.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`lxc launch ubuntu:24.04 vm1 --vm \\
+  -c limits.cpu=2 -c limits.memory=4GiB
+
+# Ver o tipo na listagem
+lxc list -c nst4
+
+# Console grafico e console serial
+lxc console vm1 --type=vga
+lxc console vm1
+
+# O shell exige o agente do LXD dentro da VM (imagens ubuntu: ja trazem)
+lxc exec vm1 -- bash`}
+      />
+
+      <h2>Copiar e migrar entre hosts</h2>
+      <CodeBlock
+        language="bash"
+        code={`# Clonar localmente
+lxc copy web web-teste
+lxc move web web-antigo          # renomear
+
+# Registrar o host remoto (precisa do listener habilitado la)
+lxc config set core.https_address :8443
+lxc config trust add --name meu-laptop
+lxc remote add outro https://10.0.0.20:8443
+lxc remote list
+
+# Copiar e mover pela rede
+lxc copy web outro:web
+lxc move web outro:web
+
+# Backup em tarball, que nao depende de host remoto
+lxc export web web-$(date +%F).tar.gz --optimized-storage
+lxc import web-2026-08-04.tar.gz`}
+      />
+
+      <h2>Limites e observabilidade</h2>
+      <CodeBlock
+        language="bash"
+        code={`# Uso atual e log do container
+lxc info web
+lxc info web --show-log
+
+# Acompanhar eventos em tempo real (util para entender restart)
+lxc monitor --type=lifecycle
+
+# Limites finos: fatia de CPU, prioridade de disco e rede
+lxc config set web limits.cpu 2
+lxc config set web limits.cpu.allowance 50%
+lxc config set web limits.memory 1GB
+lxc config set web limits.memory.enforce soft
+lxc config set web limits.disk.priority 5
+
+# Ver tudo que foi configurado, incluindo o que veio do profile
+lxc config show web --expanded`}
+      />
+
       <h2>Armadilhas comuns</h2>
       <AlertBox type="warning" title="ZFS vs dir storage backend">
         Em desenvolvimento <code>dir</code> serve. Em produção use

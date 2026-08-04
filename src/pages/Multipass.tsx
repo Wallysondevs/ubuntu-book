@@ -144,6 +144,124 @@ multipass restore dev.antes-do-upgrade
 multipass transfer relatorio.pdf dev:/tmp/`}
       />
 
+      <h2>Rede, IP e acesso por SSH</h2>
+      <p>
+        Por padrão a VM fica atrás de NAT em uma rede interna: ela alcança a
+        internet e o host, mas ninguém da sua rede local alcança ela. Para
+        expor a VM como se fosse outra máquina física, use o modo bridge.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# IP da VM, só o endereço
+multipass info dev | awk '/IPv4/ {print $2}'
+
+# O Multipass mantem a propria chave SSH; da para usar direto
+sudo ssh -i /var/snap/multipass/common/data/multipassd/ssh-keys/id_rsa \\
+  ubuntu@$(multipass info dev | awk '/IPv4/ {print $2}')
+
+# Descobrir a interface fisica do host
+ip -brief link
+
+# Definir a interface da bridge e subir uma VM na rede local
+multipass set local.bridged-network=enp3s0
+multipass launch 24.04 --name lan --bridged
+
+# Agora a VM tem IP da sua LAN e o roteador a enxerga
+multipass info lan | grep IPv4`}
+      />
+
+      <h2>Mudar CPU, RAM e disco depois de criada</h2>
+      <p>
+        Nem tudo é ajustável a quente: a VM precisa estar parada. E disco só
+        cresce.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`multipass stop dev
+
+multipass set local.dev.cpus=4
+multipass set local.dev.memory=8G
+multipass set local.dev.disk=40G
+
+multipass start dev
+multipass info dev
+
+# Dentro da VM, confirmar que o disco cresceu
+multipass exec dev -- df -h /`}
+      />
+
+      <AlertBox type="warning" title="Disco não encolhe">
+        <code>local.NOME.disk</code> aceita apenas valores maiores que o atual.
+        Se você exagerou, o caminho é recriar a VM — mais um motivo para
+        descrever a máquina em um cloud-init versionado em vez de ajustar tudo
+        à mão.
+      </AlertBox>
+
+      <h2>Aliases: usar o binario da VM como se fosse local</h2>
+      <p>
+        Um alias transforma um comando de dentro da VM em comando do host. É o
+        jeito mais limpo de testar outra versão de linguagem sem sujar sua
+        máquina.
+      </p>
+      <CodeBlock
+        language="bash"
+        code={`# Criar o alias: comando python3 da VM "dev" vira py no host
+multipass alias dev:python3 py
+
+# Garantir que /snap/bin esta no PATH e usar
+py --version
+
+# Listar e remover
+multipass aliases
+multipass unalias py
+
+# Aliases combinam bem com mount: mesmo arquivo, outro interpretador
+multipass mount ~/projeto dev:/home/ubuntu/projeto
+cd ~/projeto && py app.py`}
+      />
+
+      <h2>Onde os dados moram e como recuperar espaco</h2>
+      <CodeBlock
+        language="bash"
+        code={`# Espaco ocupado por imagens e discos das VMs
+sudo du -sh /var/snap/multipass/common/data/multipassd/
+
+# VMs deletadas continuam no disco ate o purge
+multipass list
+multipass purge
+
+# Zerar tudo
+multipass delete --all
+multipass purge
+
+# O cache de imagens baixadas tambem pesa
+sudo du -sh /var/snap/multipass/common/cache/`}
+      />
+
+      <h2>Erros que voce vai encontrar</h2>
+      <CodeBlock
+        language="bash"
+        code={`# "timed out waiting for initialization to complete"
+# host lento ou cloud-init grande: aumente o timeout
+multipass launch 24.04 --name dev --timeout 600
+
+# "unable to determine a suitable network" no modo --bridged
+multipass get local.bridged-network
+multipass set local.bridged-network=enp3s0
+
+# VM sem rede depois de suspender o notebook
+multipass restart dev
+sudo snap restart multipass
+
+# Ver o log do daemon quando nada faz sentido
+snap logs multipass -n 50
+journalctl -u snap.multipass.multipassd -n 50 --no-pager
+
+# Conferir se o cloud-init terminou (e por que falhou)
+multipass exec dev -- cloud-init status --long
+multipass exec dev -- sudo cat /var/log/cloud-init-output.log`}
+      />
+
       <h2>Armadilhas comuns</h2>
       <AlertBox type="warning" title="Driver qemu vs libvirt">
         Em hosts com libvirt já configurado, mude o driver:

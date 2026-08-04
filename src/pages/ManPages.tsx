@@ -184,6 +184,111 @@ import { PageContainer } from "@/components/layout/PageContainer";
   sudo apt install -y manpages-posix`}
         />
 
+        <h2>5. Navegar dentro da man page (e o less por tras dela)</h2>
+        <p>
+          O <code>man</code> nao mostra o texto: ele entrega para o
+          <code>less</code>. Todo atalho de leitura vem de la, e saber cinco
+          deles muda completamente a experiencia.
+        </p>
+        <CodeBlock
+          title="Atalhos que valem decorar"
+          code={`man ip
+
+#  /palavra     busca para frente
+#  ?palavra     busca para tras
+#  n  /  N      proxima / anterior ocorrencia
+#  g  /  G      inicio / fim do documento
+#  espaco / b   pagina para baixo / para cima
+#  h            ajuda do proprio less
+#  q            sair
+
+# Abrir ja posicionado na busca
+man -P "less -p ENVIRONMENT" ssh
+
+# Ir direto a uma secao numerada (1=comando, 5=arquivo de config, 8=admin)
+man 5 crontab      # o formato do arquivo
+man 8 cron         # o daemon
+man 1 crontab      # o comando
+
+# Quantas secoes existem para o mesmo nome
+man -f printf
+whatis printf`}
+        />
+
+        <h2>6. apropos, whatis e o banco de dados do man</h2>
+        <p>
+          Quando voce nao sabe o nome do comando, o caminho e buscar pela
+          descricao. Isso depende de um indice que precisa estar atualizado.
+        </p>
+        <CodeBlock
+          title="Buscar sem saber o nome"
+          code={`# Procurar pela descricao
+apropos "partition"
+apropos -s 8 firewall        # so na secao 8 (administracao)
+apropos "copy files"
+
+# Reconstruir o indice (necessario depois de instalar pacotes novos)
+sudo mandb
+
+# "nothing appropriate" quase sempre significa indice vazio
+apropos ls || sudo mandb
+
+# Onde a man page mora no disco
+man -w ip
+ls /usr/share/man/man1 | head
+
+# Ler uma man page que veio em arquivo, sem instalar o pacote
+man ./minha-pagina.1.gz`}
+        />
+
+        <h2>7. Man pages em portugues e leitura offline</h2>
+        <CodeBlock
+          title="Traducoes e exportacao"
+          code={`# Pacote de traducoes (cobertura parcial, mas ajuda)
+sudo apt install manpages-pt manpages-pt-dev
+
+# Forcar idioma em uma leitura
+LANG=pt_BR.UTF-8 man ls
+LANG=C man ls          # voltar ao original em ingles
+
+# Exportar para texto puro (sem codigo de formatacao)
+man ip | col -b > ip.txt
+
+# Exportar para PDF
+man -t ip | ps2pdf - ip.pdf
+
+# Ler no navegador
+sudo apt install man2html
+man -H ip`}
+        />
+
+        <h2>8. Quando o man nao e o lugar certo</h2>
+        <p>
+          Parte da documentacao do sistema nunca esteve no man. Saber onde mais
+          olhar evita a conclusao errada de que "nao existe documentacao".
+        </p>
+        <CodeBlock
+          title="As outras quatro fontes locais"
+          code={`# 1. help embutido do shell (para builtins, o man nao existe)
+help cd
+help test
+type -a cd
+
+# 2. --help do proprio programa, quase sempre mais curto e mais atual
+ip --help
+systemctl --help | head -30
+
+# 3. info, formato do projeto GNU, com mais exemplos que o man
+info coreutils 'ls invocation'
+
+# 4. /usr/share/doc: changelog, README e exemplos de configuracao
+ls /usr/share/doc/openssh-server/
+zcat /usr/share/doc/nginx-common/changelog.Debian.gz | head
+
+# systemd documenta unit por unit
+systemctl help nginx.service`}
+        />
+
         <h2>Troubleshooting</h2>
         <CodeBlock
           title="Problemas comuns com man pages"

@@ -92,6 +92,105 @@ import { PageContainer } from "@/components/layout/PageContainer";
           <li><strong>Ubuntu Podcast</strong> — Podcast oficial da comunidade</li>
         </ul>
 
+        <h2>7. Onde procurar quando algo quebra</h2>
+        <p>
+          A ordem importa. Buscar no Google antes de olhar o log local costuma
+          custar meia hora e terminar em uma resposta de outra distribuicao.
+        </p>
+        <CodeBlock
+          title="Roteiro de diagnostico, do mais barato ao mais caro"
+          code={`# 1. O que o servico diz de si mesmo
+systemctl status nome-do-servico
+journalctl -u nome-do-servico -n 50 --no-pager
+
+# 2. O que o kernel viu (hardware, disco, USB, rede)
+sudo dmesg -T | tail -40
+
+# 3. O que mudou recentemente no sistema
+grep -i " install \| upgrade " /var/log/apt/history.log | tail -20
+
+# 4. Espaco e memoria, causa de metade dos casos misteriosos
+df -h; df -i; free -h
+
+# 5. Bug conhecido nesta versao exata
+lsb_release -a
+apt policy pacote
+# https://bugs.launchpad.net/ubuntu/+source/PACOTE
+
+# 6. So agora vale procurar fora, com a mensagem literal entre aspas`}
+        />
+
+        <h2>8. Fontes para acompanhar releases e seguranca</h2>
+        <p>
+          Ubuntu tem calendario previsivel: release em abril e outubro, LTS em
+          abril de ano par. Acompanhar duas ou tres fontes evita surpresa.
+        </p>
+        <ul>
+          <li>
+            <strong>Ubuntu Security Notices</strong> — ubuntu.com/security/notices:
+            uma entrada por vulnerabilidade corrigida, com a versao exata do
+            pacote que resolve.
+          </li>
+          <li>
+            <strong>Release notes e schedule</strong> — discourse.ubuntu.com e
+            wiki.ubuntu.com/Releases: datas de fim de suporte de cada versao.
+          </li>
+          <li>
+            <strong>Launchpad</strong> — bugs.launchpad.net: o rastreador oficial.
+            Antes de abrir bug, procure o seu sintoma; quase sempre ja existe.
+          </li>
+          <li>
+            <strong>Ubuntu Weekly Newsletter</strong> — resumo semanal do que
+            mudou, bom para nao precisar seguir mailing list nenhuma.
+          </li>
+          <li>
+            <strong>Changelog do pacote</strong> — mais confiavel que qualquer
+            blog, porque descreve exatamente o que entrou na sua versao.
+          </li>
+        </ul>
+        <CodeBlock
+          title="Acompanhar sem sair do terminal"
+          code={`# Datas de suporte de todas as releases
+sudo apt install distro-info
+ubuntu-distro-info --all --fullname
+ubuntu-distro-info --lts
+ubuntu-distro-info --days=eol
+
+# Changelog da versao que voce tem instalada
+apt changelog nginx | head -30
+
+# Notas da release em que voce esta
+cat /etc/os-release
+zless /usr/share/doc/base-files/changelog.Debian.gz`}
+        />
+
+        <h2>9. Como pesquisar erro do jeito certo</h2>
+        <p>
+          Pesquisa boa e pesquisa especifica. Tres ajustes resolvem a maioria
+          das buscas frustradas.
+        </p>
+        <ul>
+          <li>
+            Cole a mensagem <strong>entre aspas</strong>, e remova o que e só seu:
+            caminho de home, PID, UUID, nome de host e horario.
+          </li>
+          <li>
+            Acrescente a versao: <code>ubuntu 24.04</code> muda completamente o
+            resultado em relacao a uma resposta escrita para o 18.04.
+          </li>
+          <li>
+            Prefira <code>site:askubuntu.com</code>, <code>site:discourse.ubuntu.com</code>
+            e <code>site:bugs.launchpad.net</code> a blogs genericos com comandos
+            copiados de outra distribuicao.
+          </li>
+        </ul>
+        <AlertBox type="warning" title="Cuidado com receita de outra distro">
+          Comando com <code>yum</code>, <code>dnf</code>, <code>pacman</code> ou
+          caminho <code>/etc/sysconfig/</code> nao e para Ubuntu. Dica que manda
+          desabilitar AppArmor, editar <code>/etc/resolv.conf</code> a mao ou
+          rodar tudo como root costuma trocar o problema por um pior.
+        </AlertBox>
+
         <AlertBox type="info" title="Dica de aprendizado">
           A melhor forma de aprender Linux é <strong>usando no dia a dia</strong>. Instale
           o Ubuntu como seu sistema principal (ou dual boot), quebre coisas, conserte,
