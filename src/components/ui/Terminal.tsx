@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Check, Copy, TerminalSquare } from "lucide-react";
 
 export type LineType = "cmd" | "out" | "err" | "ok" | "warn" | "comment";
 
 export interface TermLine {
   type: LineType;
   text: string;
+  /** Sobrescreve o diretório do prompt só nesta linha. */
+  cwd?: string;
 }
 
 interface TerminalProps {
@@ -13,34 +17,39 @@ interface TerminalProps {
   user?: string;
   host?: string;
   cwd?: string;
-  /** revela linha por linha ao entrar na tela */
+  /** Revela linha por linha ao entrar na tela. */
   animate?: boolean;
   className?: string;
 }
 
+/* Cores Tango — as mesmas do terminal do Ubuntu. */
 const OUT_COLOR: Record<LineType, string> = {
-  cmd: "text-gray-100",
-  out: "text-gray-300",
-  err: "text-red-400",
-  ok: "text-green-400",
-  warn: "text-yellow-400",
-  comment: "text-gray-500 italic",
+  cmd: "text-[#eeeeec]",
+  out: "text-[#d3d7cf]",
+  err: "text-[#ef2929]",
+  ok: "text-[#8ae234]",
+  warn: "text-[#fce94f]",
+  comment: "text-[#8a8f8a] italic",
 };
 
-// Prompt no estilo Ubuntu: usuario@host verde, caminho azul, $ branco.
+/** Prompt real do bash no Ubuntu: usuário@host verde, caminho azul, $ claro. */
 function Prompt({ user, host, cwd }: { user: string; host: string; cwd: string }) {
   return (
     <span className="select-none">
-      <span className="text-green-400 font-semibold">
+      <span className="text-[#8ae234] font-bold">
         {user}@{host}
       </span>
-      <span className="text-gray-400">:</span>
-      <span className="text-blue-400 font-semibold">{cwd}</span>
-      <span className="text-gray-300">$ </span>
+      <span className="text-[#d3d7cf]">:</span>
+      <span className="text-[#729fcf] font-bold">{cwd}</span>
+      <span className="text-[#d3d7cf]">$ </span>
     </span>
   );
 }
 
+/**
+ * Janela de terminal do Ubuntu. Use para mostrar comandos COM a saída real.
+ * Para conteúdo de arquivo ou uma sequência de comandos, use <CodeBlock />.
+ */
 export function Terminal({
   lines,
   title,
@@ -50,53 +59,86 @@ export function Terminal({
   animate = true,
   className = "",
 }: TerminalProps) {
+  const [copied, setCopied] = useState(false);
+
+  const commands = lines
+    .filter((l) => l.type === "cmd")
+    .map((l) => l.text)
+    .join("\n");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(commands);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: animate ? 0.12 : 0 } },
+    show: { transition: { staggerChildren: animate ? 0.09 : 0 } },
   };
   const item = {
-    hidden: { opacity: 0, y: 4 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.18 } },
+    hidden: { opacity: 0, y: 3 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.16 } },
   };
 
+  const lastCmd = lines.reduce(
+    (acc, l, i) => (l.type === "cmd" ? i : acc),
+    -1,
+  );
+
   return (
-    <div
-      className={`my-6 rounded-xl overflow-hidden border border-white/10 bg-[#1b1b1d] shadow-2xl shadow-black/40 ring-1 ring-primary/10 ${className}`}
-    >
-      {/* barra de título estilo Ptyxis/GNOME */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-b from-[#38343c] to-[#2b2830] border-b border-black/40">
-        <div className="flex gap-2">
-          <span className="w-3 h-3 rounded-full bg-[#ed6a5e] shadow-inner" />
-          <span className="w-3 h-3 rounded-full bg-[#f4bf50] shadow-inner" />
-          <span className="w-3 h-3 rounded-full bg-[#61c554] shadow-inner" />
+    <div className={`term-window term-window--shell my-6 ${className}`}>
+      {/* Barra de título estilo GNOME / Ptyxis */}
+      <div className="term-titlebar">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex gap-1.5 shrink-0">
+            <span className="term-dot bg-[#ed6a5e]" />
+            <span className="term-dot bg-[#f4bf50]" />
+            <span className="term-dot bg-[#61c554]" />
+          </div>
+          <div className="flex items-center gap-2 text-xs font-mono min-w-0">
+            <TerminalSquare className="w-3.5 h-3.5 text-[#e95420] shrink-0" />
+            <span className="truncate text-gray-300/90">
+              {title ?? `${user}@${host}: ${cwd}`}
+            </span>
+          </div>
         </div>
-        <span className="flex-1 text-center text-xs font-medium text-gray-400 truncate pr-10">
-          {title ?? `${user}@${host}: ${cwd}`}
-        </span>
+        <button
+          onClick={handleCopy}
+          className="term-btn shrink-0"
+          title="Copiar os comandos"
+          aria-label="Copiar os comandos"
+        >
+          {copied ? (
+            <Check className="w-4 h-4 text-[#8ae234]" />
+          ) : (
+            <Copy className="w-4 h-4" />
+          )}
+        </button>
       </div>
 
-      {/* corpo */}
+      {/* Corpo */}
       <motion.div
         variants={container}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.2 }}
-        className="p-4 sm:p-5 font-mono text-[13px] leading-relaxed overflow-x-auto"
+        className="term-body term-scanlines term-scroll px-4 py-3.5 font-mono text-[13px] leading-[1.7] overflow-x-auto"
       >
         {lines.map((line, i) => {
           const isCmd = line.type === "cmd";
-          const isLast = i === lines.length - 1;
           return (
             <motion.div
               key={i}
               variants={item}
               className={`whitespace-pre-wrap break-words ${OUT_COLOR[line.type]}`}
             >
-              {isCmd && <Prompt user={user} host={host} cwd={cwd} />}
-              <span>{line.text}</span>
-              {isCmd && isLast && (
-                <span className="inline-block w-2 h-4 -mb-0.5 ml-0.5 bg-primary animate-pulse" />
+              {isCmd && <Prompt user={user} host={host} cwd={line.cwd ?? cwd} />}
+              {line.type === "comment" && (
+                <span className="select-none opacity-60">#{" "}</span>
               )}
+              <span className={isCmd ? "font-semibold" : ""}>{line.text}</span>
+              {isCmd && i === lastCmd && <span className="term-cursor" />}
             </motion.div>
           );
         })}
