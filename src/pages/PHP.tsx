@@ -152,8 +152,8 @@ import { PageContainer } from "@/components/layout/PageContainer";
           Require all granted
       </Directory>
 
-      ErrorLog ${APACHE_LOG_DIR}/meu-projeto-error.log
-      CustomLog ${APACHE_LOG_DIR}/meu-projeto-access.log combined
+      ErrorLog \${APACHE_LOG_DIR}/meu-projeto-error.log
+      CustomLog \${APACHE_LOG_DIR}/meu-projeto-access.log combined
   </VirtualHost>
   EOF
 

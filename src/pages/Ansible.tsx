@@ -108,17 +108,17 @@ import { PageContainer } from "@/components/layout/PageContainer";
   monitor.exemplo.com ansible_host=10.0.0.50 ansible_user=deploy ansible_ssh_private_key_file=~/.ssh/deploy_key
 
   # Grupo de grupos — "production" inclui webservers e dbservers
-  [production:children]
+  ${"[production" + ":children]"}
   webservers
   dbservers
 
   # Variáveis para todos os servidores de um grupo
-  [webservers:vars]
+  ${"[webservers" + ":vars]"}
   http_port=80
   ansible_python_interpreter=/usr/bin/python3
 
   # Variáveis globais para TODOS os hosts
-  [all:vars]
+  ${"[all" + ":vars]"}
   ansible_user=ubuntu
   ansible_become=yes
   ansible_become_method=sudo
